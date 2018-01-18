@@ -1,6 +1,6 @@
 {
   "name": "@cq/spa-page-model-manager",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Registry providing mechanism for managing the model representation of a page",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "test-debug": "npm run build && karma start --browsers=Chrome --single-run=false --auto-watch",
     "build": "babel src --presets babel-preset-es2015 --out-dir dist",
     "docs": "jsdoc ./src/",
-    "prepublish": "npm run build npm-auto-version",
+    "prepublish": "npm-auto-version npm run build",
     "postpublish": "git push origin --tags"
   },
   "babel": {
