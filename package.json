@@ -1,6 +1,6 @@
 {
   "name": "@cq/spa-page-model-manager",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Registry providing mechanism for managing the model representation of a page",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "build": "babel src --presets babel-preset-es2015 --out-dir dist",
     "docs": "jsdoc ./src/",
     "prepublish": "npm-auto-version npm run build",
-    "postpublish": "git push origin --tags"
+    "postpublish": "git commit -am 'publish latest version' && git push origin && git push origin --tags"
   },
   "babel": {
     "plugins": [
