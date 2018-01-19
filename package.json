@@ -1,6 +1,6 @@
 {
   "name": "@cq/spa-page-model-manager",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Registry providing mechanism for managing the model representation of a page",
   "main": "index.js",
   "scripts": {
