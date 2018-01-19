@@ -1,4 +1,4 @@
-import PageModelManager from '../dist/PageModelManager';
+import PageModelManager from '../index.js';
 
 describe('PageModelManager', () => {
 
