@@ -11,6 +11,4 @@
  *
  */
 
-module.exports = {
-    PageModelManager: require('./dist/PageModelManager')
-};
+module.exports = require('./dist/PageModelManager');
