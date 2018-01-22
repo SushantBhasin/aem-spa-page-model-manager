@@ -1,0 +1,17 @@
+{
+  "plugins": [
+    [
+      "istanbul",
+      {
+        "include": [
+          "dist/**.*"
+        ],
+        "exclude": [
+          "src/**.*",
+          "node_modules/**.*",
+          "tests/**.*"
+        ]
+      }
+    ]
+  ]
+}
