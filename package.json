@@ -1,5 +1,5 @@
 {
-  "name": "@cq/spa-page-model-manager",
+  "name": "@cq/cq-spa-page-model-manager",
   "version": "0.0.9",
   "description": "Registry providing mechanism for managing the model representation of a page",
   "main": "index.js",
