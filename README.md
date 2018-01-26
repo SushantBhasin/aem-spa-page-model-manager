@@ -1,5 +1,5 @@
 # spa-page-model-manager
-The PageModelManager provides access to the model of a page
+The PageModelManager provides access to the model of the page
 
 ## Development
 
