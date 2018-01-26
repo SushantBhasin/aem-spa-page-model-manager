@@ -18,6 +18,7 @@ import clone from 'clone';
 
 const ITEMS_PN = ':items';
 const ITEMS_ORDER_PN = ':itemsOrder';
+const DEFAULT_MODEL_PATH = window.location.pathname.replace(/\.htm(l)?$/,'.model.json');
 
 /**
  * Contains the Page Model Object.
@@ -323,6 +324,8 @@ const PageModelManager = {
      * @returns {Promise} Promise resolved by PageModel
      */
     init: function(path) {
+        path = path || DEFAULT_MODEL_PATH;
+
         return new Promise(function(resolve, reject) {
 
             if (!path) {
@@ -360,6 +363,8 @@ const PageModelManager = {
      * returns {Promise}
      */
     getData: function(path, immutable) {
+        let that = this;
+
         return new Promise(function (resolve) {
             if (pageModel) {
                 resolveModel(path, pageModel, resolve, immutable);
@@ -367,7 +372,10 @@ const PageModelManager = {
                 // Wait for the page model to be available
                 let retryResolveModel = function retryResolveModel() {
                     if (!pageModel) {
-                        requestAnimationFrame(retryResolveModel);
+                        requestAnimationFrame(function () {
+                            that.init().then(retryResolveModel);
+                        });
+
                         return;
                     }
 

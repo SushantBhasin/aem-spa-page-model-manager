@@ -19,7 +19,7 @@ module.exports = function(config) {
 
         // process es6 files
         preprocessors: {
-            'tests/test-context.js': [ 'webpack' ]
+            'tests/test-context.js': [ 'webpack', 'sourcemap' ]
 
         },
 
@@ -33,6 +33,7 @@ module.exports = function(config) {
 
         // webpack
         webpack: {
+            devtool: 'inline-source-map',
             module: {
                 loaders: [
                     {
@@ -73,7 +74,7 @@ module.exports = function(config) {
         autoWatch: true,
 
         // browsers ('Chrome', 'ChromeCanary', 'Firefox', 'Opera', 'Safari', 'PhantomJS', 'IE')
-        browsers: [ 'Chrome' ],
+        browsers: [ 'ChromeHeadless' ],
 
         // if browser does not capture in given timeout [ms], kill it
         captureTimeout: 60000,

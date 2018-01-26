@@ -8,7 +8,8 @@ describe('PageModelManager', () => {
 
     const TYPE_META_DATA = ':type';
 
-    const STATIC_PAGE_MODEL = 'react-page.json';
+    const DEFAULT_PAGE_MODEL_PATH = window.location.pathname.replace(/\.htm(l)?$/,'.model.json');
+    const CUSTOM_PAGE_MODEL_PATH = 'custom-path.json';
 
     const ERROR_VALUE = 'error';
 
@@ -39,6 +40,30 @@ describe('PageModelManager', () => {
                         ":type": "wcm/foundation/components/responsivegrid"
                     },
                     "child0001": {":type": "test/components/componentchild1"}
+                },
+                ":type": "wcm/foundation/components/responsivegrid"
+            }
+        },
+        ":type": "we-retail-react/components/structure/page"
+    };
+
+    const CUSTOM_PAGE_MODEL_JSON = {
+        "designPath": "/libs/settings/wcm/designs/default",
+        "title": "React sample page Custom",
+        "lastModifiedDate": 1512116041058,
+        "templateName": "sample-template",
+        "cssClassNames": "page",
+        "language": "en-US",
+        ":itemsOrder": [
+            "root"
+        ],
+        ":items": {
+            "root": {
+                "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
+                "columnCount": 12,
+                ":itemsOrder": ["child0000"],
+                ":items": {
+                    "child0000": {":type": "test/components/componentchild1"}
                 },
                 ":type": "wcm/foundation/components/responsivegrid"
             }
@@ -97,36 +122,45 @@ describe('PageModelManager', () => {
 
     let server;
 
-    beforeEach(() => {
+    before(() => {
         server = sinon.fakeServer.create();
 
-        server.respondWith("GET", STATIC_PAGE_MODEL,
+        server.respondWith("GET", DEFAULT_PAGE_MODEL_PATH,
             [200, { "Content-Type": "application/json" }, JSON.stringify(PAGE_MODEL_JSON)]);
 
-        PageModelManager.init(STATIC_PAGE_MODEL).then(model => {
+        server.respondWith("GET", CUSTOM_PAGE_MODEL_PATH,
+            [200, { "Content-Type": "application/json" }, JSON.stringify(CUSTOM_PAGE_MODEL_JSON)]);
+    });
+
+    beforeEach(() => {
+        // should return the page model for the default path
+        PageModelManager.init().then(model => {
             assert.deepEqual(PAGE_MODEL_JSON, model, 'Returns the page model object');
         });
 
         server.respond();
     });
 
-    afterEach(() => {
+    after(() => {
         server.restore();
     });
 
     describe('fetching a page model ->', () => {
 
-        it('should fail when no path has been provided', done => {
-            PageModelManager.init().then(() => {
-                done(false, 'No page model should be provided');
-            }, () => {
-                // Should result in an error
+        it('should return a custom model for the given path', done => {
+            PageModelManager.init(CUSTOM_PAGE_MODEL_PATH).then(model => {
+                assert.deepEqual(CUSTOM_PAGE_MODEL_JSON, model, 'Unexpected page model returned');
                 done();
+            }, () => {
+                done(false, 'No page model returned');
+                // Should result in an error
             });
+
+            server.respond();
         });
 
         it('should get an immutable page model', done => {
-            PageModelManager.init(STATIC_PAGE_MODEL).then(model1 => {
+            PageModelManager.init().then(model1 => {
                 model1[TYPE_META_DATA] = ERROR_VALUE;
 
                 PageModelManager.getData().then(model2 => {
