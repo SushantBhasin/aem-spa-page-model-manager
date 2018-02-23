@@ -104,7 +104,7 @@ function getModelChild(path, model) {
  */
 function resolveModel(path, pageModel, resolveFnc, immutable) {
     let model;
-    // Is the path empty
+    // Is the path undefined, null, falsy or empty
     if (!path || path.trim().length < 1) {
         model = immutable !== false ? clone(pageModel) : pageModel;
         resolveFnc(model);

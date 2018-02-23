@@ -159,11 +159,63 @@ describe('PageModelManager', () => {
             server.respond();
         });
 
-        it('should get an immutable page model', done => {
+        it('should get an immutable page model with no parameter', done => {
             PageModelManager.init().then(model1 => {
                 model1[TYPE_META_DATA] = ERROR_VALUE;
 
                 PageModelManager.getData().then(model2 => {
+                    assert.notEqual(ERROR_VALUE, model2[TYPE_META_DATA], 'The page model is mutable');
+                    done();
+                });
+            });
+
+            server.respond();
+        });
+
+        it('should get an immutable page model with undefined as parameter', done => {
+            PageModelManager.init().then(model1 => {
+                model1[TYPE_META_DATA] = ERROR_VALUE;
+
+                PageModelManager.getData(undefined).then(model2 => {
+                    assert.notEqual(ERROR_VALUE, model2[TYPE_META_DATA], 'The page model is mutable');
+                    done();
+                });
+            });
+
+            server.respond();
+        });
+
+        it('should get an immutable page model with null as parameter', done => {
+            PageModelManager.init().then(model1 => {
+                model1[TYPE_META_DATA] = ERROR_VALUE;
+
+                PageModelManager.getData(undefined).then(model2 => {
+                    assert.notEqual(ERROR_VALUE, model2[TYPE_META_DATA], 'The page model is mutable');
+                    done();
+                });
+            });
+
+            server.respond();
+        });
+
+        it('should get an immutable page model with false as parameter', done => {
+            PageModelManager.init().then(model1 => {
+                model1[TYPE_META_DATA] = ERROR_VALUE;
+
+                PageModelManager.getData(false).then(model2 => {
+                    assert.notEqual(ERROR_VALUE, model2[TYPE_META_DATA], 'The page model is mutable');
+                    done();
+                });
+            });
+
+            server.respond();
+        });
+
+        it('should get an immutable page model with "" as parameter', done => {
+            PageModelManager.init().then(model1 => {
+                model1[TYPE_META_DATA] = ERROR_VALUE;
+
+                PageModelManager.getData('').then(model2 => {
                     assert.notEqual(ERROR_VALUE, model2[TYPE_META_DATA], 'The page model is mutable');
                     done();
                 });
