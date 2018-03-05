@@ -1,7 +1,7 @@
 /*
  * ADOBE CONFIDENTIAL
  *
- * Copyright 2017 Adobe Systems Incorporated
+ * Copyright 2018 Adobe Systems Incorporated
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -32,6 +32,15 @@ let pageModel;
  * @private
  */
 let listeners = {};
+
+/**
+ * Returns the url to the page model. Either it is set via a meta tag property called 'cq:page_model_url' or it falls back to '{path/to/page}.model.json'
+ * @returns {string}
+ */
+function getPageModelPath() {
+    const pageModelMeta = document.querySelector('meta[property="cq:page_model_url"]');
+    return (pageModelMeta && pageModelMeta.content) || DEFAULT_MODEL_PATH;
+}
 
 /**
  * Call listeners on the given path
@@ -324,7 +333,7 @@ const PageModelManager = {
      * @returns {Promise} Promise resolved by PageModel
      */
     init: function(path) {
-        path = path || DEFAULT_MODEL_PATH;
+        path = path || getPageModelPath();
 
         return new Promise(function(resolve, reject) {
 
