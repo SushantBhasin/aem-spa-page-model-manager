@@ -1,8 +1,32 @@
 {
-  "name": "@cq/cq-spa-page-model-manager",
+  "name": "@adobe/cq-spa-page-model-manager",
   "version": "0.0.19",
-  "description": "Registry providing mechanism for managing the model representation of a page",
+  "auto-changelog": {
+    "template": "templates/CHANGELOG.hbs"
+  },
+  "bugs": {
+    "url": "https://www.adobe.com/go/aem6_4_support_en"
+  },
+  "engines": {
+    "npm": ">=5.5.1 <6.0.0"
+  },
+  "files": [
+    "dist/"
+  ],
+  "homepage": "https://www.adobe.com/go/aem6_4_docs_spa_en",
+  "keywords": [
+    "the official",
+    "adobe",
+    "aem",
+    "spa editor",
+    "experience manager",
+    "marketing cloud",
+    "cq",
+    "reactjs",
+    "pagemodelmanager"
+  ],
   "main": "index.js",
+  "private": true,
   "scripts": {
     "linter": "eslint --ext .js,.jsx .",
     "linter:fix": "eslint --ext .js,.jsx . --fix",
@@ -10,19 +34,14 @@
     "test-debug": "npm run build && karma start --browsers=Chrome --single-run=false --auto-watch",
     "build": "babel src --presets babel-preset-es2015 --out-dir dist",
     "docs": "jsdoc -c ./jsdoc_conf.json",
+    "generateDocs": "doxdox \"src/**/*.+(js|jsx)\" --layout markdown --output DOCUMENTATION.md",
     "prepublishOnly": "npm-auto-version npm run build",
     "postpublish": "git commit -am 'publish latest version' && git push origin && git push origin --tags"
   },
-  "repository": {
-    "type": "git",
-    "url": "git@git.corp.adobe.com:CQ/spa-page-model-manager.git"
-  },
   "author": "Adobe Systems Inc.",
-  "publishConfig": {
-    "registry": "https://artifactory.corp.adobe.com/artifactory/api/npm/npm-cq-spa-release-local"
-  },
   "license": "Apache-2.0",
   "dependencies": {
+    "auto-changelog": "^1.4.5",
     "babel-polyfill": "^6.9.1",
     "clone": "^2.1.1",
     "custom-event-polyfill": "^0.3.0"
@@ -42,6 +61,7 @@
     "babel-plugin-istanbul": "^4.1.5",
     "babel-preset-es2015": "^6.9.0",
     "chai": "^3.5.0",
+    "doxdox": "^2.0.3",
     "eslint": "4.3.0",
     "eslint-plugin-babel": "4.1.2",
     "inject-loader": "2.0.1",
