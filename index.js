@@ -11,4 +11,9 @@
  *
  */
 
-module.exports = require('./dist/PageModelManager');
+require('./dist/ModelRouter');
+
+module.exports = {
+    PageModelManager: require('./dist/PageModelManager').default,
+    Constants: require('./dist/Constants').default
+};

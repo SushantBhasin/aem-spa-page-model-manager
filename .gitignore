@@ -1,6 +1,8 @@
 .idea
+*.iml
 .DS_Store
 .npmrc
+.chrome
 /build
 /temp
 /dist
@@ -22,3 +24,6 @@ out/
 
 # code coverage
 coverage/
+
+# npm pack
+*.tgz
