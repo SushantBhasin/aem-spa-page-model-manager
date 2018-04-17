@@ -1,6 +1,6 @@
 {
   "name": "@adobe/cq-spa-page-model-manager",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "auto-changelog": {
     "template": "templates/CHANGELOG.hbs"
   },
@@ -26,7 +26,6 @@
     "pagemodelmanager"
   ],
   "main": "index.js",
-  "private": true,
   "scripts": {
     "linter": "eslint --ext .js,.jsx .",
     "linter:fix": "eslint --ext .js,.jsx . --fix",
