@@ -35,13 +35,12 @@
     "build": "npm run linter && babel src --out-dir dist",
     "docs": "jsdoc -c ./jsdoc_conf.json",
     "generateDocs": "doxdox \"src/**/*.+(js|jsx)\" --layout markdown --output DOCUMENTATION.md",
-    "prepublishOnly": "npm-auto-version npm run build",
+    "prepublishOnly": "npm-auto-version && npm run build && npm run docs && npm run generateDocs",
     "postpublish": "git commit -am 'publish latest version' && git push origin && git push origin --tags"
   },
   "author": "Adobe Systems Inc.",
   "license": "Apache-2.0",
   "dependencies": {
-    "auto-changelog": "^1.4.5",
     "babel-polyfill": "^6.9.1",
     "clone": "^2.1.1",
     "custom-event-polyfill": "^0.3.0"
@@ -54,6 +53,7 @@
   },
   "peerDependencies": {},
   "devDependencies": {
+    "auto-changelog": "^1.4.6",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.9.1",
     "babel-eslint": "7.2.3",
