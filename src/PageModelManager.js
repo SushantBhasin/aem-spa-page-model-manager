@@ -202,7 +202,8 @@ function splitParentPath(path) {
  * Updates the page model with the given data
  *
  * @param {Object} msg - Object containing the data to update the page model
- * @param {String} msg.path - Path in the PageModel which needs to be updated
+ * @property {String} msg.dataPath - Relative data path in the PageModel which needs to be updated
+ * @property {String} msg.pagePath - Absolute page path corresponding to the page in the PageModel which needs to be updated
  * @param {String} msg.cmd - Command Action requested via Editable on the content Node
  * @param {Object} msg.data - Data that needs to be updated in the PageModel at {path}
  *
@@ -550,15 +551,11 @@ function fetchModel(path) {
  * <p> It can also manage multiple pages; see {@link ModelRouter}.</p>
  *
  * <h2>Configuration</h2>
- * <p>The PageModelManager can be configured using meta tags and properties located in the head section of the document.</p>
- *
- * e.g. &lt;meta property="name" content="value"\&gt;
+ * <p>The PageModelManager can be configured using a meta tag in the head section of the document:</p>
+ * <pre><code>e.g. &lt;meta property="cq:page_model_url" content="/content/test.model.json"\&gt;</code></pre>
  *
  * @module PageModelManager
  *
- * @property {string} [cq:page_model_url]   - [Meta property] URL of the model. Allows to provide a custom URL. By default the model URL is determined based on the current URL
- *
- * @type {{init: PageModelManager.init, getData: PageModelManager.getData, setData: PageModelManager.setData, addListener: PageModelManager.addListener, removeListener: PageModelManager.removeListener}}
  */
 const PageModelManager = {
 
@@ -587,7 +584,8 @@ const PageModelManager = {
      * @type {Object}
      * @property {Object} detail
      * @property {Object} detail.msg -
-     * @property {String} detail.msg.path - Path in the PageModel which needs to be updated
+     * @property {String} detail.msg.dataPath - Relative data path in the PageModel which needs to be updated
+     * @property {String} detail.msg.pagePath - Absolute page path corresponding to the page in the PageModel which needs to be updated
      * @property {String} detail.msg.cmd - Command Action requested via Editable on the content Node
      * @property {Object} detail.msg.data - Data that needs to be updated in the PageModel at the given path
      */

@@ -30,12 +30,10 @@ import PageModelManager from './PageModelManager';
  *
  * <h2>Configuration</h2>
  * <p>The Model Router can be configured using meta tags and properties located in the head section of the document.</p>
- *
- * e.g. &lt;meta property="name" content="value"\&gt;
+ * <pre><code>e.g. &lt;meta property="cq:page_model_router" content="true"\&gt;
+ * e.g. &lt;meta property="cq:page_model_route_filters" content="route/not/found,^(.*)(?:exclude/path)(.*)"\&gt;</code></pre>
  *
  * @module ModelRouter
- * @property {boolean} [cq:page_model_router]              - [Meta property] (boolean) indicating if the ModelRouter be enabled
- * @property {string[]} [cq:page_model_route_filters]      - [Meta property] (array of regex) indicating  the filters to be tested against hash changes
  */
 
 /**
