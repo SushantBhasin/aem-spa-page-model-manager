@@ -1,6 +1,6 @@
 {
   "name": "@adobe/cq-spa-page-model-manager",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "auto-changelog": {
     "template": "templates/CHANGELOG.hbs"
   },
