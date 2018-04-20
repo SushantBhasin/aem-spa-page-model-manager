@@ -345,7 +345,7 @@ The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is al
 
 ## Changelog 
 
-### v0.0.20 - 17 April 2018
+### 0.0.22 - 20 April 2018
 
 Initial public release of cq-spa-page-model-manager, which provides:
  * Updated `PageModelManager` API, now able to manage the model of multiple pages stored in AEM:

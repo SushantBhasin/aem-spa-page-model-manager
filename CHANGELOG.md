@@ -1,4 +1,4 @@
-### v0.0.20 - 17 April 2018
+### 0.0.22 - 20 April 2018
 
 Initial public release of cq-spa-page-model-manager, which provides:
  * Updated `PageModelManager` API, now able to manage the model of multiple pages stored in AEM:
