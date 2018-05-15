@@ -159,8 +159,8 @@ function extractModel(dataPath, pageModel, immutable) {
         if (dataPath && dataPath.trim().length > 0) {
             // If the path is valid, then try to find the corresponding child model
             try {
-                if(dataPath.startsWith("/") && pageModel[Constants.PAGES_PROP] && pageModel[Constants.PAGES_PROP][path]) {
-                    model = pageModel[Constants.PAGES_PROP][path];
+                if(dataPath.startsWith("/") && pageModel[Constants.CHILDREN_PROP] && pageModel[Constants.CHILDREN_PROP][path]) {
+                    model = pageModel[Constants.CHILDREN_PROP][path];
                 } else {
                     model = extractModelRecursively(dataPath, pageModel);
                 }
@@ -383,8 +383,8 @@ function storePageModel(pagePath, pageModel) {
         pageModelMap = pageModel;
     } else {
         // Child pages
-        pageModelMap[Constants.PAGES_PROP] = pageModelMap[Constants.PAGES_PROP] || {};
-        pageModelMap[Constants.PAGES_PROP][pagePath] = pageModel;
+        pageModelMap[Constants.CHILDREN_PROP] = pageModelMap[Constants.CHILDREN_PROP] || {};
+        pageModelMap[Constants.CHILDREN_PROP][pagePath] = pageModel;
     }
 
     // Inform that a new page model has been loaded
@@ -672,7 +672,7 @@ const PageModelManager = {
                 });
             } else {
                 // At this point, we are ready to get data since init() has completed
-                let pageModelFromCache = pagePath === rootPagePath ? pageModelMap : pageModelMap[Constants.PAGES_PROP] && pageModelMap[Constants.PAGES_PROP][pagePath];
+                let pageModelFromCache = pagePath === rootPagePath ? pageModelMap : pageModelMap[Constants.CHILDREN_PROP] && pageModelMap[Constants.CHILDREN_PROP][pagePath];
                 if (pageModelFromCache && !forceReload) {
                     // Use the model from cache
                     extractModel(dataPath, pageModelFromCache, immutable)

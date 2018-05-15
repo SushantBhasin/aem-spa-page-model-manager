@@ -79,9 +79,9 @@ Order in which the items should be listed
     
 
     
-#### PAGE_PATH_PROP()
+#### PATH_PROP()
 
-Path of a page
+Path of an item
 
 
 
@@ -97,9 +97,9 @@ Path of a page
     
 
     
-#### PAGES_PROP()
+#### CHILDREN_PROP()
 
-List of child pages of an page
+Children of a hierarchical item
 
 
 

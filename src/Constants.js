@@ -44,18 +44,18 @@ const Constants = {
     ITEMS_ORDER_PROP: ':itemsOrder',
 
     /**
-     * Path of a page
+     * Path of an item
      *
      * @type {string}
      */
-    PAGE_PATH_PROP: ':pagePath',
+    PATH_PROP: ':path',
 
     /**
-     * List of child pages of an page
+     * Children of a hierarchical item
      *
      * @type {string}
      */
-    PAGES_PROP: ':pages'
+    CHILDREN_PROP: ':children'
 };
 
 export default Constants;
