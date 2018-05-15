@@ -192,6 +192,7 @@ describe('PageModelManager ->', () => {
             "http://content/url/page": 'http://content/url/page.model.json',
             "http://content/url/page.html/suffix": 'http://content/url/page.model.json/suffix',
             "http://content/url/page.html?query=param": 'http://content/url/page.model.json?query=param',
+            "http://contextpath/content/url/page.html": 'http://contextpath/content/url/page.model.json',
             "/content/url/page": '/content/url/page.model.json',
             "/content/url/page.htm": '/content/url/page.model.json',
             "/content/url/page.html": '/content/url/page.model.json',

@@ -16,9 +16,8 @@
  */
 import clone from 'clone';
 import Constants from './Constants';
+import Helpers from './Helpers';
 import InternalConstants from './InternalConstants';
-
-const DEFAULT_MODEL_URL = window.location.pathname.replace(/\.htm(l)?$/, InternalConstants.DEFAULT_MODEL_JSON_EXTENSION);
 
 /**
  * Page path on which the page model manager has been initialized.
@@ -44,16 +43,6 @@ let pageModelMap = {};
  */
 let listenersMap = {};
 
-/**
- * Returns the path to the page model. Either it is derived from a meta tag property called 'cq:page_model_url' or from the current window location.
- * @returns {String}
- *
- * @private
- */
-function getPageModelPath() {
-    const pageModelMeta = document.querySelector('meta[property="cq:page_model_url"]');
-    return (pageModelMeta && pageModelMeta.content) || DEFAULT_MODEL_URL;
-}
 
 /**
  * Returns the listeners corresponding to the given page path and data path.
@@ -374,6 +363,7 @@ function movePath(pagePath, dataPath, data, insertBefore) {
  */
 function storePageModel(pagePath, pageModel) {
     pagePath = pagePath || rootPagePath;
+    pagePath = Helpers.sanitize(pagePath);
 
     let isRootPage = pagePath === rootPagePath;
 
@@ -428,81 +418,6 @@ function setData(pagePath, dataPath, newData) {
 }
 
 /**
- * Returns the provided path extended with the provided extension
- *
- * @param {string} path         - path to be extended
- * @param {string} extension    - extension to be added
- * @returns {string}
- *
- * @private
- */
-function addExtension(path, extension) {
-    if (!extension || extension.length < 1) {
-        return path;
-    }
-
-    if (!extension.startsWith('.')) {
-        extension = '.' + extension;
-    }
-
-    if (!path || path.length < 1 || path.indexOf(extension) > -1) {
-        return path;
-    }
-
-    let extensionPath = path;
-
-    // Groups
-    // 1. the resource
-    // 2. the selectors and the extension
-    // 3. the suffix
-    // 4. the parameters
-    let match = /^((?:[\/a-zA-Z0-9:_-]*)+)(?:\.?)([a-zA-Z0-9._-]*)(?:\/?)([a-zA-Z0-9\/\._-]*)(?:\??)([a-zA-Z0-9=&]*)$/g.exec(path);
-    let queue = '';
-
-    if (match && match.length > 2) {
-        // suffix
-        queue = match[3] ? '/' + match[3] : '';
-        // parameters
-        queue += match[4] ? '?' + match[4] : '';
-
-        extensionPath = match[1] + '.' + match[2].replace(/\.htm(l)?/, extension) + queue;
-    }
-
-    return extensionPath.indexOf(extension) > -1 ? extensionPath: extensionPath + extension + queue;
-}
-
-/**
- * Returns the provided path extended with the provided selector
- *
- * @param {string} path         - path to be extended
- * @param {string} selector     - selector to be added
- * @returns {string}
- *
- * @private
- */
-function addSelector(path, selector) {
-    if (!selector || selector.length < 1) {
-        return path;
-    }
-
-    if (!selector.startsWith('.')) {
-        selector = '.' + selector;
-    }
-
-    if (!path || path.length < 1 || path.indexOf(selector) > -1) {
-        return path;
-    }
-
-    let index = path.indexOf('.') || path.length;
-
-    if (index < 0) {
-        return path + selector;
-    }
-
-    return path.slice(0, index) + selector + path.slice(index, path.length);
-}
-
-/**
  * Fetch the page model from the server
  *
  * @param path - The path of the corresponding page
@@ -511,8 +426,9 @@ function addSelector(path, selector) {
  * @private
  */
 function fetchModel(path) {
-    path = addSelector(path, InternalConstants.DEFAULT_SLING_MODEL_SELECTOR);
-    path = addExtension(path, 'json');
+    path = Helpers.addSelector(path, InternalConstants.DEFAULT_SLING_MODEL_SELECTOR);
+    path = Helpers.addExtension(path, 'json');
+    path = Helpers.externalize(path);
 
     return new Promise(function (resolve, reject) {
         if (!path) {
@@ -605,10 +521,9 @@ const PageModelManager = {
     init: function(pagePath) {
         pageModelMap = {};
         listenersMap = {};
-        pagePath = pagePath || getPageModelPath();
-        let selectorIndex = pagePath.indexOf(".");
-
-        rootPagePath = selectorIndex > -1 ? pagePath.substr(0, selectorIndex) : pagePath;
+        
+        pagePath = pagePath || Helpers.getPageModelUrl();
+        rootPagePath = Helpers.sanitize(pagePath);
 
         return new Promise(function (resolve, reject) {
                 return fetchModel(pagePath)
