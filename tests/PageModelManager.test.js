@@ -717,11 +717,10 @@ describe('PageModelManager ->', () => {
                     callback: () => {
                         PageModelManager.getData(CHILD0000_PATH).then(pageModel => {
                             const order = pageModel[Constants.ITEMS_ORDER_PROP];
-                            assert.equal(
-                                order.indexOf('child0010') + 1,
-                                order.indexOf('child0011'));
-
-                            done();
+                            
+                            if (order.indexOf('child0010') + 1 === order.indexOf('child0011')) {
+                                done();
+                            }
                         });
                     }
                 });
