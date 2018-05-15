@@ -33,7 +33,7 @@ PageModelManager.getData({
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.22*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.23*
 
 
 
