@@ -79,27 +79,9 @@ Order in which the items should be listed
     
 
     
-#### PAGE_PATH_PROP()
+#### PATH_PROP()
 
-Path of a page
-
-
-
-
-
-
-##### Returns
-
-
-- `Void`
-
-
-    
-
-    
-#### PAGES_PROP()
-
-List of child pages of an page
+Path of an item
 
 
 
@@ -114,29 +96,27 @@ List of child pages of an page
 
     
 
-
-### src/ModelRouter.js
-
-
     
+#### CHILDREN_PROP()
 
-    
+Children of a hierarchical item
 
-    
 
-    
+
+
+
+
+##### Returns
+
+
+- `Void`
+
 
     
 
 
 ### src/PageModelManager.js
 
-
-    
-
-    
-
-    
 
     
 

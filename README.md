@@ -113,27 +113,9 @@ Order in which the items should be listed
     
 
     
-#### PAGE_PATH_PROP()
+#### PATH_PROP()
 
-Path of a page
-
-
-
-
-
-
-##### Returns
-
-
-- `Void`
-
-
-    
-
-    
-#### PAGES_PROP()
-
-List of child pages of an page
+Path of an item
 
 
 
@@ -148,29 +130,27 @@ List of child pages of an page
 
     
 
-
-### src/ModelRouter.js
-
-
     
+#### CHILDREN_PROP()
 
-    
+Children of a hierarchical item
 
-    
 
-    
+
+
+
+
+##### Returns
+
+
+- `Void`
+
 
     
 
 
 ### src/PageModelManager.js
 
-
-    
-
-    
-
-    
 
     
 
@@ -345,9 +325,18 @@ The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is al
 
 ## Changelog 
 
+### 0.0.23 - 15 May 2018
+
+Public release of `cq-spa-page-model-manager`, which provides:
+
+ * Support for the latest version of the `com.adobe.cq.export.json.hierarchy` API
+    * Support and usage of the `:path` and `:children` fields to identify a page and its child pages
+ * Support for URLs containing a context path
+    * The `PageModelManager` can now be used in conjunction with URLs including a context path
+
 ### 0.0.22 - 20 April 2018
 
-Initial public release of cq-spa-page-model-manager, which provides:
+Initial public release of `cq-spa-page-model-manager`, which provides:
  * Updated `PageModelManager` API, now able to manage the model of multiple pages stored in AEM:
     * `getData()`, `addListeners()` and `removeListeners()` expect a config parameter that specifies the `pagePath` and `dataPath`
     * `getData()` supports a `forceReload` parameter

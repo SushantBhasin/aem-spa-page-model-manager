@@ -42,7 +42,7 @@ describe('PageModelManager ->', () => {
                 ":type": "wcm/foundation/components/responsivegrid"
             }
         },
-        ":pages": {
+        ":children": {
             "/content/test/subpage1": {
                 ":type":	"we-retail-journal/react/components/structure/page",
                 ":items": {
@@ -192,6 +192,7 @@ describe('PageModelManager ->', () => {
             "http://content/url/page": 'http://content/url/page.model.json',
             "http://content/url/page.html/suffix": 'http://content/url/page.model.json/suffix',
             "http://content/url/page.html?query=param": 'http://content/url/page.model.json?query=param',
+            "http://contextpath/content/url/page.html": 'http://contextpath/content/url/page.model.json',
             "/content/url/page": '/content/url/page.model.json',
             "/content/url/page.htm": '/content/url/page.model.json',
             "/content/url/page.html": '/content/url/page.model.json',
@@ -442,6 +443,7 @@ describe('PageModelManager ->', () => {
             let listenerCalled = new Promise((resolve) => {
                 PageModelManager.addListener({
                     dataPath: dataPath,
+                    pagePath: page,
                     callback: resolve
                 });
             });
@@ -515,7 +517,7 @@ describe('PageModelManager ->', () => {
                 pagePath: page,
                 dataPath: 'root/' + data
             }).then(childModel => {
-                assert.deepEqual(PAGE_MODEL_JSON[Constants.PAGES_PROP][page][Constants.ITEMS_PROP].root[Constants.ITEMS_PROP][data], childModel, 'Returns the child model object from a different page');
+                assert.deepEqual(PAGE_MODEL_JSON[Constants.CHILDREN_PROP][page][Constants.ITEMS_PROP].root[Constants.ITEMS_PROP][data], childModel, 'Returns the child model object from a different page');
                 assert(1, server.requestCount, 'No extra server request should be performed.');
                 done();
             });
@@ -715,11 +717,10 @@ describe('PageModelManager ->', () => {
                     callback: () => {
                         PageModelManager.getData(CHILD0000_PATH).then(pageModel => {
                             const order = pageModel[Constants.ITEMS_ORDER_PROP];
-                            assert.equal(
-                                order.indexOf('child0010') + 1,
-                                order.indexOf('child0011'));
-
-                            done();
+                            
+                            if (order.indexOf('child0010') + 1 === order.indexOf('child0011')) {
+                                done();
+                            }
                         });
                     }
                 });
