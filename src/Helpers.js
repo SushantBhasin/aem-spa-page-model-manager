@@ -76,6 +76,10 @@ const Helpers = {
      * @returns {string}
      */
     internalize(path) {
+        if (contextPath === undefined) {
+            contextPath = this.getContextPath();
+        }
+        
         if (path.startsWith(contextPath)) {
             return path.replace(contextPath, "");
         } else {
