@@ -114,9 +114,149 @@ Children of a hierarchical item
 
     
 
+    
+#### HIERARCHY_TYPE_PROP()
+
+Hierarchical type of the item
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+
+### src/EventType.js
+
+
+    
+#### EventType()
+
+Type of events triggered or listened by the PageModelManager and ModelRouter
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### PAGE_MODEL_INIT()
+
+Event which indicates that the PageModelManager has been initialized
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### PAGE_MODEL_LOADED()
+
+Event which indicates that the PageModelManager has loaded new content
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### PAGE_MODEL_UPDATE()
+
+Event that indicates a request to update the page model
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### PAGE_MODEL_ROUTE_CHANGED()
+
+Event which indicates that ModelRouter has identified that model route has changed
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+
+### src/MetaProperty.js
+
+
+    
+#### MetaProperty()
+
+Names of the meta properties associated with the PageModelProvider and ModelRouter
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
 
 ### src/PageModelManager.js
 
+
+    
+
+    
+
+    
 
     
 
@@ -156,7 +296,7 @@ Children of a hierarchical item
 
 <h2>Configuration</h2>
 <p>The PageModelManager can be configured using a meta tag in the head section of the document:</p>
-<pre><code>e.g. &lt;meta property="cq:page_model_url" content="/content/test.model.json"\&gt;</code></pre>
+<pre><code>e.g. &lt;meta property="cq:pagemodel_root_url" content="/content/test.model.json"\&gt;</code></pre>
 
 
 
@@ -172,7 +312,7 @@ Children of a hierarchical item
     
 
     
-#### init([pagePath])
+#### init([cfg])
 
 Initializes the page model manager with the model corresponding to the given page path.
 It will fetch the corresponding page model from the server and later use the given page path as the root page path.
@@ -184,7 +324,9 @@ It will fetch the corresponding page model from the server and later use the giv
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| pagePath | `String`  | Path (absolute path) of the page to be managed. Defaults to the cq:page_model_url meta. | *Optional* |
+| cfg | `[object Object]`  | - Configuration object. | *Optional* |
+| cfg.pagePath | `String`  | - Absolute path of the page (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
+| cfg.immutable&#x3D;true | `boolean`  | - Should the returned model be a copy | *Optional* |
 
 
 
@@ -192,7 +334,25 @@ It will fetch the corresponding page model from the server and later use the giv
 ##### Returns
 
 
-- `Promise`  Promise resolved with the page model (copy).
+- `Promise`  Promise resolved with the page model
+
+
+    
+
+    
+#### getRootModelUrl()
+
+Returns the path to the root model the page model manager has been initialized with
+
+
+
+
+
+
+##### Returns
+
+
+- `string`  
 
 
     

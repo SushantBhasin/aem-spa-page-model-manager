@@ -34,7 +34,7 @@
     "build": "npm run linter && babel src --out-dir dist",
     "docs": "jsdoc -c ./jsdoc_conf.json && doxdox \"src/**/*.+(js|jsx)\" -i \"src/Helpers.js,src/ModelRouter.js\" --layout templates/DOCUMENTATION.hbs --output DOCUMENTATION.md",
     "preversion": "npm run test && npm run build && npm run docs && npm run readme",
-    "version": "git add -A dist",
+    "version": "git add -A",
     "postversion": "git push && git push --tags",
     "readme": "node_modules/markdown-include/bin/cli.js markdown-include.config.json",
     "prepublishOnly": "npm version && npm run docs && npm run readme",
