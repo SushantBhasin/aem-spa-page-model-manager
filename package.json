@@ -33,12 +33,10 @@
     "test-debug": "npm run build && karma start --browsers=Chrome_with_debugging",
     "build": "npm run linter && babel src --out-dir dist",
     "docs": "jsdoc -c ./jsdoc_conf.json && doxdox \"src/**/*.+(js|jsx)\" -i \"src/Helpers.js,src/ModelRouter.js\" --layout templates/DOCUMENTATION.hbs --output DOCUMENTATION.md",
-    "preversion": "npm run test && npm run build && npm run docs && npm run readme",
+    "preversion": "npm run build && npm run test && npm run docs && npm run readme",
     "version": "git add -A",
     "postversion": "git push && git push --tags",
-    "readme": "node_modules/markdown-include/bin/cli.js markdown-include.config.json",
-    "prepublishOnly": "npm version && npm run docs && npm run readme",
-    "postpublish": "git commit -am 'publish latest version' && git push origin && git push origin --tags"
+    "readme": "node_modules/markdown-include/bin/cli.js markdown-include.config.json"
   },
   "author": "Adobe Systems Inc.",
   "license": "Apache-2.0",
@@ -84,7 +82,6 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "mocha": "^5.1.0",
-    "semver": "^5.5.0",
     "sinon": "^4.5.0",
     "sinon-chai": "^3.0.0",
     "webpack": "^1.13.1"
