@@ -18,26 +18,34 @@ import clone from 'clone';
 import Constants from './Constants';
 import Helpers from './Helpers';
 import InternalConstants from './InternalConstants';
+import EventType from './EventType';
+import MetaProperty from "./MetaProperty";
 
 /**
- * Page path on which the page model manager has been initialized.
- * The initial path is set via {@code PageModelManager#init}.
+ * URL to the model the page model manager has been initialized with
+ * The root model URL is set via {@code PageModelManager#init}.
+ *
+ * @type {string}
  *
  * @private
  */
-let rootPagePath;
+let rootModelUrl;
 
 /**
  * Contains the different page model objects already loaded.
  * The initial page model is set via {@code PageModelManager#init}, and the additional ones can be set via {@code PageModelManager#getData}
  *
+ * @type {{}}
+ *
  * @private
  */
-let pageModelMap = {};
+let rootModel;
 
 /**
  * Contains the different listeners registered against their corresponding paths.
  * The map has the following schematic structure: map(page path => map(data path => listener)). An empty data path string can be set to identify a page listener
+ *
+ * @type {{}}
  *
  * @private
  */
@@ -46,6 +54,7 @@ let listenersMap = {};
 
 /**
  * Returns the listeners corresponding to the given page path and data path.
+ *
  * @param pagePath - Absolute path of the page corresponding to the page model. Defaults to {@code rootPagePath}.
  * @param dataPath - Relative path of the data in the page model. Defaults to empty string.
  * @returns {Array}
@@ -53,7 +62,7 @@ let listenersMap = {};
  * @private
  */
 function getListenersForPath(pagePath, dataPath) {
-    pagePath = pagePath || rootPagePath;
+    pagePath = adaptPagePath(pagePath);
     dataPath = dataPath || '';
 
     return (listenersMap[pagePath] && listenersMap[pagePath][dataPath]) || [];
@@ -70,13 +79,14 @@ function getListenersForPath(pagePath, dataPath) {
  * @private
  */
 function notifyListeners(pagePath, dataPath) {
-    pagePath = pagePath || rootPagePath;
+    pagePath = adaptPagePath(pagePath);
     dataPath = dataPath || '';
 
     let listenersForPath = getListenersForPath(pagePath, dataPath);
 
-    if (listenersForPath.length === 0 && pagePath !== rootPagePath) {
-        listenersForPath = getListenersForPath(rootPagePath, dataPath);
+    // Also warn the app root for the model change
+    if (listenersForPath.length === 0 && pagePath) {
+        listenersForPath = getListenersForPath('', dataPath);
     }
 
     if (listenersForPath.length) {
@@ -100,9 +110,9 @@ function notifyListeners(pagePath, dataPath) {
  */
 function triggerPageModelLoaded() {
     // Deep copy to protect the internal state of the page model
-    window.dispatchEvent(new CustomEvent('cq-pagemodel-loaded', {
+    window.dispatchEvent(new CustomEvent(EventType.PAGE_MODEL_LOADED, {
         detail: {
-            model: clone(pageModelMap)
+            model: clone(rootModel)
         }
     }));
 }
@@ -122,7 +132,7 @@ function extractModelRecursively(path, model) {
 
     let tokens = path.split('/');
     let token = tokens.shift();
-    let child = model[Constants.ITEMS_PROP][token];
+    let child = model[Constants.ITEMS_PROP] && model[Constants.ITEMS_PROP][token];
 
     if (!child || tokens.length < 1) {
         return child;
@@ -148,8 +158,8 @@ function extractModel(dataPath, pageModel, immutable) {
         if (dataPath && dataPath.trim().length > 0) {
             // If the path is valid, then try to find the corresponding child model
             try {
-                if(dataPath.startsWith("/") && pageModel[Constants.CHILDREN_PROP] && pageModel[Constants.CHILDREN_PROP][path]) {
-                    model = pageModel[Constants.CHILDREN_PROP][path];
+                if(dataPath.startsWith("/") && pageModel[Constants.CHILDREN_PROP] && pageModel[Constants.CHILDREN_PROP][dataPath]) {
+                    model = pageModel[Constants.CHILDREN_PROP][dataPath];
                 } else {
                     model = extractModelRecursively(dataPath, pageModel);
                 }
@@ -207,7 +217,7 @@ function updateModel(msg) {
     }
     // Path in the PageModel which needs to be updated
     let dataPath = msg.dataPath;
-    let pagePath = msg.pagePath || rootPagePath;
+    let pagePath = adaptPagePath(msg.pagePath);
     // Command Action requested via Editable on the content Node
     let cmd = msg.cmd;
     // Data that needs to be updated in the page model at the given path
@@ -260,7 +270,7 @@ function updateModel(msg) {
  * @private
  */
 function deletePath(pagePath, dataPath) {
-    pagePath = pagePath || rootPagePath;
+    pagePath = adaptPagePath(pagePath);
     let p = splitParentPath(dataPath);
 
     return this.getData({
@@ -292,7 +302,7 @@ function deletePath(pagePath, dataPath) {
  * @private
  */
 function insertPath(pagePath, dataPath, data, insertBefore) {
-    pagePath = pagePath || rootPagePath;
+    pagePath = adaptPagePath(pagePath);
     let parentAndKey = splitParentPath(dataPath);
 
     return this.getData({
@@ -331,7 +341,7 @@ function insertPath(pagePath, dataPath, data, insertBefore) {
  * @private
  */
 function movePath(pagePath, dataPath, data, insertBefore) {
-    pagePath = pagePath || rootPagePath;
+    pagePath = adaptPagePath(pagePath);
     let self = this;
 
     return this.getData({
@@ -353,28 +363,39 @@ function movePath(pagePath, dataPath, data, insertBefore) {
 }
 
 /**
- * Adds a page to the {@link pageModelMap}. Either the page is the page model or the page is a child page of the root page
+ * Adds a page to the {@link rootModel}. Either the page is the page model or the page is a child page of the root page
  *
  *
  * @param {String} [pagePath]       - absolute path of the page resource
  * @param {{}} pageModel            - model of the page to be added
+ * @param {boolean} [isRoot]        - is the page model the root of the model structure
  *
  * @private
  */
-function storePageModel(pagePath, pageModel) {
-    pagePath = pagePath || rootPagePath;
+function storePageModel(pagePath, pageModel, isRoot) {
+    pagePath = adaptPagePath(pagePath);
     pagePath = Helpers.sanitize(pagePath);
-
-    let isRootPage = pagePath === rootPagePath;
 
     // Initialize the listeners and page model registries
     listenersMap[pagePath] = listenersMap[pagePath] || {};
-    if (isRootPage) {
-        pageModelMap = pageModel;
+    if (isRoot) {
+        let childPages = {};
+        if (rootModel && rootModel[Constants.CHILDREN_PROP] && rootModel[Constants.CHILDREN_PROP].length > 0) {
+            childPages = rootModel[Constants.CHILDREN_PROP];
+        }
+
+        rootModel = pageModel;
+
+        // Preserve pre-loaded child pages
+        for (let key in childPages) {
+            if (childPages.hasOwnProperty(key) && !rootModel[Constants.CHILDREN_PROP][key]) {
+                rootModel[Constants.CHILDREN_PROP][key] = childPages[key];
+            }
+        }
     } else {
         // Child pages
-        pageModelMap[Constants.CHILDREN_PROP] = pageModelMap[Constants.CHILDREN_PROP] || {};
-        pageModelMap[Constants.CHILDREN_PROP][pagePath] = pageModel;
+        rootModel[Constants.CHILDREN_PROP] = rootModel[Constants.CHILDREN_PROP] || {};
+        rootModel[Constants.CHILDREN_PROP][pagePath] = pageModel;
     }
 
     // Inform that a new page model has been loaded
@@ -384,8 +405,8 @@ function storePageModel(pagePath, pageModel) {
     notifyListeners(pagePath, '');
 
     // If the page is not the root, notify the root that a page has been added
-    if (!isRootPage) {
-        notifyListeners(rootPagePath, '');
+    if (!isRoot) {
+        notifyListeners('', '');
     }
 }
 
@@ -401,7 +422,7 @@ function storePageModel(pagePath, pageModel) {
  */
 function setData(pagePath, dataPath, newData) {
     let splitPaths = splitParentPath(dataPath);
-    pagePath = pagePath || rootPagePath;
+    pagePath = adaptPagePath(pagePath);
 
     return this.getData({
         pagePath: pagePath,
@@ -420,25 +441,32 @@ function setData(pagePath, dataPath, newData) {
 /**
  * Fetch the page model from the server
  *
- * @param path - The path of the corresponding page
+ * @param {string} [url]        - The URL of the corresponding page
+ * @param {boolean} [init]      - Should the method be used to initialize the root model
+ *
  * @return {Promise} Returns a promise resolved with the page model object
  *
  * @private
  */
-function fetchModel(path) {
-    path = Helpers.addSelector(path, InternalConstants.DEFAULT_SLING_MODEL_SELECTOR);
-    path = Helpers.addExtension(path, 'json');
-    path = Helpers.externalize(path);
+function fetchModel(url, init) {
+    url = Helpers.getModelUrl(url);
+    url = Helpers.addSelector(url, InternalConstants.DEFAULT_SLING_MODEL_SELECTOR);
+    url = Helpers.addExtension(url, 'json');
+    url = Helpers.externalize(url);
+
+    if (init) {
+        rootModelUrl = url;
+    }
 
     return new Promise(function (resolve, reject) {
-        if (!path) {
-            let err = 'PageModelManager.js' + 'Fetching model rejected for path:' + path;
-            console.warn(err);
+        if (!url) {
+            let err = 'Fetching model rejected for path:' + url;
+            console.warn('PageModelManager.js', err);
             reject(err);
         }
 
         let xhr = new XMLHttpRequest();
-        xhr.open('GET', path);
+        xhr.open('GET', url);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Accept', 'application/json');
 
@@ -463,12 +491,79 @@ function fetchModel(path) {
 }
 
 /**
+ * Resolves and broadcasts the initialization of the Page Model
+ *
+ * @param {function} resolve                - Promise resolve function
+ * @param {boolean} [immutable=false]       - should the model be immutable
+ *
+ * @fires cq-pagemodel-init
+ *
+ * @private
+ */
+function resolveInitPageModel(resolve, immutable) {
+    // Optionally inject an initial route
+    window.dispatchEvent(new CustomEvent(EventType.PAGE_MODEL_INIT, {}));
+    resolve(immutable ? clone(rootModel) : rootModel);
+}
+
+/**
+ * Adapts the provided path to a valid model path.
+ * Returns an empty string if the given path is equal to the root model path.
+ * This function is a utility tool that converts a provided root model path into an internal specific empty path
+ *
+ * @param {string} [path]   - raw model path
+ * @return {string} the valid model path
+ *
+ * @private
+ */
+function adaptPagePath(path) {
+    if (!path) {
+        return '';
+    }
+
+    if (!rootModelUrl) {
+        return path;
+    }
+
+    const localPath = Helpers.internalize(path);
+    const localRootModelPath = Helpers.sanitize(rootModelUrl);
+
+    return localPath === localRootModelPath ? '' : localPath;
+}
+
+/**
+ * Does the provided model object contains an entry for the given child path
+ *
+ * @param {{}} model            - model to be evaluated
+ * @param {string} childPath    - path of the child
+ * @return {*}
+ *
+ * @private
+ */
+function hasChild(model, childPath) {
+    return model && childPath && model[Constants.CHILDREN_PROP] && model[Constants.CHILDREN_PROP][childPath];
+}
+
+/**
+ * Does the provided page path correspond to the model root path
+ *
+ * @param {string} pagePath         - path of the page model
+ * @param {string} modelRootPath    - current model root path
+ * @return {boolean}
+ *
+ * @private
+ */
+function isPageURLRoot(pagePath, modelRootPath) {
+    return !pagePath || !modelRootPath || Helpers.sanitize(pagePath) === Helpers.sanitize(modelRootPath);
+}
+
+/**
  * <p> The PageModelManager is responsible for centralizing, synchronizing and providing access to the model of the page.</p>
  * <p> It can also manage multiple pages; see {@link ModelRouter}.</p>
  *
  * <h2>Configuration</h2>
  * <p>The PageModelManager can be configured using a meta tag in the head section of the document:</p>
- * <pre><code>e.g. &lt;meta property="cq:page_model_url" content="/content/test.model.json"\&gt;</code></pre>
+ * <pre><code>e.g. &lt;meta property="cq:pagemodel_root_url" content="/content/test.model.json"\&gt;</code></pre>
  *
  * @module PageModelManager
  *
@@ -512,34 +607,74 @@ const PageModelManager = {
      *
      * @static
      * @function init
-     * @param {String} [pagePath] Path (absolute path) of the page to be managed. Defaults to the cq:page_model_url meta.
-     * @returns {Promise} Promise resolved with the page model (copy).
+     * @param {{}}      [cfg]                           - Configuration object.
+     * @param {String}  [cfg.pagePath]                  - Absolute path of the page (e.g., "/content/mypage"). If not provided, the root page path is used.
+     * @param {boolean} [cfg.immutable=true]            - Should the returned model be a copy
+     * @returns {Promise} Promise resolved with the page model
      *
      * @fires cq-pagemodel-loaded
      * @fires cq-pagemodel-init
      */
-    init: function(pagePath) {
-        pageModelMap = {};
+    init: function(cfg) {
+        rootModel = undefined;
         listenersMap = {};
-        
-        pagePath = pagePath || Helpers.getPageModelUrl();
-        rootPagePath = Helpers.sanitize(pagePath);
+        rootModelUrl = undefined;
+
+        let pagePath, immutable;
+
+        if (typeof cfg === "string" || !cfg) {
+            // Compatibility layer with previous method signature
+            pagePath = cfg;
+            immutable = arguments[1] !== false;
+        } else {
+            pagePath = cfg.pagePath;
+            immutable = cfg.immutable !== false;
+        }
+
+        pagePath = Helpers.internalize(pagePath);
+
+        const metaPropertyModelUrl = Helpers.internalize(Helpers.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROOT_URL));
+        const currentPageModelUrl = Helpers.internalize(Helpers.getCurrentPageModelUrl());
+        // Fetch the app root model
+        // 1. consider the provided page path
+        // 2. consider the meta property value
+        // 3. fallback to the model path contained in the URL
+        const rootModelPath = pagePath || metaPropertyModelUrl || currentPageModelUrl;
 
         return new Promise(function (resolve, reject) {
-                return fetchModel(pagePath)
-                    .then(function (pageModel) {
-                        // The root page path is then used to retrieve data when passing a data path to getData()
-                        storePageModel("", pageModel);
-
-                        // Optionally inject an initial route
-                        window.dispatchEvent(new CustomEvent('cq-pagemodel-init', {}));
-
-                        resolve(clone(pageModel));
-                    }).catch(function () {
-                        reject(new Error("Cannot fetch model for the given path: " + pagePath));
-                        rootPagePath = undefined;
-                    });
+            return fetchModel(rootModelPath, true)
+                .then(pageModel => {
+                    // Store the root model
+                    storePageModel('', pageModel, true);
+                    // The child model URL can either be provided or contained in the current page URL
+                    const childModelPath = pagePath || currentPageModelUrl;
+                    // Append the child page if the page model doesn't correspond to the model root URL
+                    // and if the model root path doesn't already contain the child model (asynchronous page load)
+                    if (!isPageURLRoot(childModelPath, metaPropertyModelUrl) && !hasChild(pageModel, childModelPath)) {
+                        // Fetch the child model
+                        fetchModel(childModelPath)
+                            .then(childModel => {
+                                storePageModel(childModelPath, childModel, false);
+                                resolveInitPageModel(resolve, immutable);
+                            });
+                    } else {
+                        resolveInitPageModel(resolve, immutable);
+                    }
+                }).catch(function () {
+                    reject(new Error("Cannot fetch model for the given path: " + pagePath));
+                    rootModel = undefined;
+                    rootModelUrl = undefined;
+                });
         });
+    },
+
+    /**
+     * Returns the path to the root model the page model manager has been initialized with
+     *
+     * @return {string}
+     */
+    getRootModelUrl() {
+        return rootModelUrl;
     },
 
     /**
@@ -564,21 +699,24 @@ const PageModelManager = {
 
         if (typeof cfg === "string" || !cfg) {
             // Compatibility layer with previous method signature
-            pagePath = rootPagePath;
+            pagePath = '';
             dataPath = arguments[0];
             immutable = arguments[1] !== false;
             forceReload = arguments[2];
         } else {
-            pagePath = cfg.pagePath || rootPagePath;
+            pagePath = adaptPagePath(cfg.pagePath);
             dataPath = cfg.dataPath;
             immutable = cfg.immutable !== false;
             forceReload = cfg.forceReload || false;
         }
 
+        pagePath = Helpers.internalize(pagePath);
+
         return new Promise(function (resolve, reject) {
-            if (!rootPagePath) {
+            // If the model is empty, proceed with the initialization
+            if (!rootModel) {
                 // First make sure init() has completed and then try again
-                self.init().then(function () {
+                self.init(cfg).then(function () {
                     self.getData(cfg)
                         .then(resolve)
                         .catch(function () {
@@ -587,7 +725,7 @@ const PageModelManager = {
                 });
             } else {
                 // At this point, we are ready to get data since init() has completed
-                let pageModelFromCache = pagePath === rootPagePath ? pageModelMap : pageModelMap[Constants.CHILDREN_PROP] && pageModelMap[Constants.CHILDREN_PROP][pagePath];
+                let pageModelFromCache = !pagePath ? rootModel : rootModel[Constants.CHILDREN_PROP] && rootModel[Constants.CHILDREN_PROP][pagePath];
                 if (pageModelFromCache && !forceReload) {
                     // Use the model from cache
                     extractModel(dataPath, pageModelFromCache, immutable)
@@ -645,7 +783,11 @@ const PageModelManager = {
      * @param {String}  [cfg.callback]                  Function to be executed listening to changes at given path
      */
     addListener: function(cfg) {
-        let pagePath = cfg.pagePath || rootPagePath;
+        if (!cfg || cfg.pagePath === undefined && cfg.dataPath === undefined) {
+            return;
+        }
+
+        let pagePath = adaptPagePath(cfg.pagePath);
         let dataPath = cfg.dataPath;
         let callback = cfg.callback;
 
@@ -665,7 +807,11 @@ const PageModelManager = {
      * @param {String}  [cfg.callback]                  Listener function to be removed.
      */
     removeListener: function(cfg) {
-        let pagePath = cfg.pagePath || rootPagePath;
+        if (!cfg || cfg.pagePath === undefined && cfg.dataPath === undefined) {
+            return;
+        }
+
+        let pagePath = adaptPagePath(cfg.pagePath);
         let dataPath = cfg.dataPath;
         let callback = cfg.callback;
 
@@ -682,7 +828,7 @@ const PageModelManager = {
 /**
  * Entry point to update the page model from an external source written in es5 such as the page editor source code
  */
-window.addEventListener('cq-pagemodel-update', function(event) {
+window.addEventListener(EventType.PAGE_MODEL_UPDATE, function(event) {
     if (!event || !event.detail || !event.detail.msg) {
         console.warn('PageModelManager.js', 'No message passed to cq-pagemodel-update', event);
         return;

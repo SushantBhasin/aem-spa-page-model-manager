@@ -16,51 +16,31 @@
  */
 
 /**
- * Useful variables for interacting with CQ/AEM components
+ * Type of events triggered or listened by the PageModelManager and ModelRouter
  *
- * @namespace Constants
+ * @type {{PAGE_MODEL_INIT: string, PAGE_MODEL_LOADED: string, PAGE_MODEL_UPDATE: string, PAGE_MODEL_ROUTE_CHANGED: string}}
  */
-const Constants = {
+const EventType = {
 
     /**
-     * Type of the item
-     *
-     * @type {string}
+     * Event which indicates that the PageModelManager has been initialized
      */
-    TYPE_PROP: ':type',
+    PAGE_MODEL_INIT: 'cq-pagemodel-init',
 
     /**
-     * List of child items of an item
-     *
-     * @type {string}
+     * Event which indicates that the PageModelManager has loaded new content
      */
-    ITEMS_PROP: ':items',
+    PAGE_MODEL_LOADED: 'cq-pagemodel-loaded',
 
     /**
-     * Order in which the items should be listed
-     *
-     * @type {string}
+     * Event that indicates a request to update the page model
      */
-    ITEMS_ORDER_PROP: ':itemsOrder',
+    PAGE_MODEL_UPDATE: 'cq-pagemodel-update',
 
     /**
-     * Path of an item
-     *
-     * @type {string}
+     * Event which indicates that ModelRouter has identified that model route has changed
      */
-    PATH_PROP: ':path',
-
-    /**
-     * Children of a hierarchical item
-     *
-     * @type {string}
-     */
-    CHILDREN_PROP: ':children',
-
-    /**
-     * Hierarchical type of the item
-     */
-    HIERARCHY_TYPE_PROP: ':hierarchyType'
+    PAGE_MODEL_ROUTE_CHANGED: 'cq-pagemodel-route-changed'
 };
 
-export default Constants;
+export default EventType;

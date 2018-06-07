@@ -1,5 +1,6 @@
 import {PageModelManager, Constants} from '../index';
 import InternalConstants from '../src/InternalConstants';
+import MetaProperty from "../src/MetaProperty";
 
 describe('PageModelManager ->', () => {
 
@@ -8,6 +9,8 @@ describe('PageModelManager ->', () => {
     const DEFAULT_PAGE_MODEL_URL = DEFAULT_PAGE_MODEL_PATH + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION;
     const CUSTOM_PAGE_MODEL_URL = CUSTOM_PAGE_MODEL_PATH + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION;
     const ROOT_RESOURCE_URL = 'page/root' + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION;
+    const CHILD_PAGE_1_PATH = '/content/test/child_page_1';
+    const CHILD_PAGE_1_URL = CHILD_PAGE_1_PATH + '.model.json';
 
     const ERROR_VALUE = 'error';
 
@@ -42,8 +45,9 @@ describe('PageModelManager ->', () => {
                 ":type": "wcm/foundation/components/responsivegrid"
             }
         },
+        ":hierarchyType": "page",
         ":children": {
-            "/content/test/subpage1": {
+            "/content/test/child_page_1": {
                 ":type":	"we-retail-journal/react/components/structure/page",
                 ":items": {
                     "root": {
@@ -115,7 +119,7 @@ describe('PageModelManager ->', () => {
         ":type": "we-retail-react/components/structure/page"
     };
 
-    const SUBPAGE1 = {
+    const CHILD_PAGE_1 = {
         ":type":	"we-retail-journal/react/components/structure/page",
         ":items": {
             "root": {
@@ -141,7 +145,6 @@ describe('PageModelManager ->', () => {
 
     const CHILD0000_PATH = 'root/child0000';
     const CHILD0010_PATH = CHILD0000_PATH + '/child0010';
-    const CHILD0011_PATH = CHILD0000_PATH + '/child0011';
 
     const CHILDXXXX_TYPE = 'test/components/componentChildType';
     const CHILDXXXX_KEY = 'childXXXX';
@@ -161,6 +164,26 @@ describe('PageModelManager ->', () => {
 
     let server;
 
+    function setPageModelUrlMetaProperty(content) {
+        let pageModelUrlMetaProperty = document.head.querySelector('meta[property="' + MetaProperty.PAGE_MODEL_ROOT_URL + '"]');
+
+        if (!pageModelUrlMetaProperty) {
+            pageModelUrlMetaProperty = document.createElement('meta');
+        }
+        pageModelUrlMetaProperty.setAttribute('property', MetaProperty.PAGE_MODEL_ROOT_URL);
+
+        pageModelUrlMetaProperty.content = content;
+        document.head.appendChild(pageModelUrlMetaProperty);
+    }
+
+    function removePageModelUrlMetaProperty() {
+        let dataTypeHintElement = document.querySelector('meta[property="' + MetaProperty.PAGE_MODEL_ROOT_URL + '"]');
+
+        if (dataTypeHintElement) {
+            document.head.removeChild(dataTypeHintElement);
+        }
+    }
+
     beforeEach(() => {
         server = sinon.fakeServer.create();
 
@@ -170,8 +193,8 @@ describe('PageModelManager ->', () => {
         server.respondWith("GET", CUSTOM_PAGE_MODEL_URL,
             [200, { "Content-Type": "application/json" }, JSON.stringify(CUSTOM_PAGE_MODEL_JSON)]);
 
-        server.respondWith("GET", "/content/test/subpage1.model.json",
-            [200, { "Content-Type": "application/json" }, JSON.stringify(SUBPAGE1)]);
+        server.respondWith("GET", CHILD_PAGE_1_URL,
+            [200, { "Content-Type": "application/json" }, JSON.stringify(CHILD_PAGE_1)]);
 
         server.respondImmediately = true;
 
@@ -209,29 +232,40 @@ describe('PageModelManager ->', () => {
             server = sinon.fakeServer.create();
             server.respondImmediately = true;
 
+            server.respondWith("GET", DEFAULT_PAGE_MODEL_PATH + ".model.json",
+                [200, { "Content-Type": "application/json" }, JSON.stringify({})]);
+
             for (let key in EXPECTED_URL) {
                 if (EXPECTED_URL.hasOwnProperty(key)) {
                     server.respondWith("GET", EXPECTED_URL[key],
-                        [200, { "Content-Type": "application/json" }, JSON.stringify({})]);
+                        [200, { "Content-Type": "application/json" }, JSON.stringify({key: key})]);
                 }
             }
 
-            return PageModelManager.init('/content/url/page');
+            return PageModelManager.init({pagePath: '/content/url/page'});
         });
 
         it('should rewrite the given URLs and call the expected URLs', () => {
             // include the initialization call
-            let i = 1;
+            const chainPromises = [];
 
             for (let key in EXPECTED_URL) {
                 if (EXPECTED_URL.hasOwnProperty(key)) {
-                    PageModelManager.init(key);
-                    assert.equal(server.requests[i].url, EXPECTED_URL[key]);
+                    PageModelManager.init({pagePath: key}).then((model) => {
+                        if (chainPromises.length) {
+                            chainPromises[chainPromises.length - 1].then(() => {
+                                const promise = new Promise((resolve, reject) => {
+                                    key === model.key ? resolve() : reject();
+                                });
+
+                                chainPromises.push(promise);
+                            });
+                        }
+                    });
                 }
-                i++;
             }
 
-            assert.equal(server.requests.length, i);
+            return Promise.all(chainPromises);
         });
     });
 
@@ -244,8 +278,51 @@ describe('PageModelManager ->', () => {
             });
         });
 
-        describe('should return an immutable page model', () => {
-            it('when called with no parameter', () => {
+        afterEach(() => {
+            removePageModelUrlMetaProperty();
+        });
+
+        describe('getModelPath ->', () => {
+
+            it('should return the default model path as the model path the PageModelManager has been initialized with', () => {
+                assert.equal(DEFAULT_PAGE_MODEL_URL, PageModelManager.getRootModelUrl());
+            });
+
+            it('should return the custom model path as the model path the PageModelManager has been initialized with using a parameter', () => {
+                return PageModelManager.init(CUSTOM_PAGE_MODEL_PATH).then((model) => {
+                    assert.deepEqual(CUSTOM_PAGE_MODEL_JSON, model, 'Wrong page model object');
+                    assert.equal(CUSTOM_PAGE_MODEL_URL, PageModelManager.getRootModelUrl());
+                });
+            });
+
+            it('should return the custom model path as the model path the PageModelManager has been initialized with using the meta property', () => {
+                setPageModelUrlMetaProperty(CUSTOM_PAGE_MODEL_URL);
+
+                return PageModelManager.init().then((model) => {
+                    /**
+                     * 1. the meta property points to the custom path
+                     * 2. the page model path is not provided as a parameter
+                     * 3. the URL content path differs from the meta property
+                     *
+                     * Expected result:
+                     *
+                     * The page model is initialized with a different path than the one exposed by the current URL.
+                     * The model path contained in the current URL is added as a child of the root page model
+                     */
+
+                    let compositeModel = Object.assign({}, CUSTOM_PAGE_MODEL_JSON);
+                    compositeModel[Constants.CHILDREN_PROP] = compositeModel[Constants.CHILDREN_PROP] || {};
+                    compositeModel[Constants.CHILDREN_PROP][DEFAULT_PAGE_MODEL_PATH] = PAGE_MODEL_JSON;
+
+                    assert.deepEqual(compositeModel, model, 'Wrong page model object');
+                    assert.equal(CUSTOM_PAGE_MODEL_URL, PageModelManager.getRootModelUrl());
+                });
+            });
+        });
+
+        describe('immutable page model', () => {
+
+            it('should return an immutable model when called with no parameter', () => {
                 return PageModelManager.init().then(model1 => {
                     model1[Constants.TYPE_PROP] = ERROR_VALUE;
 
@@ -254,7 +331,8 @@ describe('PageModelManager ->', () => {
                     });
                 });
             });
-            it('when called with undefined as parameter', () => {
+
+            it('should return an immutable model when called with undefined as parameter', () => {
                 return PageModelManager.init().then(model1 => {
                     model1[Constants.TYPE_PROP] = ERROR_VALUE;
 
@@ -263,7 +341,8 @@ describe('PageModelManager ->', () => {
                     });
                 });
             });
-            it('when called with null as parameter', () => {
+
+            it('should return an immutable model when called with null as parameter', () => {
                 return PageModelManager.init().then(model1 => {
                     model1[Constants.TYPE_PROP] = ERROR_VALUE;
 
@@ -272,7 +351,8 @@ describe('PageModelManager ->', () => {
                     });
                 });
             });
-            it('when called with false as parameter', () => {
+
+            it('should return an immutable model when called with false as parameter', () => {
                 return PageModelManager.init().then(model1 => {
                     model1[Constants.TYPE_PROP] = ERROR_VALUE;
 
@@ -281,7 +361,8 @@ describe('PageModelManager ->', () => {
                     });
                 });
             });
-            it('when called with "" as parameter', () => {
+
+            it('should return an immutable model when called with "" as parameter', () => {
                 return PageModelManager.init().then(model1 => {
                     model1[Constants.TYPE_PROP] = ERROR_VALUE;
 
@@ -290,7 +371,38 @@ describe('PageModelManager ->', () => {
                     });
                 });
             });
+
+            it('should return an immutable model when called with a config and a pagePath parameter', () => {
+                return PageModelManager.init({pagePath: DEFAULT_PAGE_MODEL_URL}).then(model1 => {
+                    model1[Constants.TYPE_PROP] = ERROR_VALUE;
+
+                    return PageModelManager.getData('').then(model2 => {
+                        assert.notEqual(ERROR_VALUE, model2[Constants.TYPE_PROP], 'The page model is mutable');
+                    });
+                });
+            });
+
+            it('should initialize the model and return an imutable object', () => {
+                return PageModelManager.init({immutable: false}).then(model1 => {
+                    model1[Constants.TYPE_PROP] = ERROR_VALUE;
+
+                    return PageModelManager.getData('').then(model2 => {
+                        assert.equal(ERROR_VALUE, model2[Constants.TYPE_PROP], 'The page model is mutable');
+                    });
+                });
+            });
+
+            it('should initialize the model and return a mutable object', () => {
+                return PageModelManager.init({immutable: false}).then(model1 => {
+                    model1[Constants.TYPE_PROP] = ERROR_VALUE;
+
+                    return PageModelManager.getData('').then(model2 => {
+                        assert.equal(ERROR_VALUE, model2[Constants.TYPE_PROP], 'The page model is immutable');
+                    });
+                });
+            });
         });
+
         it('should get the default page model', done => {
             PageModelManager.getData().then(model => {
                 assert.deepEqual(PAGE_MODEL_JSON, model, 'Unexpected page model');
@@ -318,42 +430,12 @@ describe('PageModelManager ->', () => {
             });
         });
 
-        it('should get the page model from the given path', done => {
-            PageModelManager.init(ROOT_RESOURCE_URL).then(model => {
-                assert.deepEqual(PAGE_MODEL_JSON[Constants.ITEMS_PROP]['root'], model, 'Unexpected root model');
-                done();
-            }, () => {
-                done(false, 'promise rejected');
-            });
-        });
-
-        it('should get the root model from the meta tag', done => {
-            function removeDataTypeHint() {
-                let dataTypeHintElement = document.querySelector('meta[property="cq:page_model_url"]');
-                if (dataTypeHintElement) {
-                    document.head.removeChild(dataTypeHintElement);
-                }
-            }
-            let dataTypeHintElement = document.createElement('meta');
-            dataTypeHintElement.setAttribute('property', 'cq:page_model_url');
-            dataTypeHintElement.content = ROOT_RESOURCE_URL;
-            document.head.appendChild(dataTypeHintElement);
-
-            PageModelManager.init().then(model => {
-                assert.deepEqual(PAGE_MODEL_JSON[Constants.ITEMS_PROP]['root'], model, 'Unexpected root model');
-                removeDataTypeHint();
-                done();
-            }, () => {
-                removeDataTypeHint();
-                done(false, 'promise rejected');
-            });
-        });
-
         it('should return a custom model for the given path', () => {
             return PageModelManager.init(CUSTOM_PAGE_MODEL_PATH).then(model => {
                 assert.deepEqual(CUSTOM_PAGE_MODEL_JSON, model, 'Unexpected page model returned');
             });
         });
+
         it('should fire "cq-pagemodel-loaded" only once with the root page model', (done) => {
             window.addEventListener('cq-pagemodel-loaded', function (event) {
                 if (event.detail.model === PAGE_MODEL_JSON) {
@@ -436,14 +518,13 @@ describe('PageModelManager ->', () => {
         });
         it('should get a reloaded child model and inform listener when passing the forceReload parameter', (done) => {
             // to cover the force reload feature
-            let page = '/content/test/subpage1';
             let data = 'child1001';
             let dataPath = 'root/' + data;
 
             let listenerCalled = new Promise((resolve) => {
                 PageModelManager.addListener({
                     dataPath: dataPath,
-                    pagePath: page,
+                    pagePath: CHILD_PAGE_1_PATH,
                     callback: resolve
                 });
             });
@@ -454,11 +535,11 @@ describe('PageModelManager ->', () => {
                 PageModelManager.getData({
                     dataPath: dataPath,
                     forceReload: true,
-                    pagePath: page
+                    pagePath: CHILD_PAGE_1_PATH
                 }).then(childModel => {
-                    assert.deepEqual(SUBPAGE1[Constants.ITEMS_PROP].root[Constants.ITEMS_PROP][data], childModel, 'Returns the child model object from a different page');
+                    assert.deepEqual(CHILD_PAGE_1[Constants.ITEMS_PROP].root[Constants.ITEMS_PROP][data], childModel, 'Returns the child model object from a different page');
                     assert.equal(1, server.requestCount, 'force reload should call the server');
-                    assert.equal(page + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION, server.lastRequest.url);
+                    assert.equal(CHILD_PAGE_1_PATH + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION, server.lastRequest.url);
                     resolve();
                 });
             });
@@ -507,23 +588,21 @@ describe('PageModelManager ->', () => {
             });
         });
         it('should get page model data from cache correctly', (done) => {
-            let page = '/content/test/subpage1';
             let data = 'child1001';
 
             // corresponds to the call to init()
             assert(1, server.requestCount);
 
             PageModelManager.getData({
-                pagePath: page,
+                pagePath: CHILD_PAGE_1_PATH,
                 dataPath: 'root/' + data
             }).then(childModel => {
-                assert.deepEqual(PAGE_MODEL_JSON[Constants.CHILDREN_PROP][page][Constants.ITEMS_PROP].root[Constants.ITEMS_PROP][data], childModel, 'Returns the child model object from a different page');
+                assert.deepEqual(PAGE_MODEL_JSON[Constants.CHILDREN_PROP][CHILD_PAGE_1_PATH][Constants.ITEMS_PROP].root[Constants.ITEMS_PROP][data], childModel, 'Returns the child model object from a different page');
                 assert(1, server.requestCount, 'No extra server request should be performed.');
                 done();
             });
         });
         it('when data missing in cache should re-fetch data from server, return page model and inform listener', (done) => {
-            let page = '/content/test/subpage1';
             let data = 'child1002';
             let dataPath = 'root/' + data;
 
@@ -536,11 +615,11 @@ describe('PageModelManager ->', () => {
 
             let dataFetched = new Promise((resolve) => {
                 PageModelManager.getData({
-                pagePath: page,
+                pagePath: CHILD_PAGE_1_PATH,
                 dataPath: dataPath
             }).then(childModel => {
-                    assert.deepEqual(SUBPAGE1[Constants.ITEMS_PROP].root[Constants.ITEMS_PROP][data], childModel, 'Returns the child model object from a different page');
-                    assert.equal(server.lastRequest.url, page + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION);
+                    assert.deepEqual(CHILD_PAGE_1[Constants.ITEMS_PROP].root[Constants.ITEMS_PROP][data], childModel, 'Returns the child model object from a different page');
+                    assert.equal(server.lastRequest.url, CHILD_PAGE_1_PATH + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION);
                     resolve();
                 });
             });
@@ -711,13 +790,13 @@ describe('PageModelManager ->', () => {
 
         describe('when triggered with the "move" cmd', () => {
 
-            it('shoud move child0010 after child0011', done => {
+            it('should move child0010 after child0011', done => {
                 PageModelManager.addListener({
                     dataPath: CHILD0000_PATH,
                     callback: () => {
                         PageModelManager.getData(CHILD0000_PATH).then(pageModel => {
                             const order = pageModel[Constants.ITEMS_ORDER_PROP];
-                            
+
                             if (order.indexOf('child0010') + 1 === order.indexOf('child0011')) {
                                 done();
                             }
@@ -727,7 +806,7 @@ describe('PageModelManager ->', () => {
 
                 dispatchEvent_PageModelUpdate('moveAfter', CHILD0010_PATH, {
                     key: 'child0010',
-                    sibling: CHILD0011_PATH
+                    sibling: 'child0011'
                 });
             });
 
@@ -737,9 +816,8 @@ describe('PageModelManager ->', () => {
                     callback: () => {
                         PageModelManager.getData(CHILD0000_PATH).then(pageModel => {
                             const order = pageModel[Constants.ITEMS_ORDER_PROP];
-                            assert.equal(
-                                order.indexOf('child0010') + 1,
-                                order.indexOf('child0011'));
+
+                            assert.equal(order.indexOf('child0010') + 1, order.indexOf('child0011'));
 
                             done();
                         });
@@ -801,7 +879,7 @@ describe('PageModelManager ->', () => {
 
         it('should notify the root listeners a page model has been added', (done) => {
             PageModelManager.addListener({
-                pagePath: DEFAULT_PAGE_MODEL_PATH,
+                pagePath: '',
                 dataPath: '',
                 callback: done
             });
