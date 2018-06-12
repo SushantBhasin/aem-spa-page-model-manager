@@ -541,7 +541,7 @@ function adaptPagePath(path) {
  * @private
  */
 function hasChild(model, childPath) {
-    return model && childPath && model[Constants.CHILDREN_PROP] && model[Constants.CHILDREN_PROP][childPath];
+    return !!(model && childPath && model[Constants.CHILDREN_PROP] && model[Constants.CHILDREN_PROP][Helpers.sanitize(childPath)]);
 }
 
 /**
