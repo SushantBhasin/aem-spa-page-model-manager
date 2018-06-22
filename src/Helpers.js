@@ -15,17 +15,16 @@
  * from Adobe Systems Incorporated.
  */
 import InternalConstants from "./InternalConstants";
+import MetaProperty from "./MetaProperty";
 
 /**
  * Regexp used to extract the context path of a location.
- * The context path is extracted by assuming that the location starts with the context path followed by {@code InternalConstants.DEFAULT_CONTENT_ROOT}.
+ * The context path is extracted by assuming that the location starts with the context path followed by one of the following node names
  */
-const CONTEXT_PATH_REGEXP = new RegExp(
-    "^(/.*)?(\\" + InternalConstants.DEFAULT_CONTENT_ROOT + ".*)"
-);
+const CONTEXT_PATH_REGEXP = /^(.*)?(?:\/(?:content|conf|apps|libs|etc)\/.*)/g;
 
 /**
- * Optional context path of the server. It is used everytime the page model manager attemps to fetch a model from the server.
+ * Optional context path of the server. It is used everytime the page model manager attempts to fetch a model from the server.
  * It is initialized by {@code Helpers#externalize}.
  */
 let contextPath;
@@ -43,9 +42,10 @@ const Helpers = {
      * @returns {String}
      */
     getContextPath(location) {
-        location = location || this.getCurrentLocation();
+        location = location || this.getCurrentPathname();
 
         let matches = CONTEXT_PATH_REGEXP.exec(location);
+        CONTEXT_PATH_REGEXP.lastIndex = 0;
         if (matches && matches[1]) {
             return matches[1];
         } else {
@@ -54,63 +54,100 @@ const Helpers = {
     },
 
     /**
-     * Returns the given path externalized by adding the optional context path.
-     * @param {string} path - Path to externalize.
+     * Returns the given URL externalized by adding the optional context path
+     *
+     * @param {string} url - URL to externalize
      * @returns {string}
      */
-    externalize(path) {
+    externalize(url) {
         if (contextPath === undefined) {
             contextPath = this.getContextPath();
         }
 
-        if (!contextPath || path.startsWith(contextPath)) {
-            return path;
+        if (!contextPath || url.startsWith(contextPath)) {
+            return url;
         }
 
-        return contextPath + path;
+        return contextPath + url;
     },
 
     /**
-     * Returns the given path internalized by removing the optional context path.
-     * @param {string} path - Path to internalize.
+     * Returns the given URL internalized by removing the optional context path
+     *
+     * @param {string} url - URL to internalize
      * @returns {string}
      */
-    internalize(path) {
-        if (path.startsWith(contextPath)) {
-            return path.replace(contextPath, "");
-        } else {
-            return path;
+    internalize(url) {
+        if (!url) {
+            return url;
         }
+
+        if (contextPath === undefined) {
+            contextPath = this.getContextPath();
+        }
+
+        // Does the path starts with a node
+        if (url.startsWith(contextPath.endsWith('/') ? contextPath : contextPath + '/')) {
+            return url.replace(contextPath, "");
+        } else {
+            return url;
+        }
+    },
+
+    /**
+     * Returns the value of the meta property with the given key
+     *
+     * @param {string} propertyName  - name of the meta property
+     * @return {string|undefined}
+     */
+    getMetaPropertyValue(propertyName) {
+        const meta = document.head.querySelector('meta[property="' + propertyName + '"]');
+        return meta && meta.content;
+    },
+
+    /**
+     * Returns a model path for the given URL
+     *
+     * @param {string} url - Raw URL for which to get a model URL
+     * @return {string|undefined}
+     */
+    convertToModelUrl(url) {
+        return url && url.replace && url.replace(/\.htm(l)?$/, InternalConstants.DEFAULT_MODEL_JSON_EXTENSION);
+    },
+
+    /**
+     * Returns the model URL as contained in the current page URL
+     *
+     * @return {string}
+     */
+    getCurrentPageModelUrl() {
+        // extract the model from the pathname
+        return this.convertToModelUrl(this.getCurrentPathname());
     },
 
     /**
      * Returns the URL of the page model to initialize the page model manager with. 
-     * It is either derived from a meta tag property called 'cq:page_model_url' or from the given location.
+     * It is either derived from a meta tag property called 'cq:pagemodel_root_url' or from the given location.
      * If no location is provided, it derives it from the current location.
-     * @param {String} [location] - Location to be used to derive the page model URL from.
+     *
+     * @param {String} [url]   - path or URL to be used to derive the page model URL from
      * @returns {String}
      */
-    getPageModelUrl(location) {
-        location = location || this.getCurrentLocation();
-
-        const pageModelMeta = document.querySelector(
-            'meta[property="cq:page_model_url"]'
-        );
-        if (pageModelMeta && pageModelMeta.content) {
-            return pageModelMeta.content;
-        } else {
-            if (location && location.replace) {
-                return location.replace(
-                    /\.htm(l)?$/,
-                    InternalConstants.DEFAULT_MODEL_JSON_EXTENSION
-                );
-            } else {
-                throw new Error(
-                    "The page model URL can't be derived from the given location: " +
-                        location
-                );
-            }
+    getModelUrl(url) {
+        // Model path extracted from the given url
+        if (url && url.replace) {
+            return this.convertToModelUrl(url);
         }
+
+        // model path from the meta property
+        const metaModelUrl = this.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROOT_URL);
+
+        if (metaModelUrl) {
+            return metaModelUrl;
+        }
+
+        // Model URL extracted from the current page URL
+        return this.getCurrentPageModelUrl();
     },
 
     /**
@@ -216,7 +253,7 @@ const Helpers = {
      * Returns the current location as a string.
      * @returns {String}
      */
-    getCurrentLocation() {
+    getCurrentPathname() {
         return window.location.pathname;
     }
 };

@@ -15,13 +15,19 @@
  * from Adobe Systems Incorporated.
  */
 
-const DEFAULT_SLING_MODEL_SELECTOR = 'model';
+/**
+ * Names of the meta properties associated with the PageModelProvider and ModelRouter
+ *
+ * @type {{PAGE_MODEL_ROOT_URL: string, PAGE_MODEL_ROUTE_FILTERS: string, PAGE_MODEL_ROUTER: string}}
+ */
+const MetaProperty = {
 
-const InternalConstants = {
+    PAGE_MODEL_ROOT_URL: 'cq:pagemodel_root_url',
 
-    DEFAULT_SLING_MODEL_SELECTOR: DEFAULT_SLING_MODEL_SELECTOR,
+    PAGE_MODEL_ROUTE_FILTERS: 'cq:pagemodel_route_filters',
 
-    DEFAULT_MODEL_JSON_EXTENSION: '.' + DEFAULT_SLING_MODEL_SELECTOR + '.json'
+    PAGE_MODEL_ROUTER: 'cq:pagemodel_router'
+
 };
 
-export default InternalConstants;
+export default MetaProperty;

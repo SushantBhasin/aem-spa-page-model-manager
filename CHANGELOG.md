@@ -1,3 +1,10 @@
+### 0.0.24 - 22 June 2018
+
+Public release of `cq-spa-page-model-manager`, which provides:
+
+* support for context path
+* **BREAKING CHANGE** change routing method to support History API by default (hash routing support has been removed)
+
 ### 0.0.23 - 15 May 2018
 
 Public release of `cq-spa-page-model-manager`, which provides:

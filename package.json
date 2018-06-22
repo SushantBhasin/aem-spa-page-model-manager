@@ -1,6 +1,6 @@
 {
   "name": "@adobe/cq-spa-page-model-manager",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "auto-changelog": {
     "template": "templates/CHANGELOG.hbs"
   },
@@ -34,8 +34,9 @@
     "build": "npm run linter && babel src --out-dir dist",
     "docs": "jsdoc -c ./jsdoc_conf.json && doxdox \"src/**/*.+(js|jsx)\" -i \"src/Helpers.js,src/ModelRouter.js\" --layout templates/DOCUMENTATION.hbs --output DOCUMENTATION.md",
     "readme": "node_modules/markdown-include/bin/cli.js markdown-include.config.json",
-    "prepublishOnly": "npm-auto-version && npm run build && npm run docs && npm run readme",
-    "postpublish": "git commit -am 'publish latest version' && git push origin && git push origin --tags"
+    "preversion": "npm run build && npm run test",
+    "version": "npm run docs && npm run readme && git add -A",
+    "postversion": "git push && git push --tags"
   },
   "author": "Adobe Systems Inc.",
   "license": "Apache-2.0",
@@ -53,6 +54,7 @@
   },
   "peerDependencies": {},
   "devDependencies": {
+    "ajv": "^5.0.0",
     "auto-changelog": "^1.4.6",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.9.1",
@@ -77,10 +79,8 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "mocha": "^5.1.0",
-    "npm-auto-version": "^1.0.0",
     "sinon": "^4.5.0",
     "sinon-chai": "^3.0.0",
-    "webpack": "^1.13.1",
-    "ajv": "^5.0.0"
+    "webpack": "^1.13.1"
   }
 }
