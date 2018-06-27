@@ -197,23 +197,8 @@ function routeModel(url) {
     dispatchRouteChanged(path);
 }
 
-/**
- * When the PageModelManager is initialized, fetch and dispatch the complete model object
- *
- * @private
- */
-function onPageInit() {
-    if (!isModelRouterEnabled()) {
-        return;
-    }
-
-    dispatchRouteChanged();
-}
-
 // Activate the model router
 if (isModelRouterEnabled()) {
-    window.addEventListener(EventType.PAGE_MODEL_INIT, onPageInit, false);
-
     // Encapsulate the history.pushState and history.replaceState functions to prefetch the page model for the current route
     const pushState = window.history.pushState;
     const replaceState = window.history.replaceState;

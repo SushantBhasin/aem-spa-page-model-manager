@@ -1,4 +1,10 @@
-### 0.0.23 - 15 May 2018
+## [Unreleased]
+
+### Removed
+
+ * unnecessary and misleading event triggering resulting in the Page Editor not to have overlays
+
+## 0.0.23 - 15 May 2018
 
 Public release of `cq-spa-page-model-manager`, which provides:
 
@@ -7,7 +13,7 @@ Public release of `cq-spa-page-model-manager`, which provides:
  * Support for URLs containing a context path
     * The `PageModelManager` can now be used in conjunction with URLs including a context path
 
-### 0.0.22 - 20 April 2018
+## 0.0.22 - 20 April 2018
 
 Initial public release of `cq-spa-page-model-manager`, which provides:
  * Updated `PageModelManager` API, now able to manage the model of multiple pages stored in AEM:
