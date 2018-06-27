@@ -1,6 +1,6 @@
 {
   "name": "@adobe/cq-spa-page-model-manager",
-  "version": "0.0.23-beta.1",
+  "version": "0.0.24",
   "auto-changelog": {
     "template": "templates/CHANGELOG.hbs"
   },
@@ -34,8 +34,9 @@
     "build": "npm run linter && babel src --out-dir dist",
     "docs": "jsdoc -c ./jsdoc_conf.json && doxdox \"src/**/*.+(js|jsx)\" -i \"src/Helpers.js,src/ModelRouter.js\" --layout templates/DOCUMENTATION.hbs --output DOCUMENTATION.md",
     "readme": "node_modules/markdown-include/bin/cli.js markdown-include.config.json",
-    "preversion": "npm run build && npm run test && npm run docs && npm run readme",
-    "version": "git add -A",
+    "docs-readme": "npm run docs && npm run readme",
+    "preversion": "npm run test && npm run docs-readme",
+    "version": "npm run docs && npm run readme && git add -A",
     "postversion": "git push && git push --tags"
   },
   "author": "Adobe Systems Inc.",

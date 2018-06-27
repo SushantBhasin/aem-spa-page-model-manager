@@ -33,7 +33,7 @@ PageModelManager.getData({
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.23-beta.0*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.24*
 
 
 
@@ -484,6 +484,13 @@ Remove the callback listener from the given path path.
 The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is already available, but if you are unable to solve your problem or you found a bug you can always [contact us](https://www.adobe.com/go/aem6_4_support_en) and ask for help!
 
 ## Changelog 
+
+### 0.0.24 - 22 June 2018
+
+Public release of `cq-spa-page-model-manager`, which provides:
+
+* support for context path
+* **BREAKING CHANGE** change routing method to support History API by default (hash routing support has been removed)
 
 ### 0.0.23 - 15 May 2018
 

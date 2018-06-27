@@ -4,6 +4,13 @@
 
  * unnecessary and misleading event triggering resulting in the Page Editor not to have overlays
 
+## 0.0.24 - 22 June 2018
+
+Public release of `cq-spa-page-model-manager`, which provides:
+
+* support for context path
+* **BREAKING CHANGE** change routing method to support History API by default (hash routing support has been removed)
+
 ## 0.0.23 - 15 May 2018
 
 Public release of `cq-spa-page-model-manager`, which provides:
@@ -22,5 +29,3 @@ Initial public release of `cq-spa-page-model-manager`, which provides:
     * `cq-pagemodel-update` event listener expects `pagePath` and `dataPath` in the event data object
  * New `ModelRouter`, which reacts to hash changes and triggers the reload of the corresponding model asynchronously
     * `cq-pagemodel-route-changed` event indicates route changes after successful model update
-
-

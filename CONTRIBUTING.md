@@ -23,15 +23,36 @@ or
 $ npm run test-debug
 ```
 
-### Generate docs
+### Generate docs and readme
+
+To generate the documents in the `/out` folder and pack them in the `DOCUMENTATION.md`:
 
 ```sh
 $ npm run docs
 ```
-The documents will be generated in the /out folder
+
+To generate the `README.md` based on the `DOCUMENTATION.md` and `CHANGELOG.md`:
+```sh
+$ npm run readme
+```
 
 ### Generate Changelog
 
 ```sh
 $ auto-changelog
 ```
+
+### Set current version
+
+```sh
+$ npm version X.Y.Z
+```
+This will (in order):
+* `preversion` 
+  * run tests and check if `DOCUMENTATION.md` and `README.md` could be generated
+* `version` 
+  * set the version to `X.Y.Z`
+  * generate `DOCUMENTATION.md` and `README.md` for this version
+  * commit all the files in one commit named `X.Y.Z` with a tag set to `vX.Y.Z`
+* `postversion`
+  * push the changes and tag
