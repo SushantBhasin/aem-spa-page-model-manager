@@ -5,12 +5,11 @@
       "istanbul",
       {
         "include": [
-          "dist/**.*"
+          "src"
         ],
         "exclude": [
-          "src/**.*",
-          "node_modules/**.*",
-          "tests/**.*"
+          "dist",
+          "tests"
         ]
       }
     ]
