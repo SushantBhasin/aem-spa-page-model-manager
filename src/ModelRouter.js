@@ -144,6 +144,9 @@ function isRouteExcluded(route) {
  * @private
  */
 function isModelRouterEnabled() {
+    if (!Helpers.isBrowser()) {
+        return false;
+    }
     const modelRouterMetaType = Helpers.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROUTER);
     // Enable the the page model routing by default
     return !modelRouterMetaType || ROUTER_MODES.DISABLED !== modelRouterMetaType;
@@ -162,7 +165,7 @@ function dispatchRouteChanged(path) {
     // Triggering the page model manager to load a new child page model
     // No need to use a cache as the PageModelManager already does it
     PageModelManager.getData({pagePath: path}).then(function (model) {
-        window.dispatchEvent(new CustomEvent(EventType.PAGE_MODEL_ROUTE_CHANGED, {
+        Helpers.dispatchGlobalEvent(new CustomEvent(EventType.PAGE_MODEL_ROUTE_CHANGED, {
             detail: {
                 model: model
             }
@@ -215,4 +218,3 @@ if (isModelRouterEnabled()) {
         return replaceState.apply(history, arguments);
     };
 }
-

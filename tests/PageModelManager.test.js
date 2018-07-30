@@ -383,11 +383,11 @@ describe('PageModelManager ->', () => {
             });
 
             it('should initialize the model and return an imutable object', () => {
-                return PageModelManager.init({immutable: false}).then(model1 => {
+                return PageModelManager.init({immutable: true}).then(model1 => {
                     model1[Constants.TYPE_PROP] = ERROR_VALUE;
 
                     return PageModelManager.getData('').then(model2 => {
-                        assert.equal(ERROR_VALUE, model2[Constants.TYPE_PROP], 'The page model is mutable');
+                        assert.notEqual(ERROR_VALUE, model2[Constants.TYPE_PROP], 'The page model is mutable');
                     });
                 });
             });
@@ -454,6 +454,26 @@ describe('PageModelManager ->', () => {
                 .catch(() => {
                     done();
             });
+        });
+
+        it('should be able to initialize with a predefined model', (done) => {
+            server = sinon.fakeServer.create();
+            server.respondWith("GET", DEFAULT_PAGE_MODEL_PATH + ".model.json",
+            [200, { "Content-Type": "application/json" }, JSON.stringify({})]);
+            
+            let predefinedModel = Object.assign({}, PAGE_MODEL_JSON);
+            predefinedModel.mark = "This one";
+            PageModelManager.init({
+                pagePath: DEFAULT_PAGE_MODEL_URL,
+                model: predefinedModel
+            }).then((model) => {
+                // Expect that the server is not called as we are having a predefined model
+                assert.equal(server.requests, 0);
+                PageModelManager.getData().then((model) => {
+                    assert.deepEqual(model, predefinedModel);
+                    done();
+                });
+            })
         });
     });
 
@@ -637,6 +657,21 @@ describe('PageModelManager ->', () => {
             });
         });
 
+        it("should not do two consecutive requests for the same data", () => {
+            server = sinon.fakeServer.create();
+            server.respondWith("GET", DEFAULT_PAGE_MODEL_URL,
+                [200, { "Content-Type": "application/json" }, JSON.stringify(PAGE_MODEL_JSON)]);
+            let promises = [];
+            promises.push(PageModelManager.getData({
+                pagePath: DEFAULT_PAGE_MODEL_PATH
+            }));
+            promises.push(PageModelManager.getData({
+                pagePath: DEFAULT_PAGE_MODEL_PATH
+            }));
+            Promise.all(promises).then(() => {
+                assert(server.requests, 1);
+            })
+        });
         describe('it should reject the promise', () => {
 
             beforeEach(() => {
@@ -678,7 +713,7 @@ describe('PageModelManager ->', () => {
         });
 
         it('should log a warning when the event data is empty', () => {
-            let spy = sinon.spy(console, 'warn');
+            let spy = sinon.spy(console, 'error');
             window.dispatchEvent(new CustomEvent('cq-pagemodel-update', {}));
 
             assert(spy.calledOnce);

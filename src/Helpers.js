@@ -36,6 +36,19 @@ let contextPath;
  */
 const Helpers = {
     /**
+     * Returns if the code executes in the browser context or not by checking for the 
+     * existance of the window object
+     *
+     * @returns {Boolean} the result of the check of the existance of the window object
+     */
+    isBrowser() {
+        try {
+            return typeof window !== 'undefined';
+        }catch(e){ 
+            return false;
+        }
+    },
+    /**
      * Returns the context path of the given location.
      * If no location is provided, it fallbacks to the current location.
      * @param {String} [location] - Location to be used to detect the context path from.
@@ -43,6 +56,9 @@ const Helpers = {
      */
     getContextPath(location) {
         location = location || this.getCurrentPathname();
+        if (!location) {
+            return "";
+        }
 
         let matches = CONTEXT_PATH_REGEXP.exec(location);
         CONTEXT_PATH_REGEXP.lastIndex = 0;
@@ -101,8 +117,10 @@ const Helpers = {
      * @return {string|undefined}
      */
     getMetaPropertyValue(propertyName) {
-        const meta = document.head.querySelector('meta[property="' + propertyName + '"]');
-        return meta && meta.content;
+        if (this.isBrowser()) {
+            const meta = document.head.querySelector('meta[property="' + propertyName + '"]');
+            return meta && meta.content;
+        }
     },
 
     /**
@@ -220,7 +238,7 @@ const Helpers = {
             ? extensionPath
             : extensionPath + extension + queue;
     },
-
+    
     /**
      * Returns the given path extended with the given selector.
      * @param {String} path - Path to be extended.
@@ -254,7 +272,18 @@ const Helpers = {
      * @returns {String}
      */
     getCurrentPathname() {
-        return window.location.pathname;
+        return this.isBrowser() ? window.location.pathname : undefined;
+    },
+
+    /**
+     * Dispatches an event on the window object, when in the browser context
+     *
+     * @param   {Event} event - the event to dispatch
+     */
+    dispatchGlobalEvent(event) {
+        if (this.isBrowser()) {
+            window.dispatchEvent(event);
+        }
     }
 };
 
