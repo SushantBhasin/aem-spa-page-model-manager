@@ -70,7 +70,6 @@
     "eslint": "4.19.1",
     "eslint-plugin-babel": "4.1.2",
     "inject-loader": "2.0.1",
-    "isomorphic-fetch": "^2.2.1",
     "istanbul": "^0.4.5",
     "jsdoc": "^3.5.5",
     "karma": "^0.13.22",

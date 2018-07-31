@@ -142,4 +142,35 @@ describe('Helpers ->', () => {
             }
         });
     });
+
+    describe("dispatchGlobalCustomEvent", () => {
+        it("should dispatch an event", (done) => {
+            let detail = {
+                a: 1,
+                b: { c: 3}
+            };
+            let eventName = "customEvt";
+            window.addEventListener(eventName, (event) => {
+                assert.equal(event.type, eventName);
+                assert.deepEqual(event.detail, detail, 'Returns the page model object');
+                done();
+            });
+
+            Helpers.dispatchGlobalCustomEvent(eventName, { detail });
+        });
+
+        it("should not dispatch any event", () => {
+            let stub = sinon.stub(Helpers, "isBrowser").callsFake(() => {
+                return false;
+            });
+            let callback = sinon.spy();
+            let eventName = "customEvt";
+            window.addEventListener(eventName, callback);
+
+            Helpers.dispatchGlobalCustomEvent(eventName, {});
+            // Dispatching the event will call the listeners syncronously.
+            assert.equal(callback.notCalled, true, "The call should not be called");
+            stub.restore();
+        })
+    })
 });

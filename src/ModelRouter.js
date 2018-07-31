@@ -165,11 +165,11 @@ function dispatchRouteChanged(path) {
     // Triggering the page model manager to load a new child page model
     // No need to use a cache as the PageModelManager already does it
     PageModelManager.getData({pagePath: path}).then(function (model) {
-        Helpers.dispatchGlobalEvent(new CustomEvent(EventType.PAGE_MODEL_ROUTE_CHANGED, {
+        Helpers.dispatchGlobalCustomEvent(EventType.PAGE_MODEL_ROUTE_CHANGED, {
             detail: {
                 model: model
             }
-        }));
+        });
     });
 }
 

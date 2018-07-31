@@ -136,11 +136,11 @@ function notifyListeners(pagePath, dataPath) {
  */
 function triggerPageModelLoaded() {
     // Deep copy to protect the internal state of the page mode
-    Helpers.dispatchGlobalEvent(new CustomEvent(EventType.PAGE_MODEL_LOADED, {
+    Helpers.dispatchGlobalCustomEvent(EventType.PAGE_MODEL_LOADED, {
         detail: {
             model: clone(rootModel)
         }
-    }));
+    });
 }
 
 /**
@@ -553,7 +553,7 @@ function fetchModel(url, init) {
  */
 function resolveInitPageModel(resolve, immutable) {
     // Optionally inject an initial route
-    Helpers.dispatchGlobalEvent(new CustomEvent(EventType.PAGE_MODEL_INIT, {}));
+    Helpers.dispatchGlobalCustomEvent(EventType.PAGE_MODEL_INIT, {});
     resolve(immutable ? clone(rootModel) : rootModel);
 }
 
@@ -607,7 +607,7 @@ function isPageURLRoot(pagePath, modelRootPath) {
  */
 function resolveInitPageModel(resolve, immutable) {
     // Optionally inject an initial route
-    Helpers.dispatchGlobalEvent(new CustomEvent(EventType.PAGE_MODEL_INIT, {}));
+    Helpers.dispatchGlobalCustomEvent(EventType.PAGE_MODEL_INIT, {});
     resolve(immutable ? clone(rootModel) : rootModel);
 }
 

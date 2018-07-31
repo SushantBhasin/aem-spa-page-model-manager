@@ -276,13 +276,14 @@ const Helpers = {
     },
 
     /**
-     * Dispatches an event on the window object, when in the browser context
+     * Dispatches a custom event on the window object, when in the browser context
      *
-     * @param   {Event} event - the event to dispatch
+     * @param  {String} eventName - the name of the custom event
+     * @param {Object} options - the custom event options
      */
-    dispatchGlobalEvent(event) {
+    dispatchGlobalCustomEvent(eventName, options) {
         if (this.isBrowser()) {
-            window.dispatchEvent(event);
+            window.dispatchEvent(new CustomEvent(eventName, options));
         }
     }
 };
