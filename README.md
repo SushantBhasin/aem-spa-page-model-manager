@@ -485,7 +485,7 @@ The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is al
 
 ## Changelog 
 
-## [Unreleased]
+## [Unreleased] - 0.0.25-beta.0
 
 ### Removed
 

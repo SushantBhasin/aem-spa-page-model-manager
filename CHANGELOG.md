@@ -1,4 +1,4 @@
-## [Unreleased]
+## [Unreleased] - 0.0.25-beta.0
 
 ### Removed
 
