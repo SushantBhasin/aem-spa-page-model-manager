@@ -33,7 +33,7 @@ PageModelManager.getData({
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.0*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.1*
 
 
 
@@ -301,6 +301,42 @@ Names of the meta properties associated with the PageModelProvider and ModelRout
     
 
     
+#### getChildModel(model, childPath)
+
+Returns the cached child model from a given model
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| model | `Object`  | - the model where we look for the child | &nbsp; |
+| childPath | `string`  | - the path of the child to look for | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `Object`  the child object if found
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 
@@ -477,6 +513,24 @@ Remove the callback listener from the given path path.
 
     
 
+    
+#### if()
+
+Entry point to update the page model from an external source written in es5 such as the page editor source code
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
 
 
 ## Documentation 
@@ -485,7 +539,15 @@ The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is al
 
 ## Changelog 
 
-## [Unreleased] - 0.0.25-beta.0
+## 0.0.25-beta.1 - 1 August 2018
+ * SSR refactoring
+ ** Added support for setting apiHost, in order to force absolute url requests on Node server
+ ** Added support for initializing with an existing model.  
+ This is useful when we initialize in the client, the state from the server.
+ ** Guarding for dispatching & listening events only in browser context. 
+ ** Fixed race conditions with `init` method when called from `getData`
+ 
+## 0.0.25-beta.0
 
 ### Removed
 

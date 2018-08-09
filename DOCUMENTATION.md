@@ -1,5 +1,5 @@
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.0*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.1*
 
 
 
@@ -267,6 +267,42 @@ Names of the meta properties associated with the PageModelProvider and ModelRout
     
 
     
+#### getChildModel(model, childPath)
+
+Returns the cached child model from a given model
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| model | `Object`  | - the model where we look for the child | &nbsp; |
+| childPath | `string`  | - the path of the child to look for | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `Object`  the child object if found
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
 
     
 
@@ -431,6 +467,24 @@ Remove the callback listener from the given path path.
 | cfg.pagePath | `String`  | Absolute path of the page (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
 | cfg.dataPath | `String`  | Relative path to the data in the page model (e.g., "root/mychild"). | *Optional* |
 | cfg.callback | `String`  | Listener function to be removed. | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### if()
+
+Entry point to update the page model from an external source written in es5 such as the page editor source code
+
+
 
 
 
