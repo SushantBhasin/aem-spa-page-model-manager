@@ -46,6 +46,12 @@ Run npm install to get all node_modules that are necessary for development.
 $ npm run build
 ```
 
+### Watch to rebuild
+
+```sh
+$ npm run build -- --watch
+```
+
 ### Test
 
 ```sh
@@ -90,3 +96,7 @@ This will (in order):
   * commit all the files in one commit named `X.Y.Z` with a tag set to `vX.Y.Z`
 * `postversion`
   * push the changes and tag
+
+### Links and transitive dependencies
+
+See the related [wiki page](https://wiki.corp.adobe.com/display/WEM/SPA+-+Working+with+NPM+modules+that+have+a+transitive+dependency)
