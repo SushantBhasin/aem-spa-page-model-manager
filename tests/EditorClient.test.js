@@ -127,9 +127,8 @@ describe("EditorClient ->", () => {
         let consoleErrorSpy;
 
         beforeEach(() => {
-            let modelClient = new ModelClient();
             let modelStore = new ModelStore(DEFAULT_PAGE_MODEL_URL, clone(PAGE_MODEL_JSON));
-            ModelManager.initialize(modelStore, modelClient);
+            ModelManager.initialize({modelStore: modelStore});
             consoleErrorSpy = sinon.spy(console, 'error');
         });
 
@@ -250,10 +249,9 @@ describe("EditorClient ->", () => {
     describe('listeners ->', () => {
 
         beforeEach(() => {
-            let modelClient = new ModelClient();
             let modelStore = new ModelStore(DEFAULT_PAGE_MODEL_URL, clone(PAGE_MODEL_JSON));
 
-            ModelManager.initialize(modelStore, modelClient);
+            ModelManager.initialize({modelStore: modelStore});
 
             fetchMock.mock('end:' + CHILD0000_PATH + '.model.json', getJSONResponse(CHILD0000_MODEL_JSON));
         });

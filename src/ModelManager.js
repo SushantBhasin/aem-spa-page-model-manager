@@ -18,6 +18,8 @@ import { PathUtils } from "./PathUtils";
 import Constants from "./Constants";
 import MetaProperty from "./MetaProperty";
 import { EditorClient } from "./EditorClient";
+import {ModelClient} from "./ModelClient";
+import {ModelStore} from "./ModelStore";
 
 /**
  * Does the provided model object contains an entry for the given child path
@@ -79,8 +81,17 @@ class ModelManager {
      * Configuration object for the getData function
      *
      * @typedef {{}} GetDataConfig
-     * @param {string} path             - Path of the data model
-     * @param {boolean} forceReload     - Should the data model be reloaded
+     * @property {string} path             - Path of the data model
+     * @property {boolean} forceReload     - Should the data model be reloaded
+     */
+
+    /**
+     * Configuration object for the Initialization function
+     *
+     * @typedef {{}} InitializationConfig
+     * @property {string} [path]                   - Path of the data model
+     * @property {ModelStore} [modelStore]         - Data model store
+     * @property {ModelClient} [modelClient]       - Model client
      */
 
     get modelClient() {
@@ -118,16 +129,23 @@ class ModelManager {
      *
      * Once the initial model is loaded and if the data model doesn't contain the path of the current pathname, the library attempts to fetch a fragment of model.
      *
-     * @param {ModelStore} modelStore        - Data model store
-     * @param {ModelClient} modelClient      - Model client
-     * @param {string} [path]                - Path to the data model
+     * @param {string|InitializationConfig} [config]                - Path to the data model or configuration object
      * @return {Promise}
      */
-    initialize(modelStore, modelClient, path) {
+    initialize(config) {
         this.destroy();
+        let path;
 
-        this._modelClient = modelClient;
-        this._modelStore = modelStore;
+        if (!config || typeof config === 'string') {
+            path = config;
+            this._modelClient = new ModelClient();
+            this._modelStore = new ModelStore();
+        } else {
+            path = config.path;
+            this._modelClient = config.modelClient || new ModelClient();
+            this._modelStore = config.modelStore || new ModelStore();
+        }
+
         this._editorClient = new EditorClient(this);
         this._listenersMap = {};
 

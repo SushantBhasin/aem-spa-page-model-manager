@@ -35,8 +35,8 @@ export class ModelStore {
      */
 
     /**
-     * @param {string} rootPath     - Root path of the model
-     * @param {{}} data             - Initial model
+     * @param {string} [rootPath]     - Root path of the model
+     * @param {{}} [data]             - Initial model
      */
     constructor(rootPath, data) {
         this.initialize(rootPath, data);

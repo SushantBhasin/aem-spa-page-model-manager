@@ -42,7 +42,7 @@ describe('ModelManager ->', () => {
 
 
         it('should fetch data on initialization', () => {
-            return ModelManager.initialize(modelStoreStub, modelClientStub, '/content/test/page').then((data) => {
+            return ModelManager.initialize({path: '/content/test/page', modelStore: modelStoreStub, modelClient: modelClientStub}).then((data) => {
                 assert.isOk(modelStoreStub.initialize.calledOnce, 'ModelStore.initialize called');
                 assert.isOk(modelClientStub.fetch.calledOnce, 'ModelClient.fetch called');
                 assert.equal(2, modelStoreStub.getData.callCount, 'ModelStore.getData called');
@@ -63,7 +63,7 @@ describe('ModelManager ->', () => {
             });
 
             it('should fetch data twice on initialization', () => {
-                return ModelManager.initialize(modelStoreStub, modelClientStub, '/content/test/page').then((data) => {
+                return ModelManager.initialize({path: '/content/test/page', modelStore: modelStoreStub, modelClient: modelClientStub}).then((data) => {
                     assert.isOk(modelStoreStub.initialize.calledOnce, 'ModelStore.initialize called');
                     assert.equal(2, modelClientStub.fetch.callCount, 'ModelClient.fetch called');
                     assert.equal(2, modelStoreStub.getData.callCount, 'ModelStore.getData called');
@@ -87,7 +87,7 @@ describe('ModelManager ->', () => {
         });
 
         it('should not fetch data on initialization', () => {
-            return ModelManager.initialize(modelStoreStub, modelClientStub, '/content/test/page').then((data) => {
+            return ModelManager.initialize({path: '/content/test/page', modelStore: modelStoreStub, modelClient: modelClientStub}).then((data) => {
                 assert.isNotOk(modelStoreStub.initialize.called, 'ModelStore.initialize not called');
                 assert.isNotOk(modelClientStub.fetch.called, 'ModelClient.fetch not called');
                 assert.isOk(modelStoreStub.getData.calledOnce, 'ModelStore.getData called');
@@ -96,7 +96,7 @@ describe('ModelManager ->', () => {
         });
 
         it('should not fetch data', () => {
-            return ModelManager.initialize(modelStoreStub, modelClientStub, '/content/test/page').then(() => {
+            return ModelManager.initialize({path: '/content/test/page', modelStore: modelStoreStub, modelClient: modelClientStub}).then(() => {
 
                 return ModelManager.getData(CHILD_PATH).then((data) => {
                     assert.isNotOk(modelClientStub.fetch.called, 'ModelClient.fetch not called');
@@ -107,7 +107,7 @@ describe('ModelManager ->', () => {
         });
 
         it('should fetch data if forced', () => {
-            return ModelManager.initialize(modelStoreStub, modelClientStub, '/content/test/page').then(() => {
+            return ModelManager.initialize({path: '/content/test/page', modelStore: modelStoreStub, modelClient: modelClientStub}).then(() => {
 
                 return ModelManager.getData({path:CHILD_PATH, forceReload: true}).then((data) => {
                     assert.isOk(modelClientStub.fetch.calledOnce, 'ModelClient.fetch called');
