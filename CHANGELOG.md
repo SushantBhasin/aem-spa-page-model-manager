@@ -1,5 +1,13 @@
 ## LATEST
 
+ * Property prefix rename (colon to cqCamelCase)
+    * `:items` to `cqItems`
+    * `:itemsOrder` to `cqItemsOrder`
+    * `:type` to `cqType`
+    * `:path` to `cqPath`
+    * `:children` to `cqChildren`
+    * `:hierarchyType` to `cqHierarchyType`
+
  * **BREAKING CHANGE** API refactoring for a better modularization
  * **BREAKING CHANGE** SSR refactoring
     * Added support for setting apiHost, in order to force absolute url requests on Node server

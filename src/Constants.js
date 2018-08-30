@@ -27,40 +27,40 @@ const Constants = {
      *
      * @type {string}
      */
-    TYPE_PROP: ':type',
+    TYPE_PROP: 'cqType',
 
     /**
      * List of child items of an item
      *
      * @type {string}
      */
-    ITEMS_PROP: ':items',
+    ITEMS_PROP: 'cqItems',
 
     /**
      * Order in which the items should be listed
      *
      * @type {string}
      */
-    ITEMS_ORDER_PROP: ':itemsOrder',
+    ITEMS_ORDER_PROP: 'cqItemsOrder',
 
     /**
      * Path of an item
      *
      * @type {string}
      */
-    PATH_PROP: ':path',
+    PATH_PROP: 'cqPath',
 
     /**
      * Children of a hierarchical item
      *
      * @type {string}
      */
-    CHILDREN_PROP: ':children',
+    CHILDREN_PROP: 'cqChildren',
 
     /**
      * Hierarchical type of the item
      */
-    HIERARCHY_TYPE_PROP: ':hierarchyType',
+    HIERARCHY_TYPE_PROP: 'cqHierarchyType',
 
     /**
      * JCR CONTENT Node

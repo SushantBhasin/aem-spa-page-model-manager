@@ -1,23 +1,23 @@
 {
-    ":type":    "we-retail-journal/react/components/structure/page",
-    ":items": {
+    "cqType":    "we-retail-journal/react/components/structure/page",
+    "cqItems": {
         "root": {
             "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
             "columnCount": 12,
-            ":itemsOrder": ["child1000", "child1001", "child1002"],
-            ":items": {
+            "cqItemsOrder": ["child1000", "child1001", "child1002"],
+            "cqItems": {
                 "child1000": {
                     "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
                     "columnCount": 12,
-                    ":type": "wcm/foundation/components/responsivegrid"
+                    "cqType": "wcm/foundation/components/responsivegrid"
                 },
-                "child1001": {":type": "test/components/componentchild1"},
-                "child1002": {":type": "test/components/componentchild2"}
+                "child1001": {"cqType": "test/components/componentchild1"},
+                "child1002": {"cqType": "test/components/componentchild2"}
             },
-            ":type": "wcm/foundation/components/responsivegrid"
+            "cqType": "wcm/foundation/components/responsivegrid"
         }
     },
-    ":itemsOrder": [
+    "cqItemsOrder": [
         "root"
     ]
 }
