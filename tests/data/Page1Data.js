@@ -1,13 +1,13 @@
-export const content_test_page1_stem_child0000 = {"cqType": "test/components/componentchild1"};
+export const content_test_page1_stem_child0000 = {":type": "test/components/componentchild1"};
 
 export const content_test_page1_stem = {
     "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
     "columnCount": 12,
-    "cqItemsOrder": ["child0000"],
-    "cqItems": {
+    ":itemsOrder": ["child0000"],
+    ":items": {
         "child0000": content_test_page1_stem_child0000
     },
-    "cqType": "wcm/foundation/components/responsivegrid"
+    ":type": "wcm/foundation/components/responsivegrid"
 };
 
 export const PAGE1 = {
@@ -17,12 +17,12 @@ export const PAGE1 = {
     "templateName": "sample-template",
     "cssClassNames": "page",
     "language": "en-US",
-    "cqItemsOrder": [
+    ":itemsOrder": [
         "stem"
     ],
-    "cqItems": {
+    ":items": {
         "stem": content_test_page1_stem
     },
-    "cqPath": "/content/test/page1",
-    "cqType": "we-retail-react/components/structure/page"
+    ":path": "/content/test/page1",
+    ":type": "we-retail-react/components/structure/page"
 };

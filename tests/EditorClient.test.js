@@ -19,85 +19,85 @@ describe("EditorClient ->", () => {
     const CHILD0000_MODEL_JSON = {
         "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
             "columnCount": 12,
-            "cqItemsOrder": ["child0010", "child0011"],
-            "cqItems": {
-            "child0010": {"cqType": "test/components/componentchild0"},
-            "child0011": {"cqType": "test/components/componentchild1"}
+            ":itemsOrder": ["child0010", "child0011"],
+            ":items": {
+            "child0010": {":type": "test/components/componentchild0"},
+            "child0011": {":type": "test/components/componentchild1"}
         },
-        "cqType": "wcm/foundation/components/responsivegrid"
+        ":type": "wcm/foundation/components/responsivegrid"
     };
 
     const PAGE_MODEL_JSON = {
-        "cqPath": DEFAULT_PAGE_MODEL_PATH,
+        ":path": DEFAULT_PAGE_MODEL_PATH,
         "designPath": "/libs/settings/wcm/designs/default",
         "title": "React sample page",
         "lastModifiedDate": 1512116041058,
         "templateName": "sample-template",
         "cssClassNames": "page",
         "language": "en-US",
-        "cqItemsOrder": [
+        ":itemsOrder": [
             "root"
         ],
-        "cqItems": {
+        ":items": {
             "root": {
                 "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
                 "columnCount": 12,
-                "cqItemsOrder": ["child0000", "child0001"],
-                "cqItems": {
+                ":itemsOrder": ["child0000", "child0001"],
+                ":items": {
                     "child0000": CHILD0000_MODEL_JSON,
-                    "child0001": {"cqType": "test/components/componentchild1"}
+                    "child0001": {":type": "test/components/componentchild1"}
                 },
-                "cqType": "wcm/foundation/components/responsivegrid"
+                ":type": "wcm/foundation/components/responsivegrid"
             }
         },
-        "cqHierarchyType": "page",
-        "cqChildren": {
+        ":hierarchyType": "page",
+        ":children": {
             "/content/test/child_page_1": {
-                "cqType":	"we-retail-journal/react/components/structure/page",
-                "cqItems": {
+                ":type":	"we-retail-journal/react/components/structure/page",
+                ":items": {
                     "root": {
                         "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
                         "columnCount": 12,
-                        "cqItemsOrder": ["child1000", "child1001"],
-                        "cqItems": {
+                        ":itemsOrder": ["child1000", "child1001"],
+                        ":items": {
                             "child1000": {
                                 "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
                                 "columnCount": 12,
-                                "cqType": "wcm/foundation/components/responsivegrid"
+                                ":type": "wcm/foundation/components/responsivegrid"
                             },
-                            "child1001": {"cqType": "test/components/componentchild1"}
+                            "child1001": {":type": "test/components/componentchild1"}
                         },
-                        "cqType": "wcm/foundation/components/responsivegrid"
+                        ":type": "wcm/foundation/components/responsivegrid"
                     }
                 },
-                "cqItemsOrder": [
+                ":itemsOrder": [
                     "root"
                 ]
             },
             "/content/test/subpage2": {
-                "cqType":	"we-retail-journal/react/components/structure/page",
-                "cqItems": {
+                ":type":	"we-retail-journal/react/components/structure/page",
+                ":items": {
                     "root": {
                         "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
                         "columnCount": 12,
-                        "cqItemsOrder": ["child2000", "child2001"],
-                        "cqItems": {
+                        ":itemsOrder": ["child2000", "child2001"],
+                        ":items": {
                             "child2000": {
                                 "gridClassNames": "aem-Grid aem-Grid--12 aem-Grid--default--12",
                                 "columnCount": 12,
-                                "cqType": "wcm/foundation/components/responsivegrid"
+                                ":type": "wcm/foundation/components/responsivegrid"
                             },
-                            "child2001": {"cqType": "test/components/componentchild1"}
+                            "child2001": {":type": "test/components/componentchild1"}
                         },
-                        "cqType": "wcm/foundation/components/responsivegrid"
+                        ":type": "wcm/foundation/components/responsivegrid"
                     }
                 },
-                "cqItemsOrder": [
+                ":itemsOrder": [
                     "root"
                 ]
             },
         },
-        "cqType": "we-retail-react/components/structure/page"
+        ":type": "we-retail-react/components/structure/page"
     };
 
 
@@ -168,7 +168,7 @@ describe("EditorClient ->", () => {
             dispatchEvent_PageModelUpdate('delete', CHILD0010_PATH, {
                 key: CHILDXXXX_KEY,
                 value: {
-                    'cqType': CHILDXXXX_TYPE
+                    ':type': CHILDXXXX_TYPE
                 }
             });
         });
@@ -187,7 +187,7 @@ describe("EditorClient ->", () => {
             dispatchEvent_PageModelUpdate('replace', CHILD0010_PATH, {
                 key: CHILDXXXX_KEY,
                 value: {
-                    'cqType': CHILDXXXX_TYPE
+                    ':type': CHILDXXXX_TYPE
                 }
             });
         });
@@ -213,7 +213,7 @@ describe("EditorClient ->", () => {
                 dispatchEvent_PageModelUpdate('insertBefore', CHILD0011_PATH, {
                     key: CHILDXXXX_KEY,
                     value: {
-                        'cqType': CHILDXXXX_TYPE
+                        ':type': CHILDXXXX_TYPE
                     }
                 });
             });
@@ -238,7 +238,7 @@ describe("EditorClient ->", () => {
                 dispatchEvent_PageModelUpdate('insertAfter', CHILD0011_PATH, {
                     key: CHILDXXXX_KEY,
                     value: {
-                        'cqType': CHILDXXXX_TYPE
+                        ':type': CHILDXXXX_TYPE
                     }
                 });
             });
@@ -266,7 +266,7 @@ describe("EditorClient ->", () => {
             dispatchEvent_PageModelUpdate('insertAfter', CHILD0010_PATH, {
                 key: CHILDXXXX_KEY,
                 value: {
-                    'cqType': CHILDXXXX_TYPE
+                    ':type': CHILDXXXX_TYPE
                 }
             });
         });
