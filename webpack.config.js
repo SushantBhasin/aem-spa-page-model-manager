@@ -1,6 +1,7 @@
 var path = require('path');
 
-var withCoverage = process.env.NODE_ENV === 'test';
+var isEnvironmentTest = process.env.NODE_ENV === 'test';
+var nodeExternals = require('webpack-node-externals');
 
 module.exports = {
     entry: './index.js',
@@ -22,14 +23,15 @@ module.exports = {
                 },
                 enforce: 'post'
             }
-        ].concat(withCoverage ? {
-                test: /\.js$/,
-                include: path.resolve(__dirname, 'src'),
-                use: {
-                    loader: 'istanbul-instrumenter-loader',
-                    options: { esModules: true }
-                },
-                enforce: 'post'
-            } : [])
-    }
+        ].concat(isEnvironmentTest ? {
+            test: /\.js$/,
+            include: path.resolve(__dirname, 'src'),
+            use: {
+                loader: 'istanbul-instrumenter-loader',
+                options: { esModules: true }
+            },
+            enforce: 'post'
+        } : [])
+    },
+    externals: [!isEnvironmentTest ? nodeExternals() : ''],
 };

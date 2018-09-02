@@ -32,7 +32,7 @@
     "docs": "jsdoc -c ./jsdoc_conf.json && doxdox \"src/**/*.+(js|jsx)\" -i \"src/Helpers.js,src/ModelRouter.js\" --layout templates/DOCUMENTATION.hbs --output DOCUMENTATION.md",
     "readme": "node_modules/markdown-include/bin/cli.js markdown-include.config.json",
     "docs-readme": "npm run docs && npm run readme",
-    "preversion": "npm run test && npm run build && npm run docs-readme",
+    "preversion": "npm run test && npm run build --mode=production && npm run docs-readme",
     "version": "npm run docs && npm run readme && git add -A",
     "postversion": "git push && git push --tags"
   },
@@ -41,16 +41,16 @@
   "publishConfig": {
     "registry": "https://artifactory.corp.adobe.com/artifactory/api/npm/npm-cq-spa-release-local"
   },
-  "dependencies": {
-    "clone": "^2.1.2",
-    "custom-event-polyfill": "^1.0.6",
-    "markdown-include": "^0.4.3"
-  },
   "eslintConfig": {
     "parserOptions": {
       "ecmaVersion": 2015,
       "sourceType": "module"
     }
+  },
+  "peerDependencies": {
+    "clone": "^2.1.2",
+    "custom-event-polyfill": "^1.0.6",
+    "markdown-include": "^0.4.3"
   },
   "devDependencies": {
     "ajv": "^5.0.0",
@@ -62,7 +62,9 @@
     "babel-polyfill": "^6.9.1",
     "babel-preset-env": "^1.7.0",
     "chai": "^4.1.2",
+    "clone": "^2.1.2",
     "cross-fetch": "^2.2.2",
+    "custom-event-polyfill": "^1.0.6",
     "doxdox": "^2.0.3",
     "eslint": "4.19.1",
     "eslint-plugin-babel": "4.1.2",
@@ -81,11 +83,13 @@
     "karma-sinon-chai": "^2.0.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^3.0.0",
+    "markdown-include": "^0.4.3",
     "mocha": "^5.2.0",
     "sinon": "^4.5.0",
     "sinon-chai": "^3.2.0",
     "source-map-loader": "^0.2.4",
     "webpack": "^4.17.1",
-    "webpack-cli": "^3.1.0"
+    "webpack-cli": "^3.1.0",
+    "webpack-node-externals": "^1.7.2"
   }
 }
