@@ -50,6 +50,7 @@
   "peerDependencies": {
     "clone": "^2.1.2",
     "custom-event-polyfill": "^1.0.6",
+    "cross-fetch": "^2.2.2",
     "markdown-include": "^0.4.3"
   },
   "devDependencies": {
