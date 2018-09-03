@@ -9,5 +9,5 @@ var context = require.context('.', true, /\.test\.js$/);
 context.keys().forEach(context);
 
 // needed for code coverage, all files from 'dist' folder are reported
-var coverageContext = require.context('../dist/', true, /\.js$/);
+var coverageContext = require.context('../src/', true, /\.js$/);
 coverageContext.keys().forEach(coverageContext);
