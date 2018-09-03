@@ -33,5 +33,5 @@ module.exports = {
             enforce: 'post'
         } : [])
     },
-    externals: [!isEnvironmentTest ? nodeExternals() : ''],
+    externals: [!isEnvironmentTest ? nodeExternals() : '']
 };
