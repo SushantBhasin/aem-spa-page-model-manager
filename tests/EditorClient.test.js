@@ -2,7 +2,6 @@ import fetchMock from "fetch-mock";
 import clone from 'clone';
 import ModelManager from '../src/ModelManager';
 import InternalConstants from '../src/InternalConstants';
-import { ModelClient } from '../src/ModelClient';
 import { ModelStore } from '../src/ModelStore';
 import Constants from '../src/Constants';
 
