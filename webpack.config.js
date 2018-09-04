@@ -9,6 +9,7 @@ module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
     output: {
+        globalObject: `typeof self !== 'undefined' ? self : this`,
         path: path.resolve(__dirname, 'dist'),
         filename: 'cq-spa-page-model-manager.js',
         library: 'cqSpaPageModelManager',
