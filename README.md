@@ -34,7 +34,7 @@ ModelManager.getData("/content/mysite/myhiddenpage/jcr:content/root/my/component
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.4*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.5*
 
 
 
