@@ -1,5 +1,5 @@
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.5*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.6*
 
 
 
@@ -1008,7 +1008,7 @@ to make sure only properly formatted paths (e.g., "/content/mypage") are stored.
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| path | `String`  | - Path of the page to be sanitized. | &nbsp; |
+| path | `string`  | - Path of the page to be sanitized. | &nbsp; |
 
 
 
@@ -1016,7 +1016,7 @@ to make sure only properly formatted paths (e.g., "/content/mypage") are stored.
 ##### Returns
 
 
-- `String`  
+- `string`  
 
 
     
