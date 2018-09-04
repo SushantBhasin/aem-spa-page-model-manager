@@ -192,10 +192,14 @@ export class PathUtils {
      * Returns the given path after sanitizing it.
      * This function should be called on page paths before storing them in the page model,
      * to make sure only properly formatted paths (e.g., "/content/mypage") are stored.
-     * @param {String} path - Path of the page to be sanitized.
-     * @return {String}
+     * @param {string} path - Path of the page to be sanitized.
+     * @return {string|undefined}
      */
     static sanitize(path) {
+        if (!path) {
+            return;
+        }
+
         // Remove protocol, domain, port and keep only the path
         path = path.replace(
             /^[a-z]{4}:\/{2}[a-z]{1,}:[0-9]{1,4}(\/.*)/,
