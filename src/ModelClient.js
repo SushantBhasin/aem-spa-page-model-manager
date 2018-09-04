@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe Systems Incorporated.
  */
-import "cross-fetch";
+import fetch from "cross-fetch";
 import { PathUtils } from "./PathUtils";
 import InternalConstants from "./InternalConstants";
 
