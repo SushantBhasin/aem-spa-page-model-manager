@@ -126,6 +126,8 @@ export class EditorClient {
         this._modelManager = null;
         delete this._modelManager;
 
-        window.removeEventListener(EventType.PAGE_MODEL_UPDATE, this._windowListener);
+        if (PathUtils.isBrowser()) {
+            window.removeEventListener(EventType.PAGE_MODEL_UPDATE, this._windowListener);
+        }
     }
 }
