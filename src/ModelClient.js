@@ -40,13 +40,9 @@ export class ModelClient {
         }
 
         // Either the API host has been provided or we make an absolute request relative to the current host
-        let url = `${this._apiHost}+${modelPath}`;
+        let url = `${this._apiHost}${modelPath}`;
 
-        if (this._fetchPromises.hasOwnProperty(url)) {
-            return this._fetchPromises[url];
-        }
-
-        let promise = fetch(url).then(function(response) {
+        return fetch(url).then(function(response) {
             if (response.status >= 200 && response.status < 300) {
                 return response.json();
             } else {
@@ -56,18 +52,6 @@ export class ModelClient {
                 return Promise.reject(error);
             }
         });
-
-        this._fetchPromises[url] = promise;
-
-        promise.then((obj) => {
-            delete this._fetchPromises[url];
-            return obj;
-        }).catch((error) => {
-            delete this._fetchPromises[url];
-            return error;
-        });
-
-        return promise;
     }
 
     /**

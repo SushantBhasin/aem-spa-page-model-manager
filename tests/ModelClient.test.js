@@ -48,38 +48,6 @@ describe("ModelClient ->", () => {
             });
         });
 
-        it("should not make concurrent server calls on duplicate request", () => {
-            let pageModelUrl = mockTheFetch('/content/test/page', new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    resolve(getJSONResponse(PAGE_MODEL));
-                }, 200);
-            }));
-
-            let promises = [];
-            let modelClient = new ModelClient(myEndPoint);
-            promises.push(modelClient.fetch(pageModelUrl));
-            promises.push(modelClient.fetch(pageModelUrl));
-            promises.push(modelClient.fetch(pageModelUrl));
-
-            return Promise.all(promises).then(() => {
-                for (let i = 0 ; i < promises.length - 1 ; ++i) {
-                    assert.equal(promises[i], promises[i + 1]);
-                }
-            });
-        });
-
-        it("Consecutive requests - refresh", (done) => {
-            const DATA_PATH = '/content/test/page.model.json';
-            let dataUrl = mockTheFetch(DATA_PATH, getJSONResponse(PAGE_MODEL), 2);
-
-            const modelClient = new ModelClient(myEndPoint);
-
-            const promise = modelClient.fetch(dataUrl).then(() => {
-                assert.notEqual(promise, modelClient.fetch(dataUrl));
-                done();
-            });
-        });
-
         describe("handling incorrect parameter", () => {
 
             let modelClient = new ModelClient(myEndPoint);

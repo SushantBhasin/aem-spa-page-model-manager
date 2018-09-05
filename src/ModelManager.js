@@ -163,6 +163,7 @@ class ModelManager {
 
         this._editorClient = new EditorClient(this);
         this._listenersMap = {};
+        this._fetchPromises = {};
 
         const metaPropertyModelUrl = PathUtils.internalize(PathUtils.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROOT_URL));
         const currentPathname = PathUtils.sanitize(PathUtils.getCurrentPathname());
@@ -179,12 +180,12 @@ class ModelManager {
             if (data) {
                 return Promise.resolve(data);
             } else {
-                return this.modelClient.fetch(this._toModelPath(rootModelURL)).then((rootModel) => {
+                return this._fetchData(rootModelURL).then((rootModel) => {
                     this.modelStore.initialize(rootModelPath, rootModel);
                     // Append the child page if the page model doesn't correspond to the URL of the root model
                     // and if the model root path doesn't already contain the child model (asynchronous page load)
                     if (!isPageURLRoot(currentPathname, metaPropertyModelUrl) && !hasChildOfPath(rootModel, currentPathname)) {
-                        return this.modelClient.fetch(this._toModelPath(currentPathname)).then((model) => {
+                        return this._fetchData(currentPathname).then((model) => {
                             this.modelStore.insertData(PathUtils.sanitize(currentPathname), model);
 
                             return this.modelStore.getData();
@@ -205,22 +206,40 @@ class ModelManager {
      * @private
      */
     _fetchData(path) {
-        return this.modelClient.fetch(this._toModelPath(path)).then((data) => {
-            const isItem = PathUtils.isItem(path);
+        if (this._fetchPromises.hasOwnProperty(path)) {
+            return this._fetchPromises[path];
+        }
 
-            this.modelStore.insertData(path, data);
+        let promise = this.modelClient.fetch(this._toModelPath(path));
 
-            // If the path correspond to an item notify either the parent item
-            // Otherwise notify the app root
-            this._notifyListeners(path);
+        this._fetchPromises[path] = promise;
 
-            if (!isItem) {
-                // As we are expecting a page, we notify the root
-                this._notifyListeners('');
-            }
-
-            return data;
+        promise.then((obj) => {
+            delete this._fetchPromises[path];
+            return obj;
+        }).catch((error) => {
+            delete this._fetchPromises[path];
+            return error;
         });
+
+        return promise;
+    }
+
+    _storeData(path, data) {
+        const isItem = PathUtils.isItem(path);
+
+        this.modelStore.insertData(path, data);
+
+        // If the path correspond to an item notify either the parent item
+        // Otherwise notify the app root
+        this._notifyListeners(path);
+
+        if (!isItem) {
+            // As we are expecting a page, we notify the root
+            this._notifyListeners('');
+        }
+
+        return data;
     }
 
     /**
@@ -258,10 +277,10 @@ class ModelManager {
                 }
 
                 // We are not having any items
-                return this._fetchData(path);
+                return this._fetchData(path).then((data) => this._storeData(path, data));
             } else {
                 // We want to reload the item
-                return this._fetchData(path);
+                return this._fetchData(path).then((data) => this._storeData(path, data));
             }
         });
     }
@@ -335,6 +354,8 @@ class ModelManager {
      * @private
      */
     destroy() {
+        this._fetchPromises = null;
+        delete this._fetchPromises;
         this._listenersMap = null;
         delete this._listenersMap;
 

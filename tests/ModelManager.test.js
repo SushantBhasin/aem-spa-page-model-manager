@@ -16,7 +16,6 @@ describe('ModelManager ->', () => {
         modelStoreStub = sinon.createStubInstance(ModelStore);
         modelStoreStub.initialize.callThrough();
 
-        //
         modelClientStub = sinon.createStubInstance(ModelClient);
         modelClientStub.fetch.returns(Promise.resolve(PAGE_MODEL));
         modelClientStub.fetch.withArgs(CHILD_PATH + '.model.json').returns(Promise.resolve(content_test_page_root_child0000_child0010));
@@ -47,6 +46,28 @@ describe('ModelManager ->', () => {
                 assert.isOk(modelClientStub.fetch.calledOnce, 'ModelClient.fetch called');
                 assert.equal(2, modelStoreStub.getData.callCount, 'ModelStore.getData called');
                 assert.deepEqual(data, PAGE_MODEL, 'data should be correct');
+            });
+        });
+
+        it("should not make concurrent server calls on duplicate request", () => {
+            return ModelManager.initialize({path: '/content/test/page', modelStore: modelStoreStub, modelClient: modelClientStub}).then((data) => {
+                const pathPath = '/content/test/duplicate/request';
+                modelClientStub.fetch.withArgs(pathPath + '.model.json').returns(new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve({});
+                    }, 200);
+                }));
+
+                let promises = [];
+                promises.push(ModelManager._fetchData(pathPath));
+                promises.push(ModelManager._fetchData(pathPath));
+                promises.push(ModelManager._fetchData(pathPath));
+
+                return Promise.all(promises).then(() => {
+                    for (let i = 0 ; i < promises.length - 1 ; ++i) {
+                        assert.equal(promises[i], promises[i + 1]);
+                    }
+                });
             });
         });
 
