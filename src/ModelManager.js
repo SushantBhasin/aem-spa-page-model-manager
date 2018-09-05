@@ -121,6 +121,21 @@ class ModelManager {
     }
 
     /**
+     * Transforms the given path into a model URL
+     *
+     * @param path
+     * @return {*}
+     * @private
+     */
+    _toModelPath(path) {
+        let url = PathUtils.addSelector(path, 'model');
+        url = PathUtils.addExtension(url, 'json');
+        url = PathUtils.externalize(url);
+
+        return PathUtils.makeAbsolute(url);
+    }
+
+    /**
      * Initializes the ModelManager using the given path to resolve a data model.
      * If no path is provided, fallbacks are applied in the following order:
      *
@@ -164,12 +179,12 @@ class ModelManager {
             if (data) {
                 return Promise.resolve(data);
             } else {
-                return this.modelClient.fetch(rootModelURL).then((rootModel) => {
+                return this.modelClient.fetch(this._toModelPath(rootModelURL)).then((rootModel) => {
                     this.modelStore.initialize(rootModelPath, rootModel);
                     // Append the child page if the page model doesn't correspond to the URL of the root model
                     // and if the model root path doesn't already contain the child model (asynchronous page load)
                     if (!isPageURLRoot(currentPathname, metaPropertyModelUrl) && !hasChildOfPath(rootModel, currentPathname)) {
-                        return this.modelClient.fetch(currentPathname).then((model) => {
+                        return this.modelClient.fetch(this._toModelPath(currentPathname)).then((model) => {
                             this.modelStore.insertData(PathUtils.sanitize(currentPathname), model);
 
                             return this.modelStore.getData();
@@ -190,7 +205,7 @@ class ModelManager {
      * @private
      */
     _fetchData(path) {
-        return this.modelClient.fetch(path).then((data) => {
+        return this.modelClient.fetch(this._toModelPath(path)).then((data) => {
             const isItem = PathUtils.isItem(path);
 
             this.modelStore.insertData(path, data);

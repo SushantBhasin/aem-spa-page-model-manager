@@ -14,9 +14,6 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe Systems Incorporated.
  */
-import "cross-fetch";
-import { PathUtils } from "./PathUtils";
-import InternalConstants from "./InternalConstants";
 
 export class ModelClient {
 
@@ -32,21 +29,18 @@ export class ModelClient {
     /**
      * Fetches a model using the given a resource path
      *
-     * @param {string} path - Path to the model
+     * @param {string} modelPath - Absolute path to the model.
      * @return {*}
      */
-    fetch(path) {
-        let url = PathUtils.addSelector(path, InternalConstants.DEFAULT_SLING_MODEL_SELECTOR);
-        url = PathUtils.addExtension(url, 'json');
-        url = PathUtils.externalize(url);
+    fetch(modelPath) {
 
-        if (!url) {
-            let err = 'Fetching model rejected for path: ' + url;
+        if (!modelPath) {
+            let err = 'Fetching model rejected for path: ' + modelPath;
             return Promise.reject(new Error(err));
         }
 
         // Either the API host has been provided or we make an absolute request relative to the current host
-        url = `${this._apiHost}/${PathUtils.makeRelative(url)}`;
+        let url = `${this._apiHost}+${modelPath}`;
 
         if (this._fetchPromises.hasOwnProperty(url)) {
             return this._fetchPromises[url];

@@ -18,8 +18,8 @@ describe('ModelManager ->', () => {
 
         //
         modelClientStub = sinon.createStubInstance(ModelClient);
-        modelClientStub.fetch.withArgs(CHILD_PATH).returns(Promise.resolve(content_test_page_root_child0000_child0010));
         modelClientStub.fetch.returns(Promise.resolve(PAGE_MODEL));
+        modelClientStub.fetch.withArgs(CHILD_PATH + '.model.json').returns(Promise.resolve(content_test_page_root_child0000_child0010));
     });
 
     afterEach('restore modelManager and modelClient', () => {
