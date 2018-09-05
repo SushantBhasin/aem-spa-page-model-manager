@@ -1,5 +1,5 @@
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.6*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.7*
 
 
 
@@ -329,7 +329,7 @@ Names of the meta properties associated with the PageModelProvider and ModelRout
     
 
     
-#### fetch(path)
+#### fetch(modelPath)
 
 Fetches a model using the given a resource path
 
@@ -340,7 +340,7 @@ Fetches a model using the given a resource path
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| path | `string`  | - Path to the model | &nbsp; |
+| modelPath | `string`  | - Absolute path to the model. | &nbsp; |
 
 
 
@@ -420,6 +420,8 @@ Configuration object for the Initialization function
 
 - `Void`
 
+
+    
 
     
 
