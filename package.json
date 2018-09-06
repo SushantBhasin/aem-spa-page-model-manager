@@ -22,6 +22,9 @@
     "reactjs",
     "pagemodelmanager"
   ],
+  "files": [
+    "dist/"
+  ],
   "main": "dist/cq-spa-page-model-manager.js",
   "scripts": {
     "linter": "eslint --ext .js,.jsx .",
