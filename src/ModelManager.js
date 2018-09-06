@@ -18,8 +18,8 @@ import { PathUtils } from "./PathUtils";
 import Constants from "./Constants";
 import MetaProperty from "./MetaProperty";
 import { EditorClient } from "./EditorClient";
-import {ModelClient} from "./ModelClient";
-import {ModelStore} from "./ModelStore";
+import { ModelClient } from "./ModelClient";
+import { ModelStore } from "./ModelStore";
 
 /**
  * Does the provided model object contains an entry for the given child path
@@ -164,6 +164,7 @@ class ModelManager {
         this._editorClient = new EditorClient(this);
         this._listenersMap = {};
         this._fetchPromises = {};
+        this._initPromise = null;
 
         const metaPropertyModelUrl = PathUtils.internalize(PathUtils.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROOT_URL));
         const currentPathname = PathUtils.sanitize(PathUtils.getCurrentPathname());
@@ -173,7 +174,7 @@ class ModelManager {
         // 3. fallback to the model path contained in the URL
         const rootModelURL = path || metaPropertyModelUrl || currentPathname;
 
-        return this._checkDependencies().then(() => {
+        this._initPromise = this._checkDependencies().then(() => {
             const rootModelPath = PathUtils.sanitize(rootModelURL);
             let data = this.modelStore.getData(rootModelPath);
 
@@ -196,6 +197,8 @@ class ModelManager {
                 });
             }
         });
+
+        return this._initPromise;
     }
 
     /**
@@ -267,22 +270,23 @@ class ModelManager {
             forceReload = config.forceReload;
         }
 
-        return this._checkDependencies().then(() => {
+        let initPromise = this._initPromise || Promise.resolve();
 
-            if (!forceReload) {
-                let item = this.modelStore.getData(path);
+        return initPromise.then(() => this._checkDependencies())
+            .then(() => {
+                if (!forceReload) {
+                    let item = this.modelStore.getData(path);
 
-                if (item) {
-                    return Promise.resolve(item);
+                    if (item) {
+                        return Promise.resolve(item);
+                    }
+                    // We are not having any items
+                    return this._fetchData(path).then((data) => this._storeData(path, data));
+                } else {
+                    // We want to reload the item
+                    return this._fetchData(path).then((data) => this._storeData(path, data));
                 }
-
-                // We are not having any items
-                return this._fetchData(path).then((data) => this._storeData(path, data));
-            } else {
-                // We want to reload the item
-                return this._fetchData(path).then((data) => this._storeData(path, data));
-            }
-        });
+            });
     }
 
     /**
@@ -303,8 +307,7 @@ class ModelManager {
             listenersForPath.forEach((listener) => {
                 try {
                     listener();
-                }
-                catch (e) {
+                } catch (e) {
                     console.error('Error in listener ' + listenersForPath + ' at path ' + path + ' : ' + e);
                 }
             });
