@@ -34,7 +34,7 @@ ModelManager.getData("/content/mysite/myhiddenpage/jcr:content/root/my/component
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.0-rc.1*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.0-rc.2*
 
 
 
@@ -514,7 +514,7 @@ Returns the path of the data model root
     
 
     
-#### ModelManager.getData(config)
+#### ModelManager.getData([config])
 
 Returns the model for the given configuration
 
@@ -525,7 +525,7 @@ Returns the model for the given configuration
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| config | `string` `GetDataConfig`  | - Either the path of the data model or a configuration object | &nbsp; |
+| config | `string` `GetDataConfig`  | - Either the path of the data model or a configuration object. If no parameter is provided the complete model is returned | *Optional* |
 
 
 
