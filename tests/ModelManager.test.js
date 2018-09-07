@@ -127,6 +127,17 @@ describe('ModelManager ->', () => {
             });
         });
 
+        it('should fetch all the data', () => {
+            return ModelManager.initialize({path: '/content/test/page', modelStore: modelStoreStub, modelClient: modelClientStub}).then(() => {
+
+                return ModelManager.getData().then((data) => {
+                    assert.isFalse(modelClientStub.fetch.called, 'ModelClient.fetch not called');
+                    assert.isOk(modelStoreStub.getData.called, 'ModelStore.getData called');
+                    assert.deepEqual(data, PAGE_MODEL, 'data should be correct');
+                });
+            });
+        });
+
         it('should fetch data if forced', () => {
             return ModelManager.initialize({path: '/content/test/page', modelStore: modelStoreStub, modelClient: modelClientStub}).then(() => {
 
