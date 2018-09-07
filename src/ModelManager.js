@@ -153,12 +153,18 @@ class ModelManager {
 
         if (!config || typeof config === 'string') {
             path = config;
-            this._modelClient = new ModelClient();
-            this._modelStore = new ModelStore();
-        } else {
+        } else if (config) {
             path = config.path;
-            this._modelClient = config.modelClient || new ModelClient();
-            this._modelStore = config.modelStore || new ModelStore();
+            this._modelClient = config.modelClient;
+            this._modelStore = config.modelStore;
+        }
+
+        if (!this._modelClient) {
+            this._modelClient = new ModelClient();
+        }
+
+        if (!this._modelStore) {
+            this._modelStore = new ModelStore();
         }
 
         this._editorClient = new EditorClient(this);
@@ -173,6 +179,10 @@ class ModelManager {
         // 2. consider the meta property value
         // 3. fallback to the model path contained in the URL
         const rootModelURL = path || metaPropertyModelUrl || currentPathname;
+
+        if (!rootModelURL) {
+            console.error('ModelManager.js', 'Cannot initialize without an URL to fetch the root model');
+        }
 
         this._initPromise = this._checkDependencies().then(() => {
             const rootModelPath = PathUtils.sanitize(rootModelURL);
@@ -256,7 +266,7 @@ class ModelManager {
 
     /**
      * Returns the model for the given configuration
-     * @param {string|GetDataConfig} config     - Either the path of the data model or a configuration object
+     * @param {string|GetDataConfig} [config]     - Either the path of the data model or a configuration object. If no parameter is provided the complete model is returned
      * @return {Promise}
      */
     getData(config) {
@@ -265,7 +275,7 @@ class ModelManager {
 
         if (typeof config === 'string') {
             path = config;
-        } else {
+        } else if (config) {
             path = config.path;
             forceReload = config.forceReload;
         }

@@ -50,6 +50,11 @@ describe("ModelStore ->", () => {
     describe("getData ->", () => {
 
         it("should return the full model", () => {
+            let item = modelStore.getData();
+            assert.deepEqual(item, PAGE_MODEL);
+        });
+
+        it("should return the full model", () => {
             let item = modelStore.getData(PAGE_MODEL[Constants.PATH_PROP]);
             assert.deepEqual(item, PAGE_MODEL);
         });
