@@ -62,11 +62,12 @@ function adaptPagePath(path) {
         return '';
     }
 
-    if (!this.modelStore.rootPath) {
-        return path;
+    const localPath = PathUtils.internalize(path);
+
+    if (!this.modelStore || !this.modelStore.rootPath) {
+        return localPath;
     }
 
-    const localPath = PathUtils.internalize(path);
     const localRootModelPath = PathUtils.sanitize(this.modelStore.rootPath);
 
     return localPath === localRootModelPath ? '' : localPath;
