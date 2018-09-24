@@ -91,7 +91,7 @@ class ModelManager {
      *
      * @typedef {{}} InitializationConfig
      * @property {string} [path]                   - Path of the data model
-     * @property {ModelStore} [modelStore]         - Data model store
+     * @property {{}} [model]                      - Model structure to initialize the page model manager with
      * @property {ModelClient} [modelClient]       - Model client
      */
 
@@ -151,24 +151,16 @@ class ModelManager {
     initialize(config) {
         this.destroy();
         let path;
+        let initialModel;
 
         if (!config || typeof config === 'string') {
             path = config;
         } else if (config) {
             path = config.path;
             this._modelClient = config.modelClient;
-            this._modelStore = config.modelStore;
+            initialModel = config.model;
         }
 
-        if (!this._modelClient) {
-            this._modelClient = new ModelClient();
-        }
-
-        if (!this._modelStore) {
-            this._modelStore = new ModelStore();
-        }
-
-        this._editorClient = new EditorClient(this);
         this._listenersMap = {};
         this._fetchPromises = {};
         this._initPromise = null;
@@ -184,6 +176,13 @@ class ModelManager {
         if (!rootModelURL) {
             console.error('ModelManager.js', 'Cannot initialize without an URL to fetch the root model');
         }
+
+        if (!this._modelClient) {
+            this._modelClient = new ModelClient();
+        }
+
+        this._editorClient = new EditorClient(this);
+        this._modelStore = new ModelStore(rootModelURL, initialModel);
 
         this._initPromise = this._checkDependencies().then(() => {
             const rootModelPath = PathUtils.sanitize(rootModelURL);
