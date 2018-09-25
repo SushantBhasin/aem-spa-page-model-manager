@@ -31,7 +31,7 @@
     "build": "npm run linter && webpack",
     "build:production": "npm run linter && webpack --mode=production",
     "docs": "jsdoc -c ./jsdoc_conf.json && doxdox \"src/**/*.+(js|jsx)\" -i \"src/Helpers.js,src/ModelRouter.js\" --layout templates/DOCUMENTATION.hbs --output DOCUMENTATION.md",
-    "readme": "node_modules/markdown-include/bin/cli.js markdown-include.config.json",
+    "readme": "node node_modules/markdown-include/bin/cli.js markdown-include.config.json",
     "docs-readme": "npm run docs && npm run readme",
     "preversion": "npm run test && npm run build:production && npm run docs-readme",
     "version": "npm run docs && npm run readme && git add -A",
