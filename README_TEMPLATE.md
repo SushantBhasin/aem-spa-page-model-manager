@@ -1,6 +1,6 @@
 ## Installation !heading
 ```
-npm install @adobe/cq-spa-page-model-manager@beta
+npm install @adobe/cq-spa-page-model-manager
 ```
 
 ## Usage !heading
