@@ -34,7 +34,7 @@ ModelManager.getData("/content/mysite/myhiddenpage/jcr:content/root/my/component
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.11*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.12*
 
 
 
@@ -1150,6 +1150,312 @@ Dispatches a custom event on the window object, when in the browser context
 
 
 - `Void`
+
+
+    
+
+    
+#### PathUtils.join(paths)
+
+Joins given path segments into a string using /
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| paths |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.normalize(path)
+
+Normalizes given path by replacing repeated / with a single one
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.makeAbsolute(path)
+
+Returns path that starts with /
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### PathUtils.makeRelative(path)
+
+Returns path without the leading /
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### PathUtils.getParentNodePath(path)
+
+Returns path to the direct parent
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `boolean` `string`  
+
+
+    
+
+    
+#### PathUtils.isItem(path)
+
+Checks if given path is an JCR path
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `boolean`  
+
+
+    
+
+    
+#### PathUtils.getNodeName(path)
+
+Returns the name of the last node of the given path
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `boolean` `string`  
+
+
+    
+
+    
+#### PathUtils.subpath(targetPath, rootPath)
+
+Returns the subpath of the targetPath relative to the rootPath,
+or the targetPath if the rootPath is not a root of the targetPath.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| targetPath |  |  | &nbsp; |
+| rootPath |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### PathUtils.splitByDelimitators(path, delimitators)
+
+Returns an array of segments of the path, split by the custom set of delimitators passed as an array.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `string`  |  | &nbsp; |
+| delimitators | `array`  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### PathUtils._getJCRPath(pagePath, dataPath)
+
+Returns an JCR path based on pagePath and dataPath
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| pagePath |  | path to the page | &nbsp; |
+| dataPath |  | path to the item on the page | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.splitPageContentPaths(path)
+
+Returns object containing pagePath (path to a page) and, if exists, itemPath (path to the item on that page)
+from the passed path
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `string`  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `[object Object]`  
+
+
+    
+
+    
+#### PathUtils.trimStrings(path, strings)
+
+Returns path that is no longer prefixed nor suffixed by the set of strings passed as an array
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+| strings | `array`  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
 
 
     
