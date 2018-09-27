@@ -122,7 +122,7 @@ export class ModelStore {
             } else {
                 // Continue traversing
                 let subPath = PathUtils.subpath(path, pathKey);
-                let pageDelimiter = PathUtils.getStartStrings(subPath, this._pageContentDelimiter);
+                let pageDelimiter = PathUtils._getStartStrings(subPath, this._pageContentDelimiter);
                 let childParentPath = PathUtils.join([parentPath, pathKey, pageDelimiter]);
                 subPath = PathUtils.trimStrings(subPath, this._pageContentDelimiter);
 

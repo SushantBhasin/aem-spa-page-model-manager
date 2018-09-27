@@ -311,39 +311,88 @@ export class PathUtils {
         }
     }
 
+    /**
+     * Joins given path segments into a string using /
+     *
+     * @param paths
+     * @returns {string}
+     */
     static join (paths) {
         return paths ? this.normalize(paths.filter((path) => path).join('/')) : "";
     }
 
+    /**
+     * Normalizes given path by replacing repeated / with a single one
+     *
+     * @param path
+     * @returns {string}
+     */
     static normalize(path) {
         if (!path) return "";
         return path ? path.replace(/(\/+)/g, '/') : "";
     }
 
+    /**
+     * Returns path that starts with /
+     *
+     * @param path
+     * @returns {*}
+     */
     static makeAbsolute(path) {
         if (!path || (typeof path !== "string")) return "";
         return path.startsWith('/') ? path : "/" + path;
     }
 
+    /**
+     * Returns path without the leading /
+     *
+     * @param path
+     * @returns {*}
+     */
     static makeRelative(path) {
         if (!path || (typeof path !== "string")) return "";
         return path.startsWith('/') ? path.slice(1) : path;
     }
 
+    /**
+     * Returns path to the direct parent
+     *
+     * @param path
+     * @returns {*|boolean|string}
+     */
     static getParentNodePath(path) {
         const splashIndex = path.lastIndexOf('/') + 1;
         return path && typeof path === 'string' && splashIndex > 0 && splashIndex < path.length && path.substring(0, splashIndex - 1);
     }
 
+    /**
+     * Checks if given path is an JCR path
+     *
+     * @param path
+     * @returns {boolean}
+     */
     static isItem(path) {
         return new RegExp(JCR_CONTENT_PATTERN).test(path);
     }
 
+    /**
+     * Returns the name of the last node of the given path
+     * @param path
+     * @returns {*|boolean|string}
+     */
     static getNodeName(path) {
         const splashIndex = path.lastIndexOf('/') + 1;
         return path && typeof path === 'string' && splashIndex < path.length && path.substring(splashIndex, path.length);
     }
 
+    /**
+     * Returns the subpath of the targetPath relative to the rootPath,
+     * or the targetPath if the rootPath is not a root of the targetPath.
+     *
+     * @param targetPath
+     * @param rootPath
+     * @returns {*}
+     */
     static subpath(targetPath, rootPath) {
         if (!targetPath) {
             return "";
@@ -370,6 +419,13 @@ export class PathUtils {
         }
     }
 
+    /**
+     * Returns an array of segments of the path, split by the custom set of delimitators passed as an array.
+     *
+     * @param {string} path
+     * @param {[string]} delimitators
+     * @returns {[*]}
+     */
     static splitByDelimitators(path, delimitators) {
         let paths = [path];
         delimitators.forEach((delimitator) => {
@@ -390,10 +446,24 @@ export class PathUtils {
         return paths;
     }
 
-    static getJCRPath(pagePath, dataPath) {
+    /**
+     * Returns an JCR path based on pagePath and dataPath
+     *
+     * @param pagePath  path to the page
+     * @param dataPath  path to the item on the page
+     * @returns {string}
+     */
+    static _getJCRPath(pagePath, dataPath) {
         return pagePath + '/' + Constants.JCR_CONTENT + '/' + dataPath;
     }
 
+    /**
+     * Returns object containing pagePath (path to a page) and, if exists, itemPath (path to the item on that page)
+     * from the passed path
+     *
+     * @param {string} path
+     * @returns {{pagePath}}
+     */
     static splitPageContentPaths(path) {
         if (!path && typeof path !== 'string') {
             return;
@@ -412,6 +482,13 @@ export class PathUtils {
         return split;
     }
 
+    /**
+     * Returns path that is no longer prefixed nor suffixed by the set of strings passed as an array
+     *
+     * @param path
+     * @param {[string]} strings
+     * @returns {*}
+     */
     static trimStrings(path, strings) {
         strings.forEach((str) => {
             while(path.startsWith(str)) {
@@ -428,7 +505,7 @@ export class PathUtils {
         return path;
     }
 
-    static getStartStrings(path, strings) {
+    static _getStartStrings(path, strings) {
         let returnStr = "";
         strings.forEach((str) => {
             while(path.startsWith(str)) {
