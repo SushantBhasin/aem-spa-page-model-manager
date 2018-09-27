@@ -423,8 +423,8 @@ export class PathUtils {
      * Returns an array of segments of the path, split by the custom set of delimitators passed as an array.
      *
      * @param {string} path
-     * @param {[string]} delimitators
-     * @returns {[*]}
+     * @param {array} delimitators
+     * @returns {*}
      */
     static splitByDelimitators(path, delimitators) {
         let paths = [path];
@@ -486,7 +486,7 @@ export class PathUtils {
      * Returns path that is no longer prefixed nor suffixed by the set of strings passed as an array
      *
      * @param path
-     * @param {[string]} strings
+     * @param {array} strings
      * @returns {*}
      */
     static trimStrings(path, strings) {
