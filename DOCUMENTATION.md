@@ -1,5 +1,5 @@
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.24*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *0.0.25-beta.12*
 
 
 
@@ -133,6 +133,57 @@ Hierarchical type of the item
     
 
 
+### src/EditorClient.js
+
+
+    
+#### triggerPageModelLoaded(model)
+
+Broadcast an event to indicate the page model has been loaded
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| model | `[object Object]`  | - model item to be added to the broadcast payload | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### new EditorClient()
+
+The EditorClient is responsible for the interactions with the Page Editor.
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+
+    
+
+
 ### src/EventType.js
 
 
@@ -249,7 +300,79 @@ Names of the meta properties associated with the PageModelProvider and ModelRout
     
 
 
-### src/PageModelManager.js
+### src/ModelClient.js
+
+
+    
+#### constructor([apiHost])
+
+
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| apiHost | `string`  | - Http host of the API | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### fetch(modelPath)
+
+Fetches a model using the given a resource path
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| modelPath | `string`  | - Absolute path to the model. | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### destroy()
+
+Destroys the internal references to avoid memory leaks
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+
+### src/ModelManager.js
 
 
     
@@ -259,44 +382,9 @@ Names of the meta properties associated with the PageModelProvider and ModelRout
     
 
     
+#### new ModelManager()
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-#### PageModelManager()
-
-<p> The PageModelManager is responsible for centralizing, synchronizing and providing access to the model of the page.</p>
-<p> It can also manage multiple pages; see {@link ModelRouter}.</p>
-
-<h2>Configuration</h2>
-<p>The PageModelManager can be configured using a meta tag in the head section of the document:</p>
-<pre><code>e.g. &lt;meta property="cq:pagemodel_root_url" content="/content/test.model.json"\&gt;</code></pre>
+The ModelManager gathers all the components implicated in managing the model data
 
 
 
@@ -312,10 +400,43 @@ Names of the meta properties associated with the PageModelProvider and ModelRout
     
 
     
-#### init([cfg])
+#### ModelManager.modelClient()
 
-Initializes the page model manager with the model corresponding to the given page path.
-It will fetch the corresponding page model from the server and later use the given page path as the root page path.
+Configuration object for the Initialization function
+
+
+
+
+
+##### Properties
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+
+    
+
+    
+#### ModelManager.initialize([config])
+
+Initializes the ModelManager using the given path to resolve a data model.
+If no path is provided, fallbacks are applied in the following order:
+
+- meta property: cq:pagemodel_root_url
+- current pathname of the browser
+
+Once the initial model is loaded and if the data model doesn't contain the path of the current pathname, the library attempts to fetch a fragment of model.
 
 
 
@@ -324,9 +445,7 @@ It will fetch the corresponding page model from the server and later use the giv
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| cfg | `[object Object]`  | - Configuration object. | *Optional* |
-| cfg.pagePath | `String`  | - Absolute path of the page (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
-| cfg.immutable&#x3D;true | `boolean`  | - Should the returned model be a copy | *Optional* |
+| config | `string` `InitializationConfig`  | - Path to the data model or configuration object | *Optional* |
 
 
 
@@ -334,15 +453,17 @@ It will fetch the corresponding page model from the server and later use the giv
 ##### Returns
 
 
-- `Promise`  Promise resolved with the page model
+- `Promise`  
 
 
     
 
     
-#### getRootModelUrl()
 
-Returns the path to the root model the page model manager has been initialized with
+    
+#### ModelManager.rootPath()
+
+Returns the path of the data model root
 
 
 
@@ -358,10 +479,9 @@ Returns the path to the root model the page model manager has been initialized w
     
 
     
-#### getData([cfg])
+#### ModelManager.getData([config])
 
-Extracts the data stored in the page model at the given path and returns a promise resolved with that data.
-If the requested model isn't stored yet, it will try to load it from the server.
+Returns the model for the given configuration
 
 
 
@@ -370,11 +490,7 @@ If the requested model isn't stored yet, it will try to load it from the server.
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| cfg | `[object Object]`  | Configuration object. | *Optional* |
-| cfg.pagePath | `String`  | Absolute path of the page (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
-| cfg.dataPath | `String`  | Relative path to the data in the page model (e.g., "root/mychild"). If not provided, the entire page model is extracted. | *Optional* |
-| cfg.immutable&#x3D;true | `boolean`  | Should the returned model be a copy | *Optional* |
-| cfg.forceReload&#x3D;false | `boolean`  | Should the page model be reloaded from the server | *Optional* |
+| config | `string` `GetDataConfig`  | - Either the path of the data model or a configuration object. If no parameter is provided the complete model is returned | *Optional* |
 
 
 
@@ -382,13 +498,15 @@ If the requested model isn't stored yet, it will try to load it from the server.
 ##### Returns
 
 
-- `Promise`  Promise resolved with the corresponding model data.
+- `Promise`  
 
 
     
 
     
-#### addListener([cfg])
+
+    
+#### ModelManager.addListener([path, callback])
 
 Add the given callback as a listener for changes at the given path.
 
@@ -399,10 +517,8 @@ Add the given callback as a listener for changes at the given path.
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| cfg | `[object Object]`  | Configuration object. | *Optional* |
-| cfg.pagePath | `String`  | Absolute path of the page (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
-| cfg.dataPath | `String`  | Relative path to the data in the page model (e.g., "root/mychild"). An empty string correspond to the model of the current path | *Optional* |
-| cfg.callback | `String`  | Function to be executed listening to changes at given path | *Optional* |
+| path | `String`  | Absolute path of the resource (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
+| callback | `String`  | Function to be executed listening to changes at given path | *Optional* |
 
 
 
@@ -416,7 +532,7 @@ Add the given callback as a listener for changes at the given path.
     
 
     
-#### removeListener([cfg])
+#### ModelManager.removeListener([path, callback])
 
 Remove the callback listener from the given path path.
 
@@ -427,10 +543,8 @@ Remove the callback listener from the given path path.
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| cfg | `[object Object]`  | Configuration object. | *Optional* |
-| cfg.pagePath | `String`  | Absolute path of the page (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
-| cfg.dataPath | `String`  | Relative path to the data in the page model (e.g., "root/mychild"). | *Optional* |
-| cfg.callback | `String`  | Listener function to be removed. | *Optional* |
+| path | `String`  | Absolute path of the resource (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
+| callback | `String`  | Listener function to be removed. | *Optional* |
 
 
 
@@ -439,6 +553,874 @@ Remove the callback listener from the given path path.
 
 
 - `Void`
+
+
+    
+
+    
+
+
+### src/ModelStore.js
+
+
+    
+#### new ModelStore()
+
+The ModelStore is in charge of providing access to the data model. It provides the CRUD operations over the model.
+To protect the integrity of the data it initially returns immutable data. If needed, you can request a mutable object.
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### ModelStore.constructor([rootPath, data])
+
+
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| rootPath | `string`  | - Root path of the model | *Optional* |
+| data | `[object Object]`  | - Initial model | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### ModelStore.initialize(rootPath, data)
+
+Initializes the the ModelManager
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| rootPath | `string`  | - Root path of the model | &nbsp; |
+| data | `[object Object]`  | - Initial model | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### ModelStore.rootPath()
+
+Returns the current root path
+
+
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+
+    
+
+    
+#### ModelStore.setData(path, newData)
+
+Replaces the data in the given location
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `string`  | - Path of the data | &nbsp; |
+| newData | `[object Object]`  | - New data to be set | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### ModelStore.getData([path, immutable&#x3D;true])
+
+Returns the data for the given path. If no path is provided, it returns the whole data
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `string`  | - Path to the data | *Optional* |
+| immutable&#x3D;true | `boolean`  | - Should the returned data be a clone | *Optional* |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### ModelStore.insertData(path, data[, siblingName, insertBefore&#x3D;false])
+
+Insert the provided data at the location of the given path. If no sibling name is provided the data is added at the end of the list
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `string`  | - Path to the data | &nbsp; |
+| data | `[object Object]`  | - Data to be inserted | &nbsp; |
+| siblingName | `string`  | - Name of the item before or after which to add the data | *Optional* |
+| insertBefore&#x3D;false | `boolean`  | - Should the data be inserted before the sibling | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### ModelStore.removeData(path)
+
+Removes the data located at the provided location
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `string`  | - Path of the data | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  - Path to the parent item initially containing the removed data
+
+
+    
+
+    
+
+
+### src/PathUtils.js
+
+
+    
+#### CONTEXT_PATH_REGEXP()
+
+Regexp used to extract the context path of a location.
+The context path is extracted by assuming that the location starts with the context path followed by one of the following node names
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### new PathUtils()
+
+Helper functions related to path manipulation.
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### PathUtils.isBrowser()
+
+Returns if the code executes in the browser context or not by checking for the
+existance of the window object
+
+
+
+
+
+
+##### Returns
+
+
+- `Boolean`  the result of the check of the existance of the window object
+
+
+    
+
+    
+#### PathUtils.getContextPath([location])
+
+Returns the context path of the given location.
+If no location is provided, it fallbacks to the current location.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| location | `String`  | - Location to be used to detect the context path from. | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `String`  
+
+
+    
+
+    
+
+    
+#### PathUtils.externalize(url)
+
+Returns the given URL externalized by adding the optional context path
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| url | `string`  | - URL to externalize | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.internalize(url)
+
+Returns the given URL internalized by removing the optional context path
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| url | `string`  | - URL to internalize | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.getMetaPropertyValue(propertyName)
+
+Returns the value of the meta property with the given key
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| propertyName | `string`  | - name of the meta property | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.convertToModelUrl(url)
+
+Returns a model path for the given URL
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| url | `string`  | - Raw URL for which to get a model URL | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.getCurrentPageModelUrl()
+
+Returns the model URL as contained in the current page URL
+
+
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.getModelUrl([url])
+
+Returns the URL of the page model to initialize the page model manager with.
+It is either derived from a meta tag property called 'cq:pagemodel_root_url' or from the given location.
+If no location is provided, it derives it from the current location.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| url | `String`  | - path or URL to be used to derive the page model URL from | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `String`  
+
+
+    
+
+    
+#### PathUtils.sanitize(path)
+
+Returns the given path after sanitizing it.
+This function should be called on page paths before storing them in the page model,
+to make sure only properly formatted paths (e.g., "/content/mypage") are stored.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `string`  | - Path of the page to be sanitized. | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.addExtension(path, extension)
+
+Returns the given path extended with the given extension.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `String`  | - Path to be extended. | &nbsp; |
+| extension | `String`  | - Extension to be added. | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `String`  
+
+
+    
+
+    
+#### PathUtils.addSelector(path, selector)
+
+Returns the given path extended with the given selector.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `String`  | - Path to be extended. | &nbsp; |
+| selector | `String`  | - Selector to be added. | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `String`  
+
+
+    
+
+    
+#### PathUtils.getCurrentPathname()
+
+Returns the current location as a string.
+
+
+
+
+
+
+##### Returns
+
+
+- `String`  
+
+
+    
+
+    
+#### PathUtils.dispatchGlobalCustomEvent(eventName, options)
+
+Dispatches a custom event on the window object, when in the browser context
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| eventName | `String`  | - the name of the custom event | &nbsp; |
+| options | `Object`  | - the custom event options | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### PathUtils.join(paths)
+
+Joins given path segments into a string using /
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| paths |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.normalize(path)
+
+Normalizes given path by replacing repeated / with a single one
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.makeAbsolute(path)
+
+Returns path that starts with /
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### PathUtils.makeRelative(path)
+
+Returns path without the leading /
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### PathUtils.getParentNodePath(path)
+
+Returns path to the direct parent
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `boolean` `string`  
+
+
+    
+
+    
+#### PathUtils.isItem(path)
+
+Checks if given path is an JCR path
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `boolean`  
+
+
+    
+
+    
+#### PathUtils.getNodeName(path)
+
+Returns the name of the last node of the given path
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `boolean` `string`  
+
+
+    
+
+    
+#### PathUtils.subpath(targetPath, rootPath)
+
+Returns the subpath of the targetPath relative to the rootPath,
+or the targetPath if the rootPath is not a root of the targetPath.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| targetPath |  |  | &nbsp; |
+| rootPath |  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### PathUtils.splitByDelimitators(path, delimitators)
+
+Returns an array of segments of the path, split by the custom set of delimitators passed as an array.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `string`  |  | &nbsp; |
+| delimitators | `array`  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
+
+
+    
+
+    
+#### PathUtils._getJCRPath(pagePath, dataPath)
+
+Returns an JCR path based on pagePath and dataPath
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| pagePath |  | path to the page | &nbsp; |
+| dataPath |  | path to the item on the page | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### PathUtils.splitPageContentPaths(path)
+
+Returns object containing pagePath (path to a page) and, if exists, itemPath (path to the item on that page)
+from the passed path
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `string`  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `[object Object]`  
+
+
+    
+
+    
+#### PathUtils.trimStrings(path, strings)
+
+Returns path that is no longer prefixed nor suffixed by the set of strings passed as an array
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path |  |  | &nbsp; |
+| strings | `array`  |  | &nbsp; |
+
+
+
+
+##### Returns
+
+
+-  
 
 
     

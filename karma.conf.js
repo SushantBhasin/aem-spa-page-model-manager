@@ -1,4 +1,5 @@
 const path = require('path');
+var webpackConfig = require('./webpack.config.js');
 
 module.exports = function(config) {
     config.set({
@@ -22,36 +23,19 @@ module.exports = function(config) {
         // process es6 files
         preprocessors: {
             'tests/test-context.js': [ 'webpack', 'sourcemap' ]
-
         },
 
         coverageReporter: {
             dir: 'coverage',
+            includeAllSources: true,
             reporters: [
-                {type:'text-summary'},
+                {type:'text'},
                 {type: 'html'}
             ]
         },
 
         // webpack
-        webpack: {
-            devtool: 'inline-source-map',
-            module: {
-                loaders: [
-                    {
-                        test: /\.(js|jsx)?$/,
-                        exclude: /node_modules/,
-                        loader: 'babel'
-                    }
-                ]
-            },
-
-            watch: true
-        },
-
-        webpackServer: {
-            noInfo: true
-        },
+        webpack: webpackConfig,
 
         // chai config
         client: {

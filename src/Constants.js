@@ -60,7 +60,12 @@ const Constants = {
     /**
      * Hierarchical type of the item
      */
-    HIERARCHY_TYPE_PROP: ':hierarchyType'
+    HIERARCHY_TYPE_PROP: ':hierarchyType',
+
+    /**
+     * JCR CONTENT Node
+     */
+    "JCR_CONTENT": "jcr:content"
 };
 
 export default Constants;

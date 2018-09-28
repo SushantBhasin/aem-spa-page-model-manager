@@ -14,10 +14,10 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe Systems Incorporated.
  */
-import PageModelManager from './PageModelManager';
 import EventType from './EventType';
-import Helpers from "./Helpers";
+import { PathUtils } from "./PathUtils";
 import MetaProperty from "./MetaProperty";
+import ModelManagerSerice from "./ModelManager";
 
 /**
  * Triggered by the ModelRouter when the route has changed.
@@ -66,7 +66,7 @@ import MetaProperty from "./MetaProperty";
  *
  * @type {{DISABLED: string, CONTENT_PATH: string}}
  */
-const ROUTER_MODES = {
+export const ROUTER_MODES = {
 
     /**
      * Flag that indicates that the model router should be disabled
@@ -90,7 +90,7 @@ const ROUTER_MODES = {
  *
  * @return {string}
  */
-function getModelPath(url) {
+export function getModelPath(url) {
     let localUrl;
 
     localUrl = url || window.location.pathname;
@@ -112,8 +112,8 @@ function getModelPath(url) {
  *
  * @private
  */
-function getRouteFilters() {
-    let routeFilters = Helpers.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROUTE_FILTERS);
+export function getRouteFilters() {
+    let routeFilters = PathUtils.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROUTE_FILTERS);
     return routeFilters ? routeFilters.split(',') : [];
 }
 
@@ -125,7 +125,7 @@ function getRouteFilters() {
  *
  * @private
  */
-function isRouteExcluded(route) {
+export function isRouteExcluded(route) {
     const routeFilters = getRouteFilters();
 
     for (let i = 0, length = routeFilters.length; i < length; i++) {
@@ -143,8 +143,11 @@ function isRouteExcluded(route) {
  *
  * @private
  */
-function isModelRouterEnabled() {
-    const modelRouterMetaType = Helpers.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROUTER);
+export function isModelRouterEnabled() {
+    if (!PathUtils.isBrowser()) {
+        return false;
+    }
+    const modelRouterMetaType = PathUtils.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROUTER);
     // Enable the the page model routing by default
     return !modelRouterMetaType || ROUTER_MODES.DISABLED !== modelRouterMetaType;
 }
@@ -158,15 +161,15 @@ function isModelRouterEnabled() {
  *
  * @private
  */
-function dispatchRouteChanged(path) {
+export function dispatchRouteChanged(path) {
     // Triggering the page model manager to load a new child page model
     // No need to use a cache as the PageModelManager already does it
-    PageModelManager.getData({pagePath: path}).then(function (model) {
-        window.dispatchEvent(new CustomEvent(EventType.PAGE_MODEL_ROUTE_CHANGED, {
+    ModelManagerSerice.getData({path: path}).then(function (model) {
+        PathUtils.dispatchGlobalCustomEvent(EventType.PAGE_MODEL_ROUTE_CHANGED, {
             detail: {
                 model: model
             }
-        }));
+        });
     });
 }
 
@@ -179,7 +182,7 @@ function dispatchRouteChanged(path) {
  *
  * @private
  */
-function routeModel(url) {
+export function routeModel(url) {
     if (!isModelRouterEnabled()) {
         return;
     }
@@ -197,23 +200,8 @@ function routeModel(url) {
     dispatchRouteChanged(path);
 }
 
-/**
- * When the PageModelManager is initialized, fetch and dispatch the complete model object
- *
- * @private
- */
-function onPageInit() {
-    if (!isModelRouterEnabled()) {
-        return;
-    }
-
-    dispatchRouteChanged();
-}
-
 // Activate the model router
 if (isModelRouterEnabled()) {
-    window.addEventListener(EventType.PAGE_MODEL_INIT, onPageInit, false);
-
     // Encapsulate the history.pushState and history.replaceState functions to prefetch the page model for the current route
     const pushState = window.history.pushState;
     const replaceState = window.history.replaceState;
@@ -230,4 +218,3 @@ if (isModelRouterEnabled()) {
         return replaceState.apply(history, arguments);
     };
 }
-

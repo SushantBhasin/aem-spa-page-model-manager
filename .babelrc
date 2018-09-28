@@ -1,18 +1,19 @@
 {
   "presets": ["env"],
-  "plugins": [
-    [
-      "istanbul",
-      {
-        "include": [
-          "dist/**.*"
-        ],
-        "exclude": [
-          "src/**.*",
-          "node_modules/**.*",
-          "tests/**.*"
-        ]
-      }
-    ]
-  ]
+  "env": {
+    "test": {
+      "plugins": [[
+        "istanbul",
+        {
+          "include": [
+            "src"
+          ],
+          "exclude": [
+            "dist",
+            "tests"
+          ]
+        }
+      ]]
+    }
+  }
 }

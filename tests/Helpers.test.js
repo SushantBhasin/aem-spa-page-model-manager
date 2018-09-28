@@ -1,6 +1,6 @@
-import Helpers from '../src/Helpers';
+import { PathUtils } from '../src/PathUtils';
 
-describe('Helpers ->', () => {
+describe('PathUtils ->', () => {
 
     describe('getContextPath ->', () => {
 
@@ -19,13 +19,13 @@ describe('Helpers ->', () => {
 
         it('should detect the context path from the given location', () => {
             for (let keyPath in EXPECTED_CONTEXT_PATH) {
-                const contextPath = Helpers.getContextPath(keyPath);
+                const contextPath = PathUtils.getContextPath(keyPath);
                 assert.equal(contextPath, EXPECTED_CONTEXT_PATH[keyPath], "Incorrect context path detected for " + keyPath);
             }
         });
 
         it('should detect the context path from the current location', () => {
-            const contextPath = Helpers.getContextPath();
+            const contextPath = PathUtils.getContextPath();
             assert.equal(contextPath, "", "Incorrect context path detected");
         });
     });
@@ -49,7 +49,7 @@ describe('Helpers ->', () => {
         };
 
         before(() => {
-            stub = sinon.stub(Helpers, "getContextPath").callsFake(() => {
+            stub = sinon.stub(PathUtils, "getContextPath").callsFake(() => {
                 return CONTEXT_PATH;
             });
         });
@@ -64,7 +64,7 @@ describe('Helpers ->', () => {
                     continue;
                 }
 
-                const externalizedPath = Helpers.externalize(keyPath);
+                const externalizedPath = PathUtils.externalize(keyPath);
                 assert.equal(externalizedPath, EXPECTED_EXTERNALIZED_PATHS[keyPath]);
             }
         });
@@ -91,7 +91,7 @@ describe('Helpers ->', () => {
         };
 
         before(() => {
-            stub = sinon.stub(Helpers, "getContextPath").callsFake(() => {
+            stub = sinon.stub(PathUtils, "getContextPath").callsFake(() => {
                 return CONTEXT_PATH;
             });
         });
@@ -106,7 +106,7 @@ describe('Helpers ->', () => {
                     continue;
                 }
 
-                const internalizedPath = Helpers.internalize(path);
+                const internalizedPath = PathUtils.internalize(path);
                 assert.equal(internalizedPath, EXPECTED_INTERNALIZED_PATHS[path]);
             }
         });
@@ -118,7 +118,7 @@ describe('Helpers ->', () => {
         let stub;
 
         before(() => {
-            stub = sinon.stub(Helpers, "getContextPath").callsFake(() => {
+            stub = sinon.stub(PathUtils, "getContextPath").callsFake(() => {
                 return CONTEXT_PATH;
             });
         });
@@ -137,9 +137,40 @@ describe('Helpers ->', () => {
 
         it('should return paths that are ready to be stored', () => {
             for (var path in EXPECTED_PATH) {
-                const sanitizedPath = Helpers.sanitize(path);
+                const sanitizedPath = PathUtils.sanitize(path);
                 assert.equal(sanitizedPath, EXPECTED_PATH[path], "Incorrect sanitized path for " + path);
             }
         });
     });
+
+    describe("dispatchGlobalCustomEvent", () => {
+        it("should dispatch an event", (done) => {
+            let detail = {
+                a: 1,
+                b: { c: 3}
+            };
+            let eventName = "customEvt";
+            window.addEventListener(eventName, (event) => {
+                assert.equal(event.type, eventName);
+                assert.deepEqual(event.detail, detail, 'Returns the page model object');
+                done();
+            });
+
+            PathUtils.dispatchGlobalCustomEvent(eventName, { detail });
+        });
+
+        it("should not dispatch any event", () => {
+            let stub = sinon.stub(PathUtils, "isBrowser").callsFake(() => {
+                return false;
+            });
+            let callback = sinon.spy();
+            let eventName = "customEvt";
+            window.addEventListener(eventName, callback);
+
+            PathUtils.dispatchGlobalCustomEvent(eventName, {});
+            // Dispatching the event will call the listeners syncronously.
+            assert.equal(callback.notCalled, true, "The call should not be called");
+            stub.restore();
+        })
+    })
 });
