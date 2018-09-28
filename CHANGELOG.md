@@ -1,4 +1,4 @@
-## LATEST
+### *1.0.0* - 28 September 2018
 
  * **BREAKING CHANGE** API refactoring for a better modularization
  * **BREAKING CHANGE** SSR refactoring
