@@ -19,6 +19,5 @@ require('./src/ModelRouter');
 
 export { default as ModelManager } from "./src/ModelManager";
 export * from "./src/ModelClient";
-export * from "./src/ModelStore";
 export * from "./src/PathUtils";
 export { default as Constants } from "./src/Constants";

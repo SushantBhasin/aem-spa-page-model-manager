@@ -126,8 +126,7 @@ describe("EditorClient ->", () => {
         let consoleErrorSpy;
 
         beforeEach(() => {
-            let modelStore = new ModelStore(DEFAULT_PAGE_MODEL_URL, clone(PAGE_MODEL_JSON));
-            ModelManager.initialize({modelStore: modelStore});
+            ModelManager.initialize({path: DEFAULT_PAGE_MODEL_URL, model: clone(PAGE_MODEL_JSON)});
             consoleErrorSpy = sinon.spy(console, 'error');
         });
 
@@ -248,9 +247,7 @@ describe("EditorClient ->", () => {
     describe('listeners ->', () => {
 
         beforeEach(() => {
-            let modelStore = new ModelStore(DEFAULT_PAGE_MODEL_URL, clone(PAGE_MODEL_JSON));
-
-            ModelManager.initialize({modelStore: modelStore});
+            ModelManager.initialize({path: DEFAULT_PAGE_MODEL_URL, model: clone(PAGE_MODEL_JSON)});
 
             fetchMock.mock('end:' + CHILD0000_PATH + '.model.json', getJSONResponse(CHILD0000_MODEL_JSON));
         });
@@ -277,6 +274,22 @@ describe("EditorClient ->", () => {
                 path: CHILD0000_PATH,
                 forceReload: true
             });
+        });
+
+        it('should remove a listener', () => {
+            let spy = sinon.spy();
+
+            ModelManager.addListener(CHILD0000_PATH, spy);
+            ModelManager.removeListener(CHILD0000_PATH, spy);
+
+            dispatchEvent_PageModelUpdate('insertAfter', CHILD0010_PATH, {
+                key: CHILDXXXX_KEY,
+                value: {
+                    ':type': CHILDXXXX_TYPE
+                }
+            });
+
+            expect(spy).not.to.be.called;
         });
     });
 

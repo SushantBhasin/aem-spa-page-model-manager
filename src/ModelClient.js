@@ -33,7 +33,6 @@ export class ModelClient {
      * @return {*}
      */
     fetch(modelPath) {
-
         if (!modelPath) {
             let err = 'Fetching model rejected for path: ' + modelPath;
             return Promise.reject(new Error(err));
@@ -51,6 +50,8 @@ export class ModelClient {
 
                 return Promise.reject(error);
             }
+        }).catch((error) => {
+            return Promise.reject(error);
         });
     }
 
