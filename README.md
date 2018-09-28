@@ -34,7 +34,7 @@ ModelManager.getData("/content/mysite/myhiddenpage/jcr:content/root/my/component
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.0*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.1*
 
 
 
@@ -1468,7 +1468,7 @@ The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is al
 
 ## Changelog 
 
-### *1.0.0* - 28 September 2018
+### *1.0.1* - 28 September 2018
 
  * **BREAKING CHANGE** API refactoring for a better modularization
  * **BREAKING CHANGE** SSR refactoring
