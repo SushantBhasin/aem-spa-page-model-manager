@@ -8,18 +8,25 @@ npm install @adobe/cq-spa-page-model-manager
 This module provides the API to manage the model representation of the pages that are composing a SPA.
 
 ```
-import {PageModelManager} from '@adobe/cq-spa-page-model-manager';
+// index.html
 
-// Initialization
-let modelStore = new ModelStore();
-let modelClient = new ModelClient(apiHost);
+<head>
+...
+    <meta property="cq:pagemodel_root_url" content="... .model.json"/>
+...
+</head>
+...
 
-ModelManager.initialize(modelStore, modelClient, "/content/mysite").then((model) => {
+// Bootstrap: index.js
+import { ModelManager } from '@adobe/cq-spa-page-model-manager';
+
+ModelManager.initialize().then((model) => {
+    // Render the App content using the provided model
     render(model);
 });
 
-// Loading of additional content
-ModelManager.getData("/content/mysite/myhiddenpage/jcr:content/root/my/component").then(...); 
+// Loading a specific portion of model
+ModelManager.getData("/content/site/page/jcr:content/path/to/component").then(...); 
 ```
 
 ## API !heading

@@ -17,24 +17,31 @@ npm install @adobe/cq-spa-page-model-manager
 This module provides the API to manage the model representation of the pages that are composing a SPA.
 
 ```
-import {PageModelManager} from '@adobe/cq-spa-page-model-manager';
+// index.html
 
-// Initialization
-let modelStore = new ModelStore();
-let modelClient = new ModelClient(apiHost);
+<head>
+...
+    <meta property="cq:pagemodel_root_url" content="... .model.json"/>
+...
+</head>
+...
 
-ModelManager.initialize(modelStore, modelClient, "/content/mysite").then((model) => {
+// Bootstrap: index.js
+import { ModelManager } from '@adobe/cq-spa-page-model-manager';
+
+ModelManager.initialize().then((model) => {
+    // Render the App content using the provided model
     render(model);
 });
 
-// Loading of additional content
-ModelManager.getData("/content/mysite/myhiddenpage/jcr:content/root/my/component").then(...); 
+// Loading a specific portion of model
+ModelManager.getData("/content/site/page/jcr:content/path/to/component").then(...); 
 ```
 
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.2*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.3*
 
 
 
@@ -1468,9 +1475,10 @@ The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is al
 
 ## Changelog 
 
-### *1.0.2* - 11 October 2018
+### *1.0.3* - 11 October 2018
 
 * Un-found remote model entry point rejection handling
+* README update
 
 ### *1.0.1* - 28 September 2018
 

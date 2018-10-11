@@ -1,6 +1,7 @@
-### *1.0.2* - 11 October 2018
+### *1.0.3* - 11 October 2018
 
 * Un-found remote model entry point rejection handling
+* README update
 
 ### *1.0.1* - 28 September 2018
 
