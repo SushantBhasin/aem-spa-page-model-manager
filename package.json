@@ -1,6 +1,6 @@
 {
   "name": "@adobe/cq-spa-page-model-manager",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "auto-changelog": {
     "template": "templates/CHANGELOG.hbs"
   },
@@ -10,6 +10,9 @@
   "engines": {
     "npm": ">=5.5.1 <6.0.0"
   },
+  "files": [
+    "dist/"
+  ],
   "homepage": "https://www.adobe.com/go/aem6_4_docs_spa_en",
   "keywords": [
     "the official",

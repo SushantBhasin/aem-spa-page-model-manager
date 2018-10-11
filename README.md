@@ -34,7 +34,7 @@ ModelManager.getData("/content/mysite/myhiddenpage/jcr:content/root/my/component
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.1*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.2*
 
 
 
@@ -1467,6 +1467,10 @@ Returns path that is no longer prefixed nor suffixed by the set of strings passe
 The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is already available, but if you are unable to solve your problem or you found a bug you can always [contact us](https://www.adobe.com/go/aem6_4_support_en) and ask for help!
 
 ## Changelog 
+
+### *1.0.2* - 11 October 2018
+
+* Un-found remote model entry point rejection handling
 
 ### *1.0.1* - 28 September 2018
 

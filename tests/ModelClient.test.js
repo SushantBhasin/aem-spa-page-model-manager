@@ -29,6 +29,19 @@ describe("ModelClient ->", () => {
 
     describe("fetch ->", () => {
 
+        it("should reject when the remote model endpoint is not found", () => {
+            let pageModelUrl = mockTheFetch('/content/test/undefined', 404);
+
+            let modelClient = new ModelClient(myEndPoint);
+
+            return modelClient.fetch(pageModelUrl).then((data) => {
+                assert.fail(data, undefined);
+            }).catch((error) => {
+                assert.isDefined(error.response);
+                assert.equal(error.response.status, 404);
+            });
+        });
+
         it("should return the expected data", () => {
             let pageModelUrl = mockTheFetch('/content/test/page', getJSONResponse(PAGE_MODEL));
             let childPage1ModelUrl = mockTheFetch('/content/test/child_page_1', getJSONResponse(content_test_child_page_1));

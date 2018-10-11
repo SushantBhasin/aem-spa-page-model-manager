@@ -1,3 +1,7 @@
+### *1.0.2* - 11 October 2018
+
+* Un-found remote model entry point rejection handling
+
 ### *1.0.1* - 28 September 2018
 
  * **BREAKING CHANGE** API refactoring for a better modularization

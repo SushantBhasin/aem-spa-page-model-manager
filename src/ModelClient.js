@@ -44,12 +44,9 @@ export class ModelClient {
         return fetch(url).then(function(response) {
             if (response.status >= 200 && response.status < 300) {
                 return response.json();
-            } else {
-                let error = new Error('while fetching the model for url: ' + url, response.statusText || response.status);
-                error.response = response;
-
-                return Promise.reject(error);
             }
+
+            throw { response: response };
         }).catch((error) => {
             return Promise.reject(error);
         });

@@ -290,12 +290,11 @@ class ModelManager {
                     if (item) {
                         return Promise.resolve(item);
                     }
-                    // We are not having any items
-                    return this._fetchData(path).then((data) => this._storeData(path, data));
-                } else {
-                    // We want to reload the item
-                    return this._fetchData(path).then((data) => this._storeData(path, data));
                 }
+
+                // We are not having any items
+                // We want to reload the item
+                return this._fetchData(path).then((data) => this._storeData(path, data));
             });
     }
 
