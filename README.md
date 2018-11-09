@@ -41,7 +41,7 @@ ModelManager.getData("/content/site/page/jcr:content/path/to/component").then(..
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.3*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.4*
 
 
 
@@ -160,6 +160,24 @@ Children of a hierarchical item
 #### HIERARCHY_TYPE_PROP()
 
 Hierarchical type of the item
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### JCR_CONTENT()
+
+JCR CONTENT Node
 
 
 
@@ -487,7 +505,7 @@ Once the initial model is loaded and if the data model doesn't contain the path 
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| config | `string` `InitializationConfig`  | - Path to the data model or configuration object | *Optional* |
+| config | `string` `InitializationConfig`  | - URL to the data model or configuration object | *Optional* |
 
 
 
@@ -1198,7 +1216,7 @@ Normalizes given path by replacing repeated / with a single one
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| path |  |  | &nbsp; |
+| path | `string`  |  | &nbsp; |
 
 
 
@@ -1223,7 +1241,7 @@ Returns path that starts with /
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| path |  |  | &nbsp; |
+| path | `string`  |  | &nbsp; |
 
 
 
@@ -1474,6 +1492,10 @@ Returns path that is no longer prefixed nor suffixed by the set of strings passe
 The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is already available, but if you are unable to solve your problem or you found a bug you can always [contact us](https://www.adobe.com/go/aem6_4_support_en) and ask for help!
 
 ## Changelog 
+
+### *1.0.4* - 9 November 2018
+
+* support path ending the jcr:content when getting the data from the ModelStore
 
 ### *1.0.3* - 11 October 2018
 

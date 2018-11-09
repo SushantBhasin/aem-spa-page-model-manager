@@ -1,5 +1,5 @@
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.3*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.4*
 
 
 
@@ -118,6 +118,24 @@ Children of a hierarchical item
 #### HIERARCHY_TYPE_PROP()
 
 Hierarchical type of the item
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### JCR_CONTENT()
+
+JCR CONTENT Node
 
 
 
@@ -445,7 +463,7 @@ Once the initial model is loaded and if the data model doesn't contain the path 
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| config | `string` `InitializationConfig`  | - Path to the data model or configuration object | *Optional* |
+| config | `string` `InitializationConfig`  | - URL to the data model or configuration object | *Optional* |
 
 
 
@@ -1156,7 +1174,7 @@ Normalizes given path by replacing repeated / with a single one
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| path |  |  | &nbsp; |
+| path | `string`  |  | &nbsp; |
 
 
 
@@ -1181,7 +1199,7 @@ Returns path that starts with /
 
 | Name | Type | Description |  |
 | ---- | ---- | ----------- | -------- |
-| path |  |  | &nbsp; |
+| path | `string`  |  | &nbsp; |
 
 
 
