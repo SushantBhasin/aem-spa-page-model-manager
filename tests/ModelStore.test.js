@@ -10,11 +10,8 @@ import {
     content_test_page_root_child0001,
     content_test_page_root_child0000,
     content_test_page_root_child0000_child0010,
-    content_test_page_root_child0000_child0011,
-    content_test_subpage2_rootPage,
     content_test_subpage2_root,
-    content_test_subpage2_root_child2001,
-    content_test_subpage2
+    content_test_subpage2_root_child2001
 } from "./data/MainPageData";
 
 import { PAGE1, content_test_page1_stem_child0000 } from "./data/Page1Data";
@@ -56,6 +53,11 @@ describe("ModelStore ->", () => {
 
         it("should return the full model", () => {
             let item = modelStore.getData(PAGE_MODEL[Constants.PATH_PROP]);
+            assert.deepEqual(item, PAGE_MODEL);
+        });
+
+        it("should return the full model with a path ending with the jcr:content node", () => {
+            let item = modelStore.getData(PAGE_MODEL[Constants.PATH_PROP] + '/' + Constants.JCR_CONTENT);
             assert.deepEqual(item, PAGE_MODEL);
         });
 

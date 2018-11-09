@@ -65,7 +65,7 @@ const Constants = {
     /**
      * JCR CONTENT Node
      */
-    "JCR_CONTENT": "jcr:content"
+    JCR_CONTENT: "jcr:content"
 };
 
 export default Constants;

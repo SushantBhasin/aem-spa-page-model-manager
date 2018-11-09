@@ -95,7 +95,7 @@ export class ModelStore {
      * @return {ItemWrapper}
      * @private
      */
-    _findItemData(path, data = this._data, parent, parentPath = '') {
+    _findItemData(path, data = this._data, parent = undefined, parentPath = '') {
         let answer = {
             parent: parent,
             parentPath: parentPath
@@ -169,7 +169,7 @@ export class ModelStore {
 
         // Request for the root path
         // Returns the full data
-        if (path === this._rootPath) {
+        if (path === this._rootPath || path === this._rootPath + '/' + Constants.JCR_CONTENT) {
             return immutable? clone(this._data) : this._data;
         }
 

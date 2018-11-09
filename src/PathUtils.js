@@ -324,7 +324,7 @@ export class PathUtils {
     /**
      * Normalizes given path by replacing repeated / with a single one
      *
-     * @param path
+     * @param {string} path
      * @returns {string}
      */
     static normalize(path) {
@@ -335,7 +335,7 @@ export class PathUtils {
     /**
      * Returns path that starts with /
      *
-     * @param path
+     * @param {string} path
      * @returns {*}
      */
     static makeAbsolute(path) {
