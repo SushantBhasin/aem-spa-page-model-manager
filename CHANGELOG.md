@@ -1,3 +1,7 @@
+### *1.0.4* - 9 November 2018
+
+* support path ending the jcr:content when getting the data from the ModelStore
+
 ### *1.0.3* - 11 October 2018
 
 * Un-found remote model entry point rejection handling
