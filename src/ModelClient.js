@@ -40,8 +40,10 @@ export class ModelClient {
 
         // Either the API host has been provided or we make an absolute request relative to the current host
         let url = `${this._apiHost}${modelPath}`;
-
-        return fetch(url).then(function(response) {
+        
+        // Assure that the default credentials value ('same-origin') is set for browsers which do not set it
+        // or which are setting the old default value ('omit')
+        return fetch(url, {credentials: 'same-origin'}).then(function(response) {
             if (response.status >= 200 && response.status < 300) {
                 return response.json();
             }
