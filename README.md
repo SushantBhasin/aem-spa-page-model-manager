@@ -41,7 +41,7 @@ ModelManager.getData("/content/site/page/jcr:content/path/to/component").then(..
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.4*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.0.5*
 
 
 
@@ -1492,6 +1492,10 @@ Returns path that is no longer prefixed nor suffixed by the set of strings passe
 The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is already available, but if you are unable to solve your problem or you found a bug you can always [contact us](https://www.adobe.com/go/aem6_4_support_en) and ask for help!
 
 ## Changelog 
+
+### *1.0.5* - 12 December 2018
+
+* ModelClient fetch: added default credentials for the request
 
 ### *1.0.4* - 9 November 2018
 

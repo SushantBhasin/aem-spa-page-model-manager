@@ -1,3 +1,7 @@
+### *1.0.5* - 12 December 2018
+
+* ModelClient fetch: added default credentials for the request
+
 ### *1.0.4* - 9 November 2018
 
 * support path ending the jcr:content when getting the data from the ModelStore
