@@ -17,7 +17,7 @@
 import { PathUtils } from "./PathUtils";
 import Constants from "./Constants";
 import MetaProperty from "./MetaProperty";
-import { EditorClient } from "./EditorClient";
+import {EditorClient, triggerPageModelLoaded} from "./EditorClient";
 import { ModelClient } from "./ModelClient";
 import { ModelStore } from "./ModelStore";
 
@@ -137,6 +137,17 @@ class ModelManager {
     }
 
     /**
+     * Returns the latest data from the model store.
+     * @fires cq-pagemodel-loaded
+     * @private
+     */
+    _returnInitialData() {
+        let data = this.modelStore.getData();
+        triggerPageModelLoaded(data);
+        return data;
+    }
+
+    /**
      * Initializes the ModelManager using the given path to resolve a data model.
      * If no path is provided, fallbacks are applied in the following order:
      *
@@ -189,6 +200,7 @@ class ModelManager {
             let data = this.modelStore.getData(rootModelPath);
 
             if (data) {
+                triggerPageModelLoaded(data);
                 return Promise.resolve(data);
             } else {
                 return this._fetchData(rootModelURL).then((rootModel) => {
@@ -198,11 +210,10 @@ class ModelManager {
                     if (!isPageURLRoot(currentPathname, metaPropertyModelUrl) && !hasChildOfPath(rootModel, currentPathname)) {
                         return this._fetchData(currentPathname).then((model) => {
                             this.modelStore.insertData(PathUtils.sanitize(currentPathname), model);
-
-                            return this.modelStore.getData();
+                            return this._returnInitialData();
                         });
                     } else {
-                        return this.modelStore.getData();
+                        return this._returnInitialData();
                     }
                 });
             }

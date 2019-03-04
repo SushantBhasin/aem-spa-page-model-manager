@@ -24,7 +24,7 @@ import EventType from "./EventType";
  * @param {{}} model - model item to be added to the broadcast payload
  * @fires cq-pagemodel-loaded
  */
-function triggerPageModelLoaded(model) {
+export function triggerPageModelLoaded(model) {
     // Deep copy to protect the internal state of the page mode
     PathUtils.dispatchGlobalCustomEvent(EventType.PAGE_MODEL_LOADED, {
         detail: {
