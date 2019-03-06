@@ -146,6 +146,7 @@ class ModelManager {
      * Once the initial model is loaded and if the data model doesn't contain the path of the current pathname, the library attempts to fetch a fragment of model.
      *
      * @param {string|InitializationConfig} [config]                - URL to the data model or configuration object
+     * @fires cq-pagemodel-loaded
      * @return {Promise}
      */
     initialize(config) {
