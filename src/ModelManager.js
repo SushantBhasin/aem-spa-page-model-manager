@@ -137,17 +137,6 @@ class ModelManager {
     }
 
     /**
-     * Returns the latest data from the model store.
-     * @fires cq-pagemodel-loaded
-     * @private
-     */
-    _returnInitialData() {
-        let data = this.modelStore.getData();
-        triggerPageModelLoaded(data);
-        return data;
-    }
-
-    /**
      * Initializes the ModelManager using the given path to resolve a data model.
      * If no path is provided, fallbacks are applied in the following order:
      *
@@ -201,7 +190,7 @@ class ModelManager {
 
             if (data) {
                 triggerPageModelLoaded(data);
-                return Promise.resolve(data);
+                return data;
             } else {
                 return this._fetchData(rootModelURL).then((rootModel) => {
                     this.modelStore.initialize(rootModelPath, rootModel);
@@ -210,10 +199,14 @@ class ModelManager {
                     if (!isPageURLRoot(currentPathname, metaPropertyModelUrl) && !hasChildOfPath(rootModel, currentPathname)) {
                         return this._fetchData(currentPathname).then((model) => {
                             this.modelStore.insertData(PathUtils.sanitize(currentPathname), model);
-                            return this._returnInitialData();
+                            let data = this.modelStore.getData();
+                            triggerPageModelLoaded(data);
+                            return data;
                         });
                     } else {
-                        return this._returnInitialData();
+                        let data = this.modelStore.getData();
+                        triggerPageModelLoaded(data);
+                        return data;
                     }
                 });
             }
