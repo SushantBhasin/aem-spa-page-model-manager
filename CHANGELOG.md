@@ -1,3 +1,8 @@
+### *1.0.6* - 6 March 2019
+
+* ModelManager#initialze to consistently return the same type of object
+* ModelManager#initialze to fire a cq-pagemodel-loaded event
+
 ### *1.0.5* - 12 December 2018
 
 * ModelClient fetch: added default credentials for the request

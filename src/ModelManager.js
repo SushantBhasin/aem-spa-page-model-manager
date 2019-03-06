@@ -17,7 +17,7 @@
 import { PathUtils } from "./PathUtils";
 import Constants from "./Constants";
 import MetaProperty from "./MetaProperty";
-import { EditorClient } from "./EditorClient";
+import {EditorClient, triggerPageModelLoaded} from "./EditorClient";
 import { ModelClient } from "./ModelClient";
 import { ModelStore } from "./ModelStore";
 
@@ -146,6 +146,7 @@ class ModelManager {
      * Once the initial model is loaded and if the data model doesn't contain the path of the current pathname, the library attempts to fetch a fragment of model.
      *
      * @param {string|InitializationConfig} [config]                - URL to the data model or configuration object
+     * @fires cq-pagemodel-loaded
      * @return {Promise}
      */
     initialize(config) {
@@ -189,7 +190,8 @@ class ModelManager {
             let data = this.modelStore.getData(rootModelPath);
 
             if (data) {
-                return Promise.resolve(data);
+                triggerPageModelLoaded(data);
+                return data;
             } else {
                 return this._fetchData(rootModelURL).then((rootModel) => {
                     this.modelStore.initialize(rootModelPath, rootModel);
@@ -198,11 +200,14 @@ class ModelManager {
                     if (!isPageURLRoot(currentPathname, metaPropertyModelUrl) && !hasChildOfPath(rootModel, currentPathname)) {
                         return this._fetchData(currentPathname).then((model) => {
                             this.modelStore.insertData(PathUtils.sanitize(currentPathname), model);
-
-                            return this.modelStore.getData();
+                            let data = this.modelStore.getData();
+                            triggerPageModelLoaded(data);
+                            return data;
                         });
                     } else {
-                        return this.modelStore.getData();
+                        let data = this.modelStore.getData();
+                        triggerPageModelLoaded(data);
+                        return data;
                     }
                 });
             }
