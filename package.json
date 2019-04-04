@@ -8,7 +8,7 @@
     "url": "https://www.adobe.com/go/aem6_4_support_en"
   },
   "engines": {
-    "npm": ">=5.5.1 <6.0.0"
+    "npm": ">=5.5.1"
   },
   "files": [
     "dist/"
@@ -89,7 +89,7 @@
     "karma-sinon": "^1.0.5",
     "karma-sinon-chai": "^2.0.2",
     "karma-sourcemap-loader": "^0.3.7",
-    "karma-webpack": "^3.0.0",
+    "karma-webpack": "^3.0.5",
     "markdown-include": "^0.4.3",
     "mocha": "^5.2.0",
     "sinon": "^4.5.0",
