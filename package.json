@@ -1,6 +1,6 @@
 {
   "name": "@adobe/cq-spa-page-model-manager",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "auto-changelog": {
     "template": "templates/CHANGELOG.hbs"
   },
@@ -42,9 +42,6 @@
   },
   "author": "Adobe Systems Inc.",
   "license": "Apache-2.0",
-  "publishConfig": {
-    "registry": "https://artifactory.corp.adobe.com/artifactory/api/npm/npm-cq-spa-release-local"
-  },
   "eslintConfig": {
     "parserOptions": {
       "ecmaVersion": 2015,
