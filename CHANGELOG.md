@@ -1,3 +1,7 @@
+### *1.0.7* - 4 April 2019
+
+* no functional changes
+
 ### *1.0.6* - 6 March 2019
 
 * ModelManager#initialze to consistently return the same type of object
