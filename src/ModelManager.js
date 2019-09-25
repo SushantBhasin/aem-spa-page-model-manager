@@ -224,7 +224,7 @@ class ModelManager {
      * @private
      */
     _fetchData(path) {
-        if (this._fetchPromises.hasOwnProperty(path)) {
+        if (Object.prototype.hasOwnProperty.call(this._fetchPromises, path)) {
             return this._fetchPromises[path];
         }
 

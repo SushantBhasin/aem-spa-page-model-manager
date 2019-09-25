@@ -60,7 +60,7 @@ describe('PathUtils ->', () => {
 
         it('should prepend the context path on the given path', () => {
             for (let keyPath in EXPECTED_EXTERNALIZED_PATHS) {
-                if (!EXPECTED_EXTERNALIZED_PATHS.hasOwnProperty(keyPath)) {
+                if (!Object.prototype.hasOwnProperty.call(EXPECTED_EXTERNALIZED_PATHS, keyPath)) {
                     continue;
                 }
 
@@ -102,7 +102,7 @@ describe('PathUtils ->', () => {
 
         it('should return the expected internalized paths', () => {
             for (let path in EXPECTED_INTERNALIZED_PATHS) {
-                if (!EXPECTED_INTERNALIZED_PATHS.hasOwnProperty(path)) {
+                if (!Object.prototype.hasOwnProperty.call(EXPECTED_INTERNALIZED_PATHS, path)) {
                     continue;
                 }
 
