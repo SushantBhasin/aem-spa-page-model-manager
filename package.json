@@ -14,6 +14,7 @@
     "dist/"
   ],
   "homepage": "https://www.adobe.com/go/aem6_4_docs_spa_en",
+  "repository": {},
   "keywords": [
     "the official",
     "adobe",
@@ -52,21 +53,21 @@
     "clone": "^2.1.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.6.0",
+    "@babel/cli": "^7.7.5",
+    "@babel/core": "^7.7.5",
+    "@babel/preset-env": "^7.7.6",
     "babel-loader": "^8.0.6",
     "babel-plugin-istanbul": "^5.2.0",
     "chai": "^4.2.0",
     "clean-webpack-plugin": "^3.0.0",
-    "cross-env": "^6.0.0",
-    "doxdox": "^2.0.3",
-    "eslint": "^6.4.0",
-    "fetch-mock": "^7.3.9",
+    "cross-env": "^6.0.3",
+    "doxdox": "^3.0.0",
+    "eslint": "^6.7.2",
+    "fetch-mock": "^8.0.1",
     "istanbul": "^0.4.5",
     "istanbul-instrumenter-loader": "^3.0.1",
     "jsdoc": "^3.6.3",
-    "karma": "^4.3.0",
+    "karma": "^4.4.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",
     "karma-coverage": "^2.0.1",
@@ -76,11 +77,11 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
     "markdown-include": "^0.4.3",
-    "mocha": "^6.2.0",
-    "sinon": "^7.4.2",
+    "mocha": "^6.2.2",
+    "sinon": "^7.5.0",
     "sinon-chai": "^3.3.0",
-    "webpack": "^4.40.2",
-    "webpack-cli": "^3.3.9",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2"
   }
 }
