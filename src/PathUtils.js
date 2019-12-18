@@ -205,12 +205,6 @@ export class PathUtils {
             /^[a-z]{4}:\/{2}[a-z]{1,}:[0-9]{1,4}(\/.*)/,
             "$1"
         );
-
-        // Remove multiple leading /'s as this is indicating a protocol as well
-        path = path.replace(
-            /^\/*(\/.+)/,
-            "$1"
-        );
         // Remove possible selectors
         let selectorIndex = path.indexOf(".");
         path = selectorIndex > -1 ? path.substr(0, selectorIndex) : path;
