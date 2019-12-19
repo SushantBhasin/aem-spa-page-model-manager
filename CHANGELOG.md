@@ -1,3 +1,9 @@
+### *1.1.0* - 19 December 2019
+
+* Improve URL sanitizing behavior for `model.json` requests
+* Make `clone` a dependency instead of a peer dependency
+* Remove optional dependencies
+
 ### *1.0.7* - 4 April 2019
 
 * no functional changes
@@ -26,7 +32,7 @@
  * **BREAKING CHANGE** SSR refactoring
     * Added support for setting apiHost, in order to force absolute url requests on Node server
     * Added support for initializing with an existing model. This is useful when we initialize in the client, the state from the server.
-    * Guarding for dispatching & listening events only in browser context. 
+    * Guarding for dispatching & listening events only in browser context.
     * Fixed race conditions with `init` method when called from `getData`
 
 ### Removed
