@@ -21,6 +21,10 @@ describe('ModelRouter ->', () => {
             expect(getModelPath('/path.model.json')).to.equal('/path');
         });
 
+        it('should get the current window URL', () => {
+            expect(getModelPath('/zyx/abc?test=test')).to.equal('/zyx/abc');
+        });
+
     });
 
     describe('dispatchRouteChanged ->', () => {
