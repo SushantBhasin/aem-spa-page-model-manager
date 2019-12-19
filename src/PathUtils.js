@@ -17,6 +17,8 @@
 import Constants from "./Constants";
 import InternalConstants from "./InternalConstants";
 import MetaProperty from "./MetaProperty";
+import { normalize as normalizePath } from "path";
+import url from "url";
 
 /**
  * Regexp used to extract the context path of a location.
@@ -200,18 +202,27 @@ export class PathUtils {
             return;
         }
 
-        // Remove protocol, domain, port and keep only the path
-        path = path.replace(
-            /^[a-z]{4}:\/{2}[a-z]{1,}:[0-9]{1,4}(\/.*)/,
-            "$1"
-        );
-        // Remove possible selectors
-        let selectorIndex = path.indexOf(".");
-        path = selectorIndex > -1 ? path.substr(0, selectorIndex) : path;
-        // Remove possible context path
-        path = this.internalize(path);
+        // Parse URL, then remove protocol and domain (if they exist).
+        // Important: URLs starting with "//some/path" will resolve to
+        // "http://some/path" or "https://some/path" (note that the first
+        // substring will be used as the hostname)
+        let sanitizedPath = url.parse(path, false, true).pathname;
 
-        return path;
+        // Remove context path (if it exists)
+        sanitizedPath = this.internalize(sanitizedPath);
+
+        // Remove selectors (if they exist)
+        let selectorIndex = sanitizedPath.indexOf(".");
+        if (selectorIndex > -1) {
+            sanitizedPath = sanitizedPath.substr(0, selectorIndex);
+        }
+
+        // Normalize path (replace multiple consecutive slashes with a single
+        // one). It's important that the final sanitized URL does not start with
+        // "//" as this might lead to resources from other sites being loaded
+        sanitizedPath = normalizePath(sanitizedPath);
+
+        return sanitizedPath;
     }
 
     /**

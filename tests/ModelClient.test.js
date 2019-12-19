@@ -15,8 +15,8 @@ describe("ModelClient ->", () => {
     };
 
     function mockTheFetch(path, data, multiple) {
-        let url = 'end:' + path + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION;
-        fetchMock.mock(url, data, {
+        const url = path + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION;
+        fetchMock.mock(`end:${url}`, data, {
             repeat: multiple ? multiple : 1
         });
 

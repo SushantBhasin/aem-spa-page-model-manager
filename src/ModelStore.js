@@ -108,7 +108,7 @@ export class ModelStore {
         }
 
         for (let pathKey in items) {
-            if (!items.hasOwnProperty(pathKey)) {
+            if (!Object.prototype.hasOwnProperty.call(items, pathKey)) {
                 continue;
             }
 
@@ -222,10 +222,10 @@ export class ModelStore {
         let parent = result.parent || pageData || this._data;
         let itemName = PathUtils.getNodeName(dataPaths.itemPath);
 
-        if (parent && parent.hasOwnProperty(Constants.ITEMS_PROP)) {
+        if (parent && Object.prototype.hasOwnProperty.call(parent, Constants.ITEMS_PROP)) {
             parent[Constants.ITEMS_PROP][itemName] = data;
 
-            if (parent.hasOwnProperty(Constants.ITEMS_ORDER_PROP)) {
+            if (Object.prototype.hasOwnProperty.call(parent, Constants.ITEMS_ORDER_PROP)) {
                 let index = parent[Constants.ITEMS_ORDER_PROP].indexOf(siblingName);
 
                 if (index > -1) {
@@ -262,7 +262,7 @@ export class ModelStore {
         let result = this._findItemData(dataPaths.itemPath, pageData);
 
         if (result.data) {
-            if (result && result.parent && result.parent.hasOwnProperty(Constants.ITEMS_PROP)) {
+            if (result && result.parent && Object.prototype.hasOwnProperty.call(result.parent, Constants.ITEMS_PROP)) {
                 let { parent } = result;
                 let itemName = PathUtils.getNodeName(dataPaths.itemPath);
 
@@ -270,7 +270,7 @@ export class ModelStore {
                 delete result.data;
                 delete result.parent;
 
-                if (parent.hasOwnProperty(Constants.ITEMS_ORDER_PROP)) {
+                if (Object.prototype.hasOwnProperty.call(parent, Constants.ITEMS_ORDER_PROP)) {
                     let index = parent[Constants.ITEMS_ORDER_PROP].indexOf(itemName);
                     parent[Constants.ITEMS_ORDER_PROP].splice(index, 1);
                 }
