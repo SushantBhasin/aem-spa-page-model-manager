@@ -99,7 +99,13 @@ export function getModelPath(url) {
     let endPosition = localUrl.indexOf('.');
 
     if (endPosition < 0) {
-        endPosition = localUrl.length;
+
+        //If the path is missing extension and has query params instead eg. http://zyx/abc?test=test
+        let queryPosition = localUrl.indexOf('?');
+        if (queryPosition < 0)
+            endPosition = localUrl.length;
+        else
+            endPosition = queryPosition;
     }
 
     return localUrl.substr(0, endPosition);
