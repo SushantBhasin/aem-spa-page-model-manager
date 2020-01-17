@@ -1,3 +1,7 @@
+### *1.1.1* - 17 January 2020
+* Fixed:
+    * Page crashes on link containing query parameter without html extension
+
 ### *1.1.0* - 19 December 2019
 
 * Improve URL sanitizing behavior for `model.json` requests
