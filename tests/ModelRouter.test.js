@@ -1,5 +1,6 @@
-import { getModelPath, dispatchRouteChanged, routeModel, getRouteFilters, isModelRouterEnabled, isRouteExcluded, ROUTER_MODES } from '../src/ModelRouter';
+import { getModelPath, dispatchRouteChanged, routeModel, getRouteFilters, isModelRouterEnabled, ROUTER_MODES } from '../src/ModelRouter';
 import ModelManager from '../src/ModelManager';
+import { isRouteExcluded } from '../src/ModelManager';
 import { PathUtils } from '../src/PathUtils';
 import MetaProperty from '../src/MetaProperty';
 
@@ -69,27 +70,6 @@ describe('ModelRouter ->', () => {
             routeModel(TEST_PATH);
 
             expect(ModelManager.getData.calledWithExactly({path: TEST_PATH})).to.be.true;
-        });
-    });
-
-    describe('getRouteFilters ->', () => {
-
-        beforeEach(() => {
-            sinon.stub(PathUtils, 'getMetaPropertyValue');
-        });
-
-        afterEach(() => {
-            PathUtils.getMetaPropertyValue.restore();
-        });
-
-        it('should return an empty list of route filters', () => {
-            expect(getRouteFilters()).to.eql([]);
-        });
-
-        it('should return a list of route filters', () => {
-            PathUtils.getMetaPropertyValue.withArgs(MetaProperty.PAGE_MODEL_ROUTE_FILTERS).returns(MODEL_ROUTE_FILTERS_STR);
-
-            expect(getRouteFilters()).to.have.all.members(MODEL_ROUTE_FILTERS);
         });
     });
 

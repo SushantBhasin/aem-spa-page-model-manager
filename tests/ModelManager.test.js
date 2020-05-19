@@ -6,7 +6,7 @@ import {PAGE_MODEL, content_test_page_root_child0000_child0010} from './data/Mai
 import MetaProperty from "../src/MetaProperty";
 import InternalConstants from "../src/InternalConstants";
 import EventType from "../src/EventType";
-import clone from "clone";
+import {getRouteFilters} from "../src/ModelManager";
 
 describe('ModelManager ->', () => {
 
@@ -16,6 +16,8 @@ describe('ModelManager ->', () => {
 
     const CHILD_PATH = PAGE_PATH + '/jcr:content/root/child0000/child0010';
     const CHILD_MODEL_URL = CHILD_PATH + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION;
+    const MODEL_ROUTE_FILTERS = ['f1', 'f2', 'f3'];
+    const MODEL_ROUTE_FILTERS_STR = MODEL_ROUTE_FILTERS.join(',');
 
     let sandbox = sinon.sandbox.create();
 
@@ -57,6 +59,18 @@ describe('ModelManager ->', () => {
         modelClientStub.fetch.restore();
         sandbox.restore();
         fetchMock.restore();
+    });
+
+    describe('getRouteFilters ->', () => {
+
+        it('should return an empty list of route filters', () => {
+            expect(getRouteFilters()).to.eql([]);
+        });
+
+        it('should return a list of route filters', () => {
+            PathUtils.getMetaPropertyValue.withArgs(MetaProperty.PAGE_MODEL_ROUTE_FILTERS).returns(MODEL_ROUTE_FILTERS_STR);
+            expect(getRouteFilters()).to.have.all.members(MODEL_ROUTE_FILTERS);
+        });
     });
 
     describe('initialize ->', () => {
@@ -141,6 +155,8 @@ describe('ModelManager ->', () => {
             });
 
             it('should fetch data twice on initialization', () => {
+                PathUtils.getMetaPropertyValue.withArgs(MetaProperty.PAGE_MODEL_ROUTE_FILTERS).returns(MODEL_ROUTE_FILTERS_STR);
+
                 return ModelManager.initialize({path: PAGE_PATH, modelClient: modelClientStub}).then((data) => {
                     expectPageModelLoadedEventFired();
                     assert.equal(2, modelClientStub.fetch.callCount, 'ModelClient.fetch called');
