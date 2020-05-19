@@ -41,7 +41,7 @@ ModelManager.getData("/content/site/page/jcr:content/path/to/component").then(..
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.1.1*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.1.2*
 
 
 
@@ -432,6 +432,198 @@ Destroys the internal references to avoid memory leaks
     
 
 
+### src/ModelManager.js
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+#### new ModelManager()
+
+The ModelManager gathers all the components implicated in managing the model data
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### ModelManager.modelClient()
+
+Configuration object for the Initialization function
+
+
+
+
+
+##### Properties
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+
+    
+
+    
+#### ModelManager.initialize([config])
+
+Initializes the ModelManager using the given path to resolve a data model.
+If no path is provided, fallbacks are applied in the following order:
+
+- meta property: cq:pagemodel_root_url
+- current pathname of the browser
+
+Once the initial model is loaded and if the data model doesn't contain the path of the current pathname, the library attempts to fetch a fragment of model.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| config | `string` `InitializationConfig`  | - URL to the data model or configuration object | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `Promise`  
+
+
+    
+
+    
+
+    
+#### ModelManager.rootPath()
+
+Returns the path of the data model root
+
+
+
+
+
+
+##### Returns
+
+
+- `string`  
+
+
+    
+
+    
+#### ModelManager.getData([config])
+
+Returns the model for the given configuration
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| config | `string` `GetDataConfig`  | - Either the path of the data model or a configuration object. If no parameter is provided the complete model is returned | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `Promise`  
+
+
+    
+
+    
+
+    
+#### ModelManager.addListener([path, callback])
+
+Add the given callback as a listener for changes at the given path.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `String`  | Absolute path of the resource (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
+| callback | `String`  | Function to be executed listening to changes at given path | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### ModelManager.removeListener([path, callback])
+
+Remove the callback listener from the given path path.
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| path | `String`  | Absolute path of the resource (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
+| callback | `String`  | Listener function to be removed. | *Optional* |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+
+
 ### src/ModelStore.js
 
 
@@ -629,194 +821,6 @@ Removes the data located at the provided location
 
 
 - `string`  - Path to the parent item initially containing the removed data
-
-
-    
-
-    
-
-
-### src/ModelManager.js
-
-
-    
-
-    
-
-    
-
-    
-#### new ModelManager()
-
-The ModelManager gathers all the components implicated in managing the model data
-
-
-
-
-
-
-##### Returns
-
-
-- `Void`
-
-
-    
-
-    
-#### ModelManager.modelClient()
-
-Configuration object for the Initialization function
-
-
-
-
-
-##### Properties
-
-| Name | Type | Description |  |
-| ---- | ---- | ----------- | -------- |
-
-
-
-##### Returns
-
-
-- `Void`
-
-
-    
-
-    
-
-    
-
-    
-#### ModelManager.initialize([config])
-
-Initializes the ModelManager using the given path to resolve a data model.
-If no path is provided, fallbacks are applied in the following order:
-
-- meta property: cq:pagemodel_root_url
-- current pathname of the browser
-
-Once the initial model is loaded and if the data model doesn't contain the path of the current pathname, the library attempts to fetch a fragment of model.
-
-
-
-
-##### Parameters
-
-| Name | Type | Description |  |
-| ---- | ---- | ----------- | -------- |
-| config | `string` `InitializationConfig`  | - URL to the data model or configuration object | *Optional* |
-
-
-
-
-##### Returns
-
-
-- `Promise`  
-
-
-    
-
-    
-
-    
-#### ModelManager.rootPath()
-
-Returns the path of the data model root
-
-
-
-
-
-
-##### Returns
-
-
-- `string`  
-
-
-    
-
-    
-#### ModelManager.getData([config])
-
-Returns the model for the given configuration
-
-
-
-
-##### Parameters
-
-| Name | Type | Description |  |
-| ---- | ---- | ----------- | -------- |
-| config | `string` `GetDataConfig`  | - Either the path of the data model or a configuration object. If no parameter is provided the complete model is returned | *Optional* |
-
-
-
-
-##### Returns
-
-
-- `Promise`  
-
-
-    
-
-    
-
-    
-#### ModelManager.addListener([path, callback])
-
-Add the given callback as a listener for changes at the given path.
-
-
-
-
-##### Parameters
-
-| Name | Type | Description |  |
-| ---- | ---- | ----------- | -------- |
-| path | `String`  | Absolute path of the resource (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
-| callback | `String`  | Function to be executed listening to changes at given path | *Optional* |
-
-
-
-
-##### Returns
-
-
-- `Void`
-
-
-    
-
-    
-#### ModelManager.removeListener([path, callback])
-
-Remove the callback listener from the given path path.
-
-
-
-
-##### Parameters
-
-| Name | Type | Description |  |
-| ---- | ---- | ----------- | -------- |
-| path | `String`  | Absolute path of the resource (e.g., "/content/mypage"). If not provided, the root page path is used. | *Optional* |
-| callback | `String`  | Listener function to be removed. | *Optional* |
-
-
-
-
-##### Returns
-
-
-- `Void`
 
 
     
