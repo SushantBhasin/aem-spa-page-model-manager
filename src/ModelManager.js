@@ -17,7 +17,7 @@
 import { PathUtils } from "./PathUtils";
 import Constants from "./Constants";
 import MetaProperty from "./MetaProperty";
-import {EditorClient, triggerPageModelLoaded} from "./EditorClient";
+import { EditorClient, triggerPageModelLoaded } from "./EditorClient";
 import { ModelClient } from "./ModelClient";
 import { ModelStore } from "./ModelStore";
 
@@ -71,6 +71,38 @@ function adaptPagePath(path) {
     const localRootModelPath = PathUtils.sanitize(this.modelStore.rootPath);
 
     return localPath === localRootModelPath ? '' : localPath;
+}
+
+/**
+ * Returns the list of provided route filters
+ *
+ * @returns {string[]}
+ *
+ * @private
+ */
+export function getRouteFilters() {
+    let routeFilters = PathUtils.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROUTE_FILTERS);
+    return routeFilters ? routeFilters.split(',') : [];
+}
+
+/**
+ * Should the route be excluded
+ *
+ * @param route
+ * @returns {boolean}
+ *
+ * @private
+ */
+export function isRouteExcluded(route) {
+    const routeFilters = getRouteFilters();
+
+    for (let i = 0, length = routeFilters.length; i < length; i++) {
+        if (new RegExp(routeFilters[i]).test(route)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -197,7 +229,9 @@ class ModelManager {
                     this.modelStore.initialize(rootModelPath, rootModel);
                     // Append the child page if the page model doesn't correspond to the URL of the root model
                     // and if the model root path doesn't already contain the child model (asynchronous page load)
-                    if (!isPageURLRoot(currentPathname, metaPropertyModelUrl) && !hasChildOfPath(rootModel, currentPathname)) {
+                    if (!isRouteExcluded(currentPathname) &&
+                        !isPageURLRoot(currentPathname, metaPropertyModelUrl) &&
+                        !hasChildOfPath(rootModel, currentPathname)) {
                         return this._fetchData(currentPathname).then((model) => {
                             this.modelStore.insertData(PathUtils.sanitize(currentPathname), model);
                             let data = this.modelStore.getData();
@@ -218,6 +252,7 @@ class ModelManager {
 
     /**
      * Fetches a model for the given path
+     * Consider wrapping this
      *
      * @param {string} path - Model path
      * @return {Promise}

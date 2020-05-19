@@ -18,6 +18,7 @@ import EventType from './EventType';
 import { PathUtils } from "./PathUtils";
 import MetaProperty from "./MetaProperty";
 import ModelManagerSerice from "./ModelManager";
+import { isRouteExcluded } from "./ModelManager";
 
 /**
  * Triggered by the ModelRouter when the route has changed.
@@ -109,38 +110,6 @@ export function getModelPath(url) {
     }
 
     return localUrl.substr(0, endPosition);
-}
-
-/**
- * Returns the list of provided route filters
- *
- * @returns {string[]}
- *
- * @private
- */
-export function getRouteFilters() {
-    let routeFilters = PathUtils.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROUTE_FILTERS);
-    return routeFilters ? routeFilters.split(',') : [];
-}
-
-/**
- * Should the route be excluded
- *
- * @param route
- * @returns {boolean}
- *
- * @private
- */
-export function isRouteExcluded(route) {
-    const routeFilters = getRouteFilters();
-
-    for (let i = 0, length = routeFilters.length; i < length; i++) {
-        if (new RegExp(routeFilters[i]).test(route)) {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 /**
