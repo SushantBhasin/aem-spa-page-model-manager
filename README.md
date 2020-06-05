@@ -193,57 +193,6 @@ JCR CONTENT Node
     
 
 
-### src/EditorClient.js
-
-
-    
-#### triggerPageModelLoaded(model)
-
-Broadcast an event to indicate the page model has been loaded
-
-
-
-
-##### Parameters
-
-| Name | Type | Description |  |
-| ---- | ---- | ----------- | -------- |
-| model | `[object Object]`  | - model item to be added to the broadcast payload | &nbsp; |
-
-
-
-
-##### Returns
-
-
-- `Void`
-
-
-    
-
-    
-#### new EditorClient()
-
-The EditorClient is responsible for the interactions with the Page Editor.
-
-
-
-
-
-
-##### Returns
-
-
-- `Void`
-
-
-    
-
-    
-
-    
-
-
 ### src/EventType.js
 
 
@@ -356,6 +305,57 @@ Names of the meta properties associated with the PageModelProvider and ModelRout
 
 - `Void`
 
+
+    
+
+
+### src/EditorClient.js
+
+
+    
+#### triggerPageModelLoaded(model)
+
+Broadcast an event to indicate the page model has been loaded
+
+
+
+
+##### Parameters
+
+| Name | Type | Description |  |
+| ---- | ---- | ----------- | -------- |
+| model | `[object Object]`  | - model item to be added to the broadcast payload | &nbsp; |
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
+#### new EditorClient()
+
+The EditorClient is responsible for the interactions with the Page Editor.
+
+
+
+
+
+
+##### Returns
+
+
+- `Void`
+
+
+    
+
+    
 
     
 
