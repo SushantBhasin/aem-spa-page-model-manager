@@ -1,3 +1,9 @@
+### *1.1.3* - 5 June 2020
+* Support Launches content paths
+
+### *1.1.2* - 19 May 2020
+* Do not fetch excluded routes on model manager initialization
+
 ### *1.1.1* - 17 January 2020
 * Fixed:
     * Page crashes on link containing query parameter without html extension

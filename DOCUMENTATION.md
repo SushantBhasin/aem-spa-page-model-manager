@@ -1,5 +1,5 @@
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.1.0*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.1.3*
 
 
 
@@ -392,6 +392,10 @@ Destroys the internal references to avoid memory leaks
 
 ### src/ModelManager.js
 
+
+    
+
+    
 
     
 

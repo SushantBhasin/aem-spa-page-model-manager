@@ -41,7 +41,7 @@ ModelManager.getData("/content/site/page/jcr:content/path/to/component").then(..
 ## API
 
 
-### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.1.0*
+### [@adobe/cq-spa-page-model-manager](https://www.adobe.com/go/aem6_4_docs_spa_en) *1.1.3*
 
 
 
@@ -434,6 +434,10 @@ Destroys the internal references to avoid memory leaks
 
 ### src/ModelManager.js
 
+
+    
+
+    
 
     
 
@@ -1492,6 +1496,16 @@ Returns path that is no longer prefixed nor suffixed by the set of strings passe
 The [technical documentation](https://www.adobe.com/go/aem6_4_docs_spa_en) is already available, but if you are unable to solve your problem or you found a bug you can always [contact us](https://www.adobe.com/go/aem6_4_support_en) and ask for help!
 
 ## Changelog 
+
+### *1.1.3* - 5 June 2020
+* Support Launches content paths
+
+### *1.1.2* - 19 May 2020
+* Do not fetch excluded routes on model manager initialization
+
+### *1.1.1* - 17 January 2020
+* Fixed:
+    * Page crashes on link containing query parameter without html extension
 
 ### *1.1.0* - 19 December 2019
 
