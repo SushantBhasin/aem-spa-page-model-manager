@@ -137,8 +137,8 @@ describe("EditorClient ->", () => {
         it('should log an error if no msg is passed', () => {
             let eventData = {detail: {msg: {}}};
 
+            console.log('We are intentionally triggering two errors in this test.');
             assert(!consoleErrorSpy.called);
-
             window.dispatchEvent(new CustomEvent('cq-pagemodel-update', eventData));
 
             assert(consoleErrorSpy.called);

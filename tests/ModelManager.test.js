@@ -19,7 +19,7 @@ describe('ModelManager ->', () => {
     const MODEL_ROUTE_FILTERS = ['f1', 'f2', 'f3'];
     const MODEL_ROUTE_FILTERS_STR = MODEL_ROUTE_FILTERS.join(',');
 
-    let sandbox = sinon.sandbox.create();
+    let sandbox = sinon.createSandbox();
 
     let modelClientStub;
 

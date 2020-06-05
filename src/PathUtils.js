@@ -24,7 +24,7 @@ import url from "url";
  * Regexp used to extract the context path of a location.
  * The context path is extracted by assuming that the location starts with the context path followed by one of the following node names
  */
-const CONTEXT_PATH_REGEXP = /^(.*)?(?:\/(?:content|conf|apps|libs|etc)\/.*)/g;
+const CONTEXT_PATH_REGEXP = /(?:\/)(?:content|apps|libs|etc|etc.clientlibs|conf|mnt\/overlay)(?:\/)/;
 
 const JCR_CONTENT_PATTERN = '(.+)/' + Constants.JCR_CONTENT +'/(.+)';
 
@@ -61,13 +61,10 @@ export class PathUtils {
             return "";
         }
 
-        let matches = CONTEXT_PATH_REGEXP.exec(location);
-        CONTEXT_PATH_REGEXP.lastIndex = 0;
-        if (matches && matches[1]) {
-            return matches[1];
-        } else {
-            return "";
-        }
+        let matches = location.match(CONTEXT_PATH_REGEXP);
+        let contextPath = (matches && (matches.index > 0)) ? location.slice(0, matches.index) : '';
+
+        return contextPath;
     }
 
     /**
@@ -103,12 +100,9 @@ export class PathUtils {
      */
     static externalize(url) {
         const contextPath = this.getContextPath();
+        let externalizedPath = url.startsWith(contextPath) ? url : `${contextPath}${url}`;
 
-        if (!contextPath || url.startsWith(contextPath)) {
-            return url;
-        }
-
-        return contextPath + url;
+        return externalizedPath;
     }
 
     /**
@@ -123,13 +117,9 @@ export class PathUtils {
         }
 
         const contextPath = this.getContextPath();
+        let internalizedPath = url.replace(new RegExp(`^${contextPath}/`), '/');
 
-        // Does the path starts with a node
-        if (url.startsWith(contextPath.endsWith('/') ? contextPath : contextPath + '/')) {
-            return url.replace(contextPath, "");
-        } else {
-            return url;
-        }
+        return internalizedPath;
     }
 
     /**

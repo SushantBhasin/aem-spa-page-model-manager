@@ -10,10 +10,15 @@ describe('PathUtils ->', () => {
             "/contextpath/etc/test.html": "/contextpath",
             "/contextpath/conf/test.html": "/contextpath",
             "/contextpath1/contextpath2/content/test.html": "/contextpath1/contextpath2",
-            "/content/content/test.html": "/content",
-            "/content/with/content/test.html": "/content/with",
+            "/content/content/test.html": "",
+            "/content/with/content/test.html": "",
+            "/content/launches/2020/05/11/root_launch/content/wknd-events/react/home.html": "",
+            "/content/launches/2020/05/11/root_launch/content/wknd-events/react.model.json": "",
+            "/contextpath/content/launches/2020/05/11/root_launch/content/wknd-events/react/home.html": "/contextpath",
+            "/contextpath1/contextpath2/content/launches/2020/05/11/root_launch/content/wknd-events/react/home.html": "/contextpath1/contextpath2",
+            "/foo/bar/xyz/content/launches/2020/05/11/root_launch/content/wknd-events/react.model.json": "/foo/bar/xyz",
             "/not/a/context/path/test.html": "",
-            "/content/test.html": "",
+            "/content/test.html": ""
         };
 
         it('should detect the context path from the given location', () => {
@@ -76,6 +81,9 @@ describe('PathUtils ->', () => {
             "/contextpath/libs/test.html": "/libs/test.html",
             "/contextpath/etc/test.html": "/etc/test.html",
             "/contextpath/conf/test.html": "/conf/test.html",
+            "/contextpath/content/contextpath/content/test.html": "/content/contextpath/content/test.html",
+            "/contextpath/content/launches/2020/05/11/root_launch/content/wknd-events/react/home.html": "/content/launches/2020/05/11/root_launch/content/wknd-events/react/home.html",
+            "/content/launches/2020/05/11/root_launch/content/wknd-events/react/home.html": "/content/launches/2020/05/11/root_launch/content/wknd-events/react/home.html",
             "/contextpath1/contextpath2/content/test.html": "/contextpath1/contextpath2/content/test.html",
             "/content/content/test.html": "/content/content/test.html",
             "/content/with/content/test.html": "/content/with/content/test.html",
