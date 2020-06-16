@@ -248,6 +248,28 @@ describe('PathUtils ->', () => {
         assert.equal(PathUtils.makeRelative(), "");
     });
 
+    it('getNodeName', () => {
+        assert.equal(PathUtils.getNodeName(), false);
+        assert.equal(PathUtils.getNodeName(undefined), false);
+        assert.equal(PathUtils.getNodeName(null), false);
+        assert.equal(PathUtils.getNodeName(false), false);
+        assert.equal(PathUtils.getNodeName(true), false);
+        assert.equal(PathUtils.getNodeName(0), false);
+        assert.equal(PathUtils.getNodeName(123), false);
+        assert.equal(PathUtils.getNodeName(123.45), false);
+        assert.equal(PathUtils.getNodeName(0x123), false);
+        assert.equal(PathUtils.getNodeName(0o123), false);
+        assert.equal(PathUtils.getNodeName(0b1001010), false);
+        assert.equal(PathUtils.getNodeName([]), false);
+        assert.equal(PathUtils.getNodeName(new Date()), false);
+        assert.equal(PathUtils.getNodeName(''), false);
+        assert.equal(PathUtils.getNodeName('foo'), 'foo');
+        assert.equal(PathUtils.getNodeName('/foo'), 'foo');
+        assert.equal(PathUtils.getNodeName('/foo///'), 'foo');
+        assert.equal(PathUtils.getNodeName('/foo/bar/12345'), '12345');
+        assert.equal(PathUtils.getNodeName('/foo/bar/12345////xyz'), 'xyz');
+    });
+
     it("subpath", () => {
         assert.equal(PathUtils.subpath("path1/path2/path3", "path1"), "path2/path3");
         assert.equal(PathUtils.subpath("path1/path2/path3", "path1/path2"), "path3");

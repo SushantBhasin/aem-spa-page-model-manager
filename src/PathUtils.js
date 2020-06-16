@@ -379,11 +379,13 @@ export class PathUtils {
     /**
      * Returns the name of the last node of the given path
      * @param path
-     * @returns {*|boolean|string}
+     * @returns {boolean|string}
      */
     static getNodeName(path) {
-        const splashIndex = path.lastIndexOf('/') + 1;
-        return path && typeof path === 'string' && splashIndex < path.length && path.substring(splashIndex, path.length);
+        const chunks = (typeof path === 'string') ? path.replace(/\/+/g, '/').split(/\//).filter(Boolean) : [];
+        const result = chunks.pop() || false;
+
+        return result;
     }
 
     /**
