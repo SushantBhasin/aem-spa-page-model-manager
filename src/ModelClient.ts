@@ -15,49 +15,54 @@
  * from Adobe Systems Incorporated.
  */
 
+import { Model } from './Model';
+
 export class ModelClient {
+    private _apiHost: string | null;
+    private _fetchPromises: { [key: string]: Promise<Model> } | null;
 
     /**
      * @constructor
      * @param {string} [apiHost] - Http host of the API
      */
-    constructor(apiHost) {
+    constructor(apiHost?: string) {
         this._apiHost = apiHost || '';
         this._fetchPromises = {};
     }
 
     /**
-     * Fetches a model using the given a resource path
+     * Fetches a model using the given a resource path.
      *
      * @param {string} modelPath - Absolute path to the model.
      * @return {*}
      */
-    fetch(modelPath) {
+    public fetch<M extends Model>(modelPath: string): Promise<M> {
         if (!modelPath) {
-            let err = 'Fetching model rejected for path: ' + modelPath;
+            const err = `Fetching model rejected for path: ${modelPath}`;
             return Promise.reject(new Error(err));
         }
 
         // Either the API host has been provided or we make an absolute request relative to the current host
-        let url = `${this._apiHost}${modelPath}`;
-        
+        const apihostPrefix = this._apiHost || '';
+        const url = `${apihostPrefix}${modelPath}`;
+
         // Assure that the default credentials value ('same-origin') is set for browsers which do not set it
         // or which are setting the old default value ('omit')
-        return fetch(url, {credentials: 'same-origin'}).then(function(response) {
-            if (response.status >= 200 && response.status < 300) {
-                return response.json();
+        return fetch(url, {credentials: 'same-origin'}).then((response) => {
+            if ((response.status >= 200) && (response.status < 300)) {
+                return response.json() as Promise<M>;
             }
 
-            throw { response: response };
+            throw { response };
         }).catch((error) => {
             return Promise.reject(error);
         });
     }
 
     /**
-     * Destroys the internal references to avoid memory leaks
+     * Destroys the internal references to avoid memory leaks.
      */
-    destroy() {
+    public destroy() {
         this._apiHost = null;
         this._fetchPromises = null;
     }

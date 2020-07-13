@@ -16,56 +16,49 @@
  */
 
 /**
- * Useful variables for interacting with CQ/AEM components
+ * Useful variables for interacting with CQ/AEM components.
  *
  * @namespace Constants
  */
-const Constants = {
+export class Constants {
+    /**
+     * Type of the item.
+     */
+    public static readonly TYPE_PROP = ':type';
 
     /**
-     * Type of the item
-     *
-     * @type {string}
+     * List of child items of an item.
      */
-    TYPE_PROP: ':type',
+    public static readonly ITEMS_PROP = ':items';
 
     /**
-     * List of child items of an item
-     *
-     * @type {string}
+     * Order in which the items should be listed.
      */
-    ITEMS_PROP: ':items',
+    public static readonly ITEMS_ORDER_PROP = ':itemsOrder';
 
     /**
-     * Order in which the items should be listed
-     *
-     * @type {string}
+     * Path of an item.
      */
-    ITEMS_ORDER_PROP: ':itemsOrder',
+    public static readonly PATH_PROP = ':path';
 
     /**
-     * Path of an item
-     *
-     * @type {string}
+     * Children of a hierarchical item.
      */
-    PATH_PROP: ':path',
+    public static readonly CHILDREN_PROP = ':children';
 
     /**
-     * Children of a hierarchical item
-     *
-     * @type {string}
+     * Hierarchical type of the item.
      */
-    CHILDREN_PROP: ':children',
+    public static readonly HIERARCHY_TYPE_PROP = ':hierarchyType';
 
     /**
-     * Hierarchical type of the item
+     * JCR content node.
      */
-    HIERARCHY_TYPE_PROP: ':hierarchyType',
+    public static readonly JCR_CONTENT = 'jcr:content';
 
-    /**
-     * JCR CONTENT Node
-     */
-    JCR_CONTENT: "jcr:content"
-};
+    private constructor() {
+        // hide constructor
+    }
+}
 
 export default Constants;

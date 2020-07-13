@@ -14,9 +14,10 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe Systems Incorporated.
  */
-import { PathUtils } from "./PathUtils";
 import clone from 'clone';
-import EventType from "./EventType";
+import EventType from './EventType';
+import { ModelManager } from './ModelManager';
+import { PathUtils } from './PathUtils';
 
 /**
  * Broadcast an event to indicate the page model has been loaded
@@ -24,7 +25,7 @@ import EventType from "./EventType";
  * @param {{}} model - model item to be added to the broadcast payload
  * @fires cq-pagemodel-loaded
  */
-export function triggerPageModelLoaded(model) {
+export function triggerPageModelLoaded(model: any): void {
     // Deep copy to protect the internal state of the page mode
     PathUtils.dispatchGlobalCustomEvent(EventType.PAGE_MODEL_LOADED, {
         detail: {
@@ -37,11 +38,13 @@ export function triggerPageModelLoaded(model) {
  * The EditorClient is responsible for the interactions with the Page Editor.
  */
 export class EditorClient {
+    public _modelManager: ModelManager;
+    public _windowListener: EventListenerOrEventListenerObject;
 
-    constructor(ModelManager) {
+    constructor(ModelManager: ModelManager) {
         this._modelManager = ModelManager;
 
-        this._windowListener = (event) => {
+        this._windowListener = (event: any) => {
             if (!event || !event.detail || !event.detail.msg) {
                 console.error('EditorService.js', 'No message passed to cq-pagemodel-update', event);
                 return;
@@ -63,28 +66,30 @@ export class EditorClient {
      * @property {String} msg.pagePath - Absolute page path corresponding to the page in the PageModel which needs to be updated
      * @param {String} msg.cmd - Command Action requested via Editable on the content Node
      * @param {Object} msg.data - Data that needs to be updated in the PageModel at {path}
-     *
      * @fires cq-pagemodel-loaded
-     *
      * @private
      */
-    _updateModel(msg) {
+    public _updateModel(msg: any) {
         if (!msg || !msg.cmd || !msg.path) {
             console.error('PageModelManager.js', 'Not enough data received to update the page model');
             return;
         }
+
         // Path in the PageModel which needs to be updated
-        let path = msg.path;
+        const path = msg.path;
+
         // Command Action requested via Editable on the content Node
-        let cmd = msg.cmd;
+        const cmd = msg.cmd;
+
         // Data that needs to be updated in the page model at the given path
-        let data = clone(msg.data);
+        const data = clone(msg.data);
 
         let siblingName;
         let itemPath;
         let insertBefore;
+        const parentNodePath = PathUtils.getParentNodePath(path);
 
-        switch(cmd) {
+        switch (cmd) {
             case 'replace':
                 this._modelManager.modelStore.setData(path, data);
                 this._modelManager._notifyListeners(path);
@@ -92,38 +97,45 @@ export class EditorClient {
 
             case 'delete':
                 this._modelManager.modelStore.removeData(path);
-                this._modelManager._notifyListeners(PathUtils.getParentNodePath(path));
+
+                if (parentNodePath) {
+                    this._modelManager._notifyListeners(parentNodePath);
+                }
+
                 break;
 
             case 'insertBefore':
                 insertBefore = true;
                 // No break as we want both insert command to be treated the same way
                 // eslint-disable-next-line no-fallthrough
+
             case 'insertAfter':
                 // The logic relative to the item path and sibling between the editor and the ModelManager is reversed
                 // Adapting the command to the ModelManager API
                 siblingName = PathUtils.getNodeName(path);
-                itemPath = PathUtils.getParentNodePath(path) + "/" + data.key;
-                this._modelManager._modelStore.insertData(itemPath, data.value, siblingName, insertBefore);
-                this._modelManager._notifyListeners(PathUtils.getParentNodePath(path));
+
+                if (parentNodePath) {
+                    itemPath = parentNodePath + '/' + data.key;
+                    this._modelManager.modelStore.insertData(itemPath, data.value, siblingName, insertBefore);
+                    this._modelManager._notifyListeners(parentNodePath);
+                }
 
                 break;
 
             default:
-                // "replaceContent" command not supported
-                // "moveBefore", "moveAfter" commands not supported.
+                // 'replaceContent' command not supported
+                // 'moveBefore', 'moveAfter' commands not supported.
                 // As instead, we are replacing source and destination parents because they can contain data about the item we want to relocate
                 console.log('EditorClient', 'unsupported command:', cmd);
         }
 
-        triggerPageModelLoaded(this._modelManager.modelStore._data);
+        triggerPageModelLoaded(this._modelManager.modelStore.dataMap);
     }
 
     /**
      * @private
      */
-    destroy() {
-        this._modelManager = null;
+    public destroy() {
         delete this._modelManager;
 
         if (PathUtils.isBrowser()) {

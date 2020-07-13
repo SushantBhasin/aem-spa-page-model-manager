@@ -1,7 +1,7 @@
 /*
  * ADOBE CONFIDENTIAL
  *
- * Copyright 2018 Adobe Systems Incorporated
+ * Copyright 2020 Adobe Systems Incorporated
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -17,11 +17,20 @@
 
 const DEFAULT_SLING_MODEL_SELECTOR = 'model';
 
-const InternalConstants = {
+export class InternalConstants {
+    /**
+     * Sling model selector.
+     */
+    public static readonly DEFAULT_SLING_MODEL_SELECTOR = DEFAULT_SLING_MODEL_SELECTOR;
 
-    DEFAULT_SLING_MODEL_SELECTOR: DEFAULT_SLING_MODEL_SELECTOR,
+    /**
+     * JSON model extension.
+     */
+    public static readonly DEFAULT_MODEL_JSON_EXTENSION = `.${DEFAULT_SLING_MODEL_SELECTOR}.json`;
 
-    DEFAULT_MODEL_JSON_EXTENSION: '.' + DEFAULT_SLING_MODEL_SELECTOR + '.json'
-};
+    private constructor() {
+        // hide constructor
+    }
+}
 
 export default InternalConstants;

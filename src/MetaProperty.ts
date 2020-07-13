@@ -1,7 +1,7 @@
 /*
  * ADOBE CONFIDENTIAL
  *
- * Copyright 2018 Adobe Systems Incorporated
+ * Copyright 2020 Adobe Systems Incorporated
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -20,14 +20,25 @@
  *
  * @type {{PAGE_MODEL_ROOT_URL: string, PAGE_MODEL_ROUTE_FILTERS: string, PAGE_MODEL_ROUTER: string}}
  */
-const MetaProperty = {
+export class MetaProperty {
+    /**
+     * Meta property pointing to page model root.
+     */
+    public static readonly PAGE_MODEL_ROOT_URL = 'cq:pagemodel_root_url';
 
-    PAGE_MODEL_ROOT_URL: 'cq:pagemodel_root_url',
+    /**
+     * Meta property pointing to route filters.
+     */
+    public static readonly PAGE_MODEL_ROUTE_FILTERS = 'cq:pagemodel_route_filters';
 
-    PAGE_MODEL_ROUTE_FILTERS: 'cq:pagemodel_route_filters',
+    /**
+     * Meta property pointing to model router.
+     */
+    public static readonly PAGE_MODEL_ROUTER = 'cq:pagemodel_router';
 
-    PAGE_MODEL_ROUTER: 'cq:pagemodel_router'
-
-};
+    private constructor() {
+        // hide constructor
+    }
+}
 
 export default MetaProperty;

@@ -14,11 +14,11 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe Systems Incorporated.
  */
+
 import EventType from './EventType';
-import { PathUtils } from "./PathUtils";
-import MetaProperty from "./MetaProperty";
-import ModelManagerSerice from "./ModelManager";
-import { isRouteExcluded } from "./ModelManager";
+import MetaProperty from './MetaProperty';
+import ModelManager from './ModelManager';
+import { PathUtils } from './PathUtils';
 
 /**
  * Triggered by the ModelRouter when the route has changed.
@@ -67,22 +67,21 @@ import { isRouteExcluded } from "./ModelManager";
  *
  * @type {{DISABLED: string, CONTENT_PATH: string}}
  */
-export const ROUTER_MODES = {
+export class RouterModes {
+    /**
+     * Flag that indicates that the model router should be disabled.
+     */
+    public static readonly DISABLED = 'disabled';
 
     /**
-     * Flag that indicates that the model router should be disabled
-     *
-     * @type {string}
+     * Flag that indicates that the model router should extract the model path from the content path section of the URL.
      */
-    DISABLED: 'disabled',
+    public static readonly CONTENT_PATH = 'path';
 
-    /**
-     * Flag that indicates that the model router should extract the model path from the content path section of the URL
-     *
-     * @type {string}
-     */
-    CONTENT_PATH: 'path'
-};
+    private constructor() {
+       // hide constructor
+    }
+}
 
 /**
  * Returns the model path. If no URL is provided the current window URL is used
@@ -91,25 +90,53 @@ export const ROUTER_MODES = {
  *
  * @return {string}
  */
-export function getModelPath(url) {
-    let localUrl;
-
-    localUrl = url || window.location.pathname;
+export function getModelPath(url?: string | null): string {
+    const localUrl = url || window.location.pathname;
 
     // The default value model path comes as the the content path
     let endPosition = localUrl.indexOf('.');
 
     if (endPosition < 0) {
+        // If the path is missing extension and has query params instead eg. http://zyx/abc?test=test
+        const queryPosition = localUrl.indexOf('?');
 
-        //If the path is missing extension and has query params instead eg. http://zyx/abc?test=test
-        let queryPosition = localUrl.indexOf('?');
-        if (queryPosition < 0)
-            endPosition = localUrl.length;
-        else
-            endPosition = queryPosition;
+        endPosition = (queryPosition < 0) ? localUrl.length : queryPosition;
     }
 
     return localUrl.substr(0, endPosition);
+}
+
+/**
+ * Returns the list of provided route filters
+ *
+ * @returns {string[]}
+ *
+ * @private
+ */
+export function getRouteFilters(): string[] {
+    const routeFilters = PathUtils.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROUTE_FILTERS);
+
+    return routeFilters ? routeFilters.split(',') : [];
+}
+
+/**
+ * Should the route be excluded
+ *
+ * @param route
+ * @returns {boolean}
+ *
+ * @private
+ */
+export function isRouteExcluded(route: string): boolean {
+    const routeFilters = getRouteFilters();
+
+    for (let i = 0, length = routeFilters.length; i < length; i++) {
+        if (new RegExp(routeFilters[i]).test(route)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /**
@@ -118,13 +145,15 @@ export function getModelPath(url) {
  *
  * @private
  */
-export function isModelRouterEnabled() {
+export function isModelRouterEnabled(): boolean {
     if (!PathUtils.isBrowser()) {
         return false;
     }
+
     const modelRouterMetaType = PathUtils.getMetaPropertyValue(MetaProperty.PAGE_MODEL_ROUTER);
+
     // Enable the the page model routing by default
-    return !modelRouterMetaType || ROUTER_MODES.DISABLED !== modelRouterMetaType;
+    return !modelRouterMetaType || (RouterModes.DISABLED !== modelRouterMetaType);
 }
 
 /**
@@ -136,14 +165,14 @@ export function isModelRouterEnabled() {
  *
  * @private
  */
-export function dispatchRouteChanged(path) {
+export function dispatchRouteChanged(path: string): void {
     // Triggering the page model manager to load a new child page model
     // No need to use a cache as the PageModelManager already does it
-    ModelManagerSerice.getData({path: path}).then(function (model) {
+    ModelManager.getData({path}).then((model) => {
         PathUtils.dispatchGlobalCustomEvent(EventType.PAGE_MODEL_ROUTE_CHANGED, {
             detail: {
-                model: model
-            }
+                model,
+            },
         });
     });
 }
@@ -157,18 +186,17 @@ export function dispatchRouteChanged(path) {
  *
  * @private
  */
-export function routeModel(url) {
+export function routeModel(url?: string | null): void {
     if (!isModelRouterEnabled()) {
         return;
     }
 
     const path = getModelPath(url);
 
-
     // don't fetch the model
     // for the root path
     // or when the route is excluded
-    if (!path || '/' === path || isRouteExcluded(path)) {
+    if (!path || ('/' === path) || isRouteExcluded(path)) {
         return;
     }
 
@@ -181,15 +209,15 @@ if (isModelRouterEnabled()) {
     const pushState = window.history.pushState;
     const replaceState = window.history.replaceState;
 
-    window.history.pushState = function(state, title, url) {
-        routeModel(url);
+    window.history.pushState = (state, title, url) => {
+        routeModel(url || null);
 
-        return pushState.apply(history, arguments);
+        return pushState.apply(history, [ state, title, url ]);
     };
 
-    window.history.replaceState = function(state, title, url) {
-        routeModel(url);
+    window.history.replaceState = (state, title, url) => {
+        routeModel(url || null);
 
-        return replaceState.apply(history, arguments);
+        return replaceState.apply(history, [ state, title, url ]);
     };
 }

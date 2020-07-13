@@ -1,0 +1,11 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "noEmit": false,
+        "baseUrl": ".",
+        "paths": {
+            "@adobe/cq-spa-page-model-manager": ["./"],
+            "@adobe/cq-spa-page-model-manager/*": ["./*"]
+        }
+    }
+}

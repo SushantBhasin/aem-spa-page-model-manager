@@ -14,11 +14,12 @@
  * is strictly forbidden unless prior written permission is obtained
  * from Adobe Systems Incorporated.
  */
-import Constants from "./Constants";
-import InternalConstants from "./InternalConstants";
-import MetaProperty from "./MetaProperty";
-import { normalize as normalizePath } from "path";
-import url from "url";
+
+import { normalize as normalizePath } from 'path';
+import url from 'url';
+import Constants from './Constants';
+import InternalConstants from './InternalConstants';
+import MetaProperty from './MetaProperty';
 
 /**
  * Regexp used to extract the context path of a location.
@@ -26,7 +27,7 @@ import url from "url";
  */
 const CONTEXT_PATH_REGEXP = /(?:\/)(?:content|apps|libs|etc|etc.clientlibs|conf|mnt\/overlay)(?:\/)/;
 
-const JCR_CONTENT_PATTERN = '(.+)/' + Constants.JCR_CONTENT +'/(.+)';
+const JCR_CONTENT_PATTERN = "(.+)/" + Constants.JCR_CONTENT + "/(.+)";
 
 /**
  * Helper functions related to path manipulation.
@@ -34,17 +35,16 @@ const JCR_CONTENT_PATTERN = '(.+)/' + Constants.JCR_CONTENT +'/(.+)';
  * @namespace PathUtils
  */
 export class PathUtils {
-
     /**
      * Returns if the code executes in the browser context or not by checking for the
      * existance of the window object
      *
      * @returns {Boolean} the result of the check of the existance of the window object
      */
-    static isBrowser() {
+    public static isBrowser(): boolean {
         try {
-            return typeof window !== 'undefined';
-        }catch(e){
+            return (typeof window !== 'undefined');
+        } catch (e) {
             return false;
         }
     }
@@ -55,14 +55,16 @@ export class PathUtils {
      * @param {String} [location] - Location to be used to detect the context path from.
      * @returns {String}
      */
-    static getContextPath(location) {
-        location = location || this.getCurrentPathname();
-        if (!location) {
-            return "";
+    public static getContextPath(location?: string | null): string {
+        const path = location || this.getCurrentPathname();
+
+        if (!path) {
+            return '';
         }
 
-        let matches = location.match(CONTEXT_PATH_REGEXP);
-        let contextPath = (matches && (matches.index > 0)) ? location.slice(0, matches.index) : '';
+        const matches = path.match(CONTEXT_PATH_REGEXP);
+        const index = (matches === null) ? -1 : (matches.index || -1);
+        const contextPath = (index > 0) ? path.slice(0, index) : '';
 
         return contextPath;
     }
@@ -77,7 +79,7 @@ export class PathUtils {
      *
      * @private
      */
-    static adaptPagePath(path, rootPath) {
+    public static adaptPagePath(path: string, rootPath?: string) {
         if (!path) {
             return '';
         }
@@ -89,7 +91,7 @@ export class PathUtils {
         const localPath = PathUtils.internalize(path);
         const localRootModelPath = PathUtils.sanitize(rootPath);
 
-        return localPath === localRootModelPath ? '' : localPath;
+        return (localPath === localRootModelPath) ? '' : localPath;
     }
 
     /**
@@ -98,9 +100,9 @@ export class PathUtils {
      * @param {string} url - URL to externalize
      * @returns {string}
      */
-    static externalize(url) {
+    public static externalize(url: string): string {
         const contextPath = this.getContextPath();
-        let externalizedPath = url.startsWith(contextPath) ? url : `${contextPath}${url}`;
+        const externalizedPath = url.startsWith(contextPath) ? url : `${contextPath}${url}`;
 
         return externalizedPath;
     }
@@ -108,16 +110,16 @@ export class PathUtils {
     /**
      * Returns the given URL internalized by removing the optional context path
      *
-     * @param {string} url - URL to internalize
+     * @param {string|null} url - URL to internalize
      * @returns {string}
      */
-    static internalize(url) {
-        if (!url) {
-            return url;
+    public static internalize(url: string | null): string {
+        if (!url || (typeof url !== 'string')) {
+            return '';
         }
 
         const contextPath = this.getContextPath();
-        let internalizedPath = url.replace(new RegExp(`^${contextPath}/`), '/');
+        const internalizedPath = url.replace(new RegExp(`^${contextPath}/`), '/');
 
         return internalizedPath;
     }
@@ -126,13 +128,18 @@ export class PathUtils {
      * Returns the value of the meta property with the given key
      *
      * @param {string} propertyName  - name of the meta property
-     * @return {string|undefined}
+     * @return {string|null}
      */
-    static getMetaPropertyValue(propertyName) {
+    public static getMetaPropertyValue(propertyName: string): string | null {
+        let value = null;
+
         if (this.isBrowser()) {
-            const meta = document.head.querySelector('meta[property="' + propertyName + '"]');
-            return meta && meta.content;
+            const meta = document.head.querySelector(`meta[property="${propertyName}"]`);
+
+            value = meta ? meta.getAttribute('content') : null;
         }
+
+        return value;
     }
 
     /**
@@ -141,18 +148,25 @@ export class PathUtils {
      * @param {string} url - Raw URL for which to get a model URL
      * @return {string|undefined}
      */
-    static convertToModelUrl(url) {
+    public static convertToModelUrl(url: string): string | undefined {
         return url && url.replace && url.replace(/\.htm(l)?$/, InternalConstants.DEFAULT_MODEL_JSON_EXTENSION);
     }
 
     /**
      * Returns the model URL as contained in the current page URL
      *
-     * @return {string}
+     * @return {string|null}
      */
-    static getCurrentPageModelUrl() {
+    public static getCurrentPageModelUrl(): string | null {
         // extract the model from the pathname
-        return this.convertToModelUrl(this.getCurrentPathname());
+        const currentPath: string | null  = this.getCurrentPathname();
+        let url = null;
+
+        if (currentPath) {
+            url = this.convertToModelUrl(currentPath) || null;
+        }
+
+        return url;
     }
 
     /**
@@ -163,7 +177,7 @@ export class PathUtils {
      * @param {String} [url]   - path or URL to be used to derive the page model URL from
      * @returns {String}
      */
-    static getModelUrl(url) {
+    public static getModelUrl(url?: string) {
         // Model path extracted from the given url
         if (url && url.replace) {
             return this.convertToModelUrl(url);
@@ -185,10 +199,10 @@ export class PathUtils {
      * This function should be called on page paths before storing them in the page model,
      * to make sure only properly formatted paths (e.g., "/content/mypage") are stored.
      * @param {string} path - Path of the page to be sanitized.
-     * @return {string|undefined}
+     * @return {string}
      */
-    static sanitize(path) {
-        if (!path) {
+    public static sanitize(path: string | null) {
+        if (!path || (typeof path !== 'string')) {
             return;
         }
 
@@ -199,18 +213,21 @@ export class PathUtils {
         let sanitizedPath = url.parse(path, false, true).pathname;
 
         // Remove context path (if it exists)
-        sanitizedPath = this.internalize(sanitizedPath);
+        if (sanitizedPath) {
+            sanitizedPath = this.internalize(sanitizedPath);
 
-        // Remove selectors (if they exist)
-        let selectorIndex = sanitizedPath.indexOf(".");
-        if (selectorIndex > -1) {
-            sanitizedPath = sanitizedPath.substr(0, selectorIndex);
+            // Remove selectors (if they exist)
+            const selectorIndex = sanitizedPath.indexOf('.');
+
+            if (selectorIndex > -1) {
+                sanitizedPath = sanitizedPath.substr(0, selectorIndex);
+            }
+
+            // Normalize path (replace multiple consecutive slashes with a single
+            // one). It's important that the final sanitized URL does not start with
+            // "//" as this might lead to resources from other sites being loaded
+            sanitizedPath = normalizePath(sanitizedPath);
         }
-
-        // Normalize path (replace multiple consecutive slashes with a single
-        // one). It's important that the final sanitized URL does not start with
-        // "//" as this might lead to resources from other sites being loaded
-        sanitizedPath = normalizePath(sanitizedPath);
 
         return sanitizedPath;
     }
@@ -221,16 +238,16 @@ export class PathUtils {
      * @param {String} extension - Extension to be added.
      * @returns {String}
      */
-    static addExtension(path, extension) {
+    public static addExtension(path: string, extension: string): string {
         if (!extension || extension.length < 1) {
             return path;
         }
 
-        if (!extension.startsWith(".")) {
-            extension = "." + extension;
+        if (!extension.startsWith('.')) {
+            extension = `.${extension}`;
         }
 
-        if (!path || path.length < 1 || path.indexOf(extension) > -1) {
+        if (!path || (path.length < 1) || (path.indexOf(extension) > -1)) {
             return path;
         }
 
@@ -241,27 +258,29 @@ export class PathUtils {
         // 2. the selectors and the extension
         // 3. the suffix
         // 4. the parameters
-        let match = /^((?:[/a-zA-Z0-9:_-]*)+)(?:\.?)([a-zA-Z0-9._-]*)(?:\/?)([a-zA-Z0-9/._-]*)(?:\??)([a-zA-Z0-9=&]*)$/g.exec(
-            path
+        const match = /^((?:[/a-zA-Z0-9:_-]*)+)(?:\.?)([a-zA-Z0-9._-]*)(?:\/?)([a-zA-Z0-9/._-]*)(?:\??)([a-zA-Z0-9=&]*)$/g.exec(
+            path,
         );
-        let queue = "";
 
-        if (match && match.length > 2) {
+        let queue = '';
+
+        if (match && (match.length > 2)) {
             // suffix
-            queue = match[3] ? "/" + match[3] : "";
+            queue = match[3] ? `/${match[3]}` : '';
+
             // parameters
-            queue += match[4] ? "?" + match[4] : "";
+            queue += match[4] ? `?${match[4]}` : '';
 
             extensionPath =
                 match[1] +
-                "." +
+                '.' +
                 match[2].replace(/\.htm(l)?/, extension) +
                 queue;
         }
 
-        return extensionPath.indexOf(extension) > -1
+        return (extensionPath.indexOf(extension) > -1)
             ? extensionPath
-            : extensionPath + extension + queue;
+            : (extensionPath + extension + queue);
     }
 
     /**
@@ -270,20 +289,20 @@ export class PathUtils {
      * @param {String} selector - Selector to be added.
      * @returns {String}
      */
-    static addSelector(path, selector) {
-        if (!selector || selector.length < 1) {
+    public static addSelector(path: string, selector: string) {
+        if (!selector || (selector.length < 1)) {
             return path;
         }
 
-        if (!selector.startsWith(".")) {
-            selector = "." + selector;
+        if (!selector.startsWith('.')) {
+            selector = `.${selector}`;
         }
 
-        if (!path || path.length < 1 || path.indexOf(selector) > -1) {
+        if (!path || (path.length < 1) || (path.indexOf(selector) > -1)) {
             return path;
         }
 
-        let index = path.indexOf(".") || path.length;
+        const index = path.indexOf('.') || path.length;
 
         if (index < 0) {
             return path + selector;
@@ -296,62 +315,69 @@ export class PathUtils {
      * Returns the current location as a string.
      * @returns {String}
      */
-    static getCurrentPathname() {
-        return this.isBrowser() ? window.location.pathname : undefined;
+    public static getCurrentPathname(): string | null {
+        return this.isBrowser() ? window.location.pathname : null;
     }
 
     /**
-     * Dispatches a custom event on the window object, when in the browser context
+     * Dispatches a custom event on the window object, when in the browser context.
      *
      * @param  {String} eventName - the name of the custom event
      * @param {Object} options - the custom event options
      */
-    static dispatchGlobalCustomEvent(eventName, options) {
+    public static dispatchGlobalCustomEvent(eventName: string, options: any): void {
         if (this.isBrowser()) {
             window.dispatchEvent(new CustomEvent(eventName, options));
         }
     }
 
     /**
-     * Joins given path segments into a string using /
+     * Joins given path segments into a string using slash.
      *
      * @param paths
      * @returns {string}
      */
-    static join (paths) {
-        return paths ? this.normalize(paths.filter((path) => path).join('/')) : "";
+    public static join(paths?: string[]): string {
+        return paths ? this.normalize(paths.filter((path) => path).join('/')) : '';
     }
 
     /**
-     * Normalizes given path by replacing repeated / with a single one
+     * Normalizes given path by replacing repeated slash with a single one.
      *
      * @param {string} path
      * @returns {string}
      */
-    static normalize(path) {
-        if (!path) return "";
-        return path ? path.replace(/(\/+)/g, '/') : "";
+    public static normalize(path?: string): string {
+        const normalizedPath = path ? path.replace(/\/+/g, '/') : '';
+
+        return normalizedPath;
     }
 
     /**
-     * Returns path that starts with /
+     * Returns path that starts with slash.
      *
      * @param {string} path
-     * @returns {*}
+     * @returns {string}
      */
-    static makeAbsolute(path) {
-        if (!path || (typeof path !== "string")) return "";
-        return path.startsWith('/') ? path : "/" + path;
+    public static makeAbsolute(path?: string): string {
+        if (!path || (typeof path !== 'string')) {
+            return '';
+        }
+
+        return path.startsWith('/') ? path : `/${path}`;
     }
 
     /**
-     * Returns path without the leading /
+     * Returns path without the leading slash.
      *
      * @param path
-     * @returns {*}
+     * @returns {string}
      */
-    static makeRelative(path) {
-        if (!path || (typeof path !== "string")) return "";
+    public static makeRelative(path?: string): string {
+        if (!path || (typeof path !== 'string')) {
+            return '';
+        }
+
         return path.startsWith('/') ? path.slice(1) : path;
     }
 
@@ -359,11 +385,18 @@ export class PathUtils {
      * Returns path to the direct parent
      *
      * @param path
-     * @returns {*|boolean|string}
+     * @returns {string|null}
      */
-    static getParentNodePath(path) {
-        const splashIndex = path.lastIndexOf('/') + 1;
-        return path && typeof path === 'string' && splashIndex > 0 && splashIndex < path.length && path.substring(0, splashIndex - 1);
+    public static getParentNodePath(path: string | null) {
+        if (path && (path.length > 0)) {
+            const splashIndex = path.lastIndexOf('/') + 1;
+
+            if (splashIndex < path.length) {
+                return path.substring(0 , splashIndex - 1);
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -372,18 +405,18 @@ export class PathUtils {
      * @param path
      * @returns {boolean}
      */
-    static isItem(path) {
+    public static isItem(path: string): boolean {
         return new RegExp(JCR_CONTENT_PATTERN).test(path);
     }
 
     /**
      * Returns the name of the last node of the given path
-     * @param path
-     * @returns {boolean|string}
+     * @param {string} path
+     * @returns {string|null}
      */
-    static getNodeName(path) {
+    public static getNodeName(path: string): string | null {
         const chunks = (typeof path === 'string') ? path.replace(/\/+/g, '/').split(/\//).filter(Boolean) : [];
-        const result = chunks.pop() || false;
+        const result = chunks.pop() || null;
 
         return result;
     }
@@ -396,27 +429,28 @@ export class PathUtils {
      * @param rootPath
      * @returns {*}
      */
-    static subpath(targetPath, rootPath) {
+    public static subpath(targetPath?: string, rootPath?: string) {
         if (!targetPath) {
-            return "";
+            return '';
         }
 
-        let targetPathChildren = PathUtils.makeRelative(targetPath).split('/');
-        let rootPathChildren = PathUtils.makeRelative(rootPath).split('/');
+        const targetPathChildren = PathUtils.makeRelative(targetPath).split('/');
+        const rootPathChildren = PathUtils.makeRelative(rootPath).split('/');
 
         if (targetPathChildren.length < rootPathChildren.length) {
             return targetPath;
         }
 
         let index;
-        for(index = 0; index < rootPathChildren.length; ++index) {
+
+        for (index = 0; index < rootPathChildren.length; ++index) {
             if (targetPathChildren[index] !== rootPathChildren[index]) {
                 break;
             }
         }
 
         if (index === rootPathChildren.length) {
-            return targetPathChildren.slice(index).join("/");
+            return targetPathChildren.slice(index).join('/');
         } else {
             return targetPath;
         }
@@ -429,23 +463,30 @@ export class PathUtils {
      * @param {array} delimitators
      * @returns {*}
      */
-    static splitByDelimitators(path, delimitators) {
+    public static splitByDelimitators(path: string, delimitators: string[]) {
         let paths = [path];
+
         delimitators.forEach((delimitator) => {
-            let newPaths = [];
-            let delim = PathUtils.normalize(PathUtils.makeAbsolute(delimitator) + "/");
+            let newPaths: string[] = [];
+            const delim = PathUtils.normalize(PathUtils.makeAbsolute(delimitator) + '/');
+
             paths.forEach((path) => {
                 newPaths = newPaths.concat(path.split(delim));
+
                 if (path.endsWith(delimitator)) {
-                    let lastPath = newPaths.splice(newPaths.length-1, 1)[0];
+                    const lastPath = newPaths.splice(newPaths.length - 1, 1)[0];
+
                     if (lastPath !== delimitator) {
                         newPaths = newPaths.concat(lastPath.split(PathUtils.makeAbsolute(delimitator)));
                     }
                 }
+
                 newPaths = newPaths.filter((path) => path);
             });
+
             paths = newPaths;
         });
+
         return paths;
     }
 
@@ -456,8 +497,8 @@ export class PathUtils {
      * @param dataPath  path to the item on the page
      * @returns {string}
      */
-    static _getJCRPath(pagePath, dataPath) {
-        return pagePath + '/' + Constants.JCR_CONTENT + '/' + dataPath;
+    public static _getJCRPath(pagePath: string, dataPath: string): string {
+        return [ pagePath, Constants.JCR_CONTENT, dataPath ].join('/');
     }
 
     /**
@@ -467,18 +508,19 @@ export class PathUtils {
      * @param {string} path
      * @returns {{pagePath}}
      */
-    static splitPageContentPaths(path) {
-        if (!path && typeof path !== 'string') {
+    public static splitPageContentPaths(path: string): {itemPath?: string; pagePath: string} | undefined {
+        if (!path && (typeof path !== 'string')) {
             return;
         }
 
-        const splitPaths = path.split('/' + Constants.JCR_CONTENT + '/');
+        const splitPaths = path.split(`/${Constants.JCR_CONTENT}/`);
 
-        let split = {
-            pagePath: splitPaths[0]
+        const split = {
+            pagePath: splitPaths[0],
         };
 
         if (splitPaths.length > 1) {
+            // @ts-ignore
             split.itemPath = splitPaths[1];
         }
 
@@ -492,30 +534,34 @@ export class PathUtils {
      * @param {array} strings
      * @returns {*}
      */
-    static trimStrings(path, strings) {
+    public static trimStrings(path: string, strings: string[]): string {
         strings.forEach((str) => {
-            while(path.startsWith(str)) {
+            while (path.startsWith(str)) {
                 path = PathUtils.makeRelative(path.slice(str.length));
             }
 
-            while(path.endsWith(str)) {
+            while (path.endsWith(str)) {
                 path = path.slice(0, path.length - str.length);
+
                 if (path.endsWith('/')) {
                     path = path.slice(0, path.length - 1);
                 }
             }
         });
+
         return path;
     }
 
-    static _getStartStrings(path, strings) {
-        let returnStr = "";
+    public static _getStartStrings(path: string, strings: string[]): string {
+        let returnStr = '';
+
         strings.forEach((str) => {
-            while(path.startsWith(str)) {
+            while (path.startsWith(str)) {
                 path = PathUtils.makeRelative(path.slice(str.length));
-                returnStr = returnStr + "/" + str;
+                returnStr = `${returnStr}/${str}`;
             }
         });
+
         return PathUtils.makeRelative(returnStr);
     }
 }

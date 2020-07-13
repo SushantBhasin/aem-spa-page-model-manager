@@ -1,12 +1,15 @@
-var path = require('path');
-
-var nodeExternals = require('webpack-node-externals');
+const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
+const isDev = process.env.NODE_ENV !== 'production';
+const mode = isDev ? 'development' : 'production';
+const devtool = isDev ? 'inline-source-map': false;
+
 module.exports = {
-    entry: './index.js',
-    mode: 'development',
-    devtool: 'source-map',
+    entry: './src/index.ts',
+    mode,
+    devtool,
     output: {
         globalObject: `typeof self !== 'undefined' ? self : this`,
         path: path.resolve(__dirname, 'dist'),
@@ -17,16 +20,19 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /.js$/,
+                test: /.ts$/,
                 exclude: /(node_modules|dist)/,
                 use: {
-                    loader: 'babel-loader',
+                    loader: 'ts-loader',
                 },
                 enforce: 'post'
             }
         ]
     },
-    externals: [nodeExternals()],
+    resolve: {
+        extensions: ['.ts']
+    },
+    externals: [ nodeExternals() ],
     plugins: [
         new CleanWebpackPlugin()
     ]

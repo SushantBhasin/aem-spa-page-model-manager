@@ -15,9 +15,10 @@
  * from Adobe Systems Incorporated.
  */
 
-require('./src/ModelRouter');
+import './ModelRouter';
 
-export { default as ModelManager } from "./src/ModelManager";
-export * from "./src/ModelClient";
-export * from "./src/PathUtils";
-export { default as Constants } from "./src/Constants";
+export * from './ModelManager';
+export * from './ModelClient';
+export * from './Model';
+export * from './PathUtils';
+export { default as Constants } from './Constants';
