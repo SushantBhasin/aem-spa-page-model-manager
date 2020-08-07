@@ -2,12 +2,12 @@
 
 module.exports = {
     preset: 'ts-jest',
-    setupFilesAfterEnv: [ '<rootDir>/tests/Setup.ts' ],
+    setupFilesAfterEnv: [ '<rootDir>/test/Setup.ts' ],
     testEnvironment: 'jsdom',
     transform: {
         '^.+\\.ts$': 'ts-jest'
     },
-    testMatch: [ '<rootDir>/tests/*.test.ts' ],
+    testMatch: [ '<rootDir>/test/*.test.ts' ],
     testPathIgnorePatterns: [
         'node_modules',
         'lib',
