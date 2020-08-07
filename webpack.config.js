@@ -7,7 +7,7 @@ const mode = isDev ? 'development' : 'production';
 const devtool = isDev ? 'inline-source-map': false;
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: './src/cq-spa-page-model-manager.ts',
     mode,
     devtool,
     output: {

@@ -290,7 +290,7 @@ export class ModelManager {
      * @param {String}  [path]  Absolute path of the resource (e.g., "/content/mypage"). If not provided, the root page path is used.
      * @param {String}  [callback]  Function to be executed listening to changes at given path
      */
-    public addListener(path: string, callback: ListenerFunction): void {
+    public addListener(path: string | undefined, callback: ListenerFunction): void {
         if (!this._listenersMap) {
             throw new Error('ListenersMap is undefined.');
         }
@@ -311,7 +311,7 @@ export class ModelManager {
      * @param {String}  [path] Absolute path of the resource (e.g., "/content/mypage"). If not provided, the root page path is used.
      * @param {String}  [callback]  Listener function to be removed.
      */
-    public removeListener(path: string, callback: ListenerFunction): void {
+    public removeListener(path: string | undefined, callback: ListenerFunction): void {
         if (!this._listenersMap) {
             throw new Error('ListenersMap is undefined.');
         }

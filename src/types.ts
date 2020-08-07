@@ -12,7 +12,7 @@
 
 import './ModelRouter';
 
-export * from './ModelManager';
+export { default as ModelManager } from './ModelManager';
 export * from './ModelClient';
 export * from './Model';
 export * from './PathUtils';

@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 
 import * as assert from 'assert';
 import fetchMock from 'jest-fetch-mock';
@@ -24,7 +24,7 @@ function getJSONResponse(body: Model) {
 
 function mockTheFetch() {
     fetchMock.doMock((req) => {
-        switch(req.url){
+        switch (req.url) {
             case myEndPoint + CHILD_PAGE_URL:
                 return Promise.resolve(getJSONResponse(content_test_child_page_1));
 

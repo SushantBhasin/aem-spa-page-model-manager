@@ -10,7 +10,7 @@ import ModelManager from '../src/ModelManager';
 import { PAGE_MODEL_JSON } from './data/EditorClientData';
 
 describe('EditorClient ->', () => {
-    const DEFAULT_PAGE_MODEL_PATH = window.location.pathname.replace(/\.htm(l)?$/,'');
+    const DEFAULT_PAGE_MODEL_PATH = window.location.pathname.replace(/\.htm(l)?$/, '');
     const DEFAULT_PAGE_MODEL_URL = DEFAULT_PAGE_MODEL_PATH + InternalConstants.DEFAULT_MODEL_JSON_EXTENSION;
     const CHILD0000_PATH = DEFAULT_PAGE_MODEL_PATH + '/jcr:content/root/child0000';
     const CHILD0010_PATH = CHILD0000_PATH + '/child0010';

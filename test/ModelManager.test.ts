@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 
 import * as assert from 'assert';
 import fetchMock from 'jest-fetch-mock';
@@ -50,7 +50,7 @@ describe('ModelManager ->', () => {
         when(ModelClientMock.fetch(PAGE_MODEL_URL)).thenReturn(Promise.resolve(PAGE_MODEL));
         when(ModelClientMock.fetch(CHILD_MODEL_URL)).thenReturn(Promise.resolve(content_test_page_root_child0000_child0010));
         modelClient = instance(ModelClientMock);
-        jest.spyOn(PathUtils,'getMetaPropertyValue').mockImplementation((val) => metaProps[val]);
+        jest.spyOn(PathUtils, 'getMetaPropertyValue').mockImplementation((val) => metaProps[val]);
         jest.spyOn(PathUtils, 'dispatchGlobalCustomEvent');
         jest.spyOn(PathUtils, 'getCurrentPathname').mockImplementation(() => pathName);
         mockTheFetch(PAGE_MODEL_URL, PAGE_MODEL);
@@ -144,7 +144,7 @@ describe('ModelManager ->', () => {
         it('should not fetch data on initialization', () => {
             return ModelManager.initialize({ path: PAGE_PATH, model: PAGE_MODEL, modelClient: modelClient }).then((data) => {
                 expectPageModelLoadedEventFired();
-                //verify(ModelClientMock.fetch(anyString())).never();
+                // verify(ModelClientMock.fetch(anyString())).never();
                 assert.deepEqual(data, PAGE_MODEL, 'data should be correct');
             });
         });
@@ -175,7 +175,7 @@ describe('ModelManager ->', () => {
             return ModelManager.initialize({ path: PAGE_PATH, model: PAGE_MODEL, modelClient: modelClient }).then(() => {
                 expectPageModelLoadedEventFired();
 
-                return ModelManager.getData({path:CHILD_PATH, forceReload: true}).then((data) => {
+                return ModelManager.getData({ path: CHILD_PATH, forceReload: true }).then((data) => {
                     verify(ModelClientMock.fetch(anyString())).times(1);
                     assert.deepEqual(data, content_test_page_root_child0000_child0010, 'data should be correct');
                 });

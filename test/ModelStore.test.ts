@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 
 import * as assert from 'assert';
 import clone from 'clone';
@@ -34,7 +34,7 @@ describe('ModelStore ->', () => {
     });
 
     const checkNestedScenario = () => {
-        let item: Model|undefined = modelStore.getData('/content/test/child_page_1/jcr:content/root/child1001');
+        let item: Model | undefined = modelStore.getData('/content/test/child_page_1/jcr:content/root/child1001');
         assert.deepEqual(item, content_test_child_page_1_root_child1001);
 
         item = modelStore.getData('/content/test/child_page_1/jcr:content/root/child1000');
@@ -205,7 +205,7 @@ describe('ModelStore ->', () => {
 
     describe('immutability', () => {
         it('should not alter the data stored in the model', () => {
-            const item: MutableModel|undefined = modelStore.getData('/content/test/subpage2/jcr:content/root');
+            const item: MutableModel | undefined = modelStore.getData('/content/test/subpage2/jcr:content/root');
 
             if (item) {
                 item.mutation = true;
@@ -213,7 +213,7 @@ describe('ModelStore ->', () => {
                 assert.fail('item should be found');
             }
 
-            const item2: MutableModel|undefined = modelStore.getData('/content/test/subpage2/jcr:content/root');
+            const item2: MutableModel | undefined = modelStore.getData('/content/test/subpage2/jcr:content/root');
 
             if (item2) {
                 expect(item2.mutation).toBeUndefined();
@@ -223,7 +223,7 @@ describe('ModelStore ->', () => {
         });
 
         it('should alter the data stored in the model', () => {
-            const item: MutableModel|undefined = modelStore.getData('/content/test/subpage2/jcr:content/root', false);
+            const item: MutableModel | undefined = modelStore.getData('/content/test/subpage2/jcr:content/root', false);
 
             if (item) {
                 item.mutation = true;
@@ -231,7 +231,7 @@ describe('ModelStore ->', () => {
                 assert.fail('item2 should be found');
             }
 
-            const item2: MutableModel|undefined = modelStore.getData('/content/test/subpage2/jcr:content/root');
+            const item2: MutableModel | undefined = modelStore.getData('/content/test/subpage2/jcr:content/root');
 
             if (item2) {
                 expect(item2.mutation).toBeDefined();

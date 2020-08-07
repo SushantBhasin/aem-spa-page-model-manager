@@ -5,10 +5,10 @@ import { dispatchRouteChanged, getModelPath, getRouteFilters, isModelRouterEnabl
 import { PathUtils } from '../src/PathUtils';
 
 let metaProps: { [key: string]: string } = {};
-const modelManagerSpy: jest.SpyInstance<Promise<Model>> = jest.spyOn(ModelManager,'getData');
+const modelManagerSpy: jest.SpyInstance<Promise<Model>> = jest.spyOn(ModelManager, 'getData');
 
 describe('ModelRouter ->', () => {
-    const DEFAULT_PAGE_MODEL_PATH = window.location.pathname.replace(/\.htm(l)?$/,'');
+    const DEFAULT_PAGE_MODEL_PATH = window.location.pathname.replace(/\.htm(l)?$/, '');
     const TEST_PATH = '/test';
     const TEST_MODEL = { test: 'model' };
     const MODEL_ROUTE_FILTERS = ['f1', 'f2', 'f3'];
@@ -16,7 +16,7 @@ describe('ModelRouter ->', () => {
 
     beforeEach(() => {
         metaProps = {};
-        jest.spyOn(PathUtils,'getMetaPropertyValue').mockImplementation((val) => metaProps[val]);
+        jest.spyOn(PathUtils, 'getMetaPropertyValue').mockImplementation((val) => metaProps[val]);
     });
 
     describe('getModelPath ->', () => {

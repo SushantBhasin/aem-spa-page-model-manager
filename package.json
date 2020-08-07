@@ -1,6 +1,10 @@
 {
   "name": "@adobe/cq-spa-page-model-manager",
   "version": "1.1.3",
+  "repository": {
+    "type": "git",
+    "url": "https://git.corp.adobe.com/CQ/spa-page-model-manager.git"
+  },
   "auto-changelog": {
     "template": "templates/CHANGELOG.hbs"
   },
@@ -14,7 +18,6 @@
     "dist/"
   ],
   "homepage": "https://www.adobe.com/go/aem6_4_docs_spa_en",
-  "repository": {},
   "keywords": [
     "the official",
     "adobe",
@@ -29,13 +32,14 @@
   "main": "dist/cq-spa-page-model-manager.js",
   "types": "dist/types.d.ts",
   "scripts": {
+    "clean": "rm -rf coverage/ dist/",
     "linter": "eslint --ext .js,.ts . && tslint --project tsconfig.json",
     "linter:fix": "eslint --ext .js,.jsx . && tslint --project tsconfig.json --fix",
     "test": "jest --clearCache && jest",
     "test:coverage": "jest --coverage",
     "test:debug": "jest --coverage --watchAll",
-    "build": "npm run linter && cross-env NODE_ENV=development webpack && npm run build:types",
-    "build:production": "npm run linter && cross-env NODE_ENV=production webpack --mode=production && npm run build:types",
+    "build": "npm run clean && npm run linter && cross-env NODE_ENV=development webpack && npm run build:types",
+    "build:production": "npm run clean && npm run linter && cross-env NODE_ENV=production webpack --mode=production && npm run build:types",
     "build:types": "tsc -p src/tsconfig.types.json",
     "docs": "jsdoc -c ./jsdoc_conf.json && doxdox \"src/**/*.+(js|jsx)\" -i \"src/Helpers.js,src/ModelRouter.js\" --layout templates/DOCUMENTATION.hbs --output DOCUMENTATION.md",
     "readme": "node node_modules/markdown-include/bin/cli.js markdown-include.config.json",

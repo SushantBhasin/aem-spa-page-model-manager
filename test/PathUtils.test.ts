@@ -7,13 +7,13 @@ import { PathUtils } from '../src/PathUtils';
 
 describe('PathUtils ->', () => {
     let currentPathName;
-    const pathName = '';
     let metaProps: { [key: string]: string } = {};
-    let metaPropSpy,pathNameSpy: jest.SpyInstance;
+    let metaPropSpy: jest.SpyInstance;
+    let pathNameSpy: jest.SpyInstance;
 
     beforeAll(() => {
-        metaPropSpy = jest.spyOn(PathUtils,'getMetaPropertyValue').mockImplementation((key) => metaProps[key]);
-        pathNameSpy = jest.spyOn(PathUtils,'getCurrentPathname').mockImplementation(() => currentPathName);
+        metaPropSpy = jest.spyOn(PathUtils, 'getMetaPropertyValue').mockImplementation((key) => metaProps[key]);
+        pathNameSpy = jest.spyOn(PathUtils, 'getCurrentPathname').mockImplementation(() => currentPathName);
     });
 
     beforeEach(() => {
@@ -74,7 +74,7 @@ describe('PathUtils ->', () => {
         };
 
         beforeAll(() => {
-            contextPathSpy = jest.spyOn(PathUtils,'getContextPath').mockImplementation(() => CONTEXT_PATH);
+            contextPathSpy = jest.spyOn(PathUtils, 'getContextPath').mockImplementation(() => CONTEXT_PATH);
         });
 
         afterAll(() => {
@@ -111,7 +111,7 @@ describe('PathUtils ->', () => {
         };
 
         beforeAll(() => {
-            contextPathSpy = jest.spyOn(PathUtils,'getContextPath').mockImplementation(() => CONTEXT_PATH);
+            contextPathSpy = jest.spyOn(PathUtils, 'getContextPath').mockImplementation(() => CONTEXT_PATH);
         });
 
         afterAll(() => {
@@ -174,7 +174,7 @@ describe('PathUtils ->', () => {
         };
 
         beforeAll(() => {
-            contextPathSpy = jest.spyOn(PathUtils,'getContextPath').mockImplementation(() => CONTEXT_PATH);
+            contextPathSpy = jest.spyOn(PathUtils, 'getContextPath').mockImplementation(() => CONTEXT_PATH);
         });
 
         afterAll(() => {
