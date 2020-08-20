@@ -41,7 +41,7 @@
     "build": "npm run clean && npm run linter && cross-env NODE_ENV=development webpack && npm run build:types",
     "build:production": "npm run clean && npm run linter && cross-env NODE_ENV=production webpack --mode=production && npm run build:types",
     "build:types": "tsc -p src/tsconfig.types.json",
-    "docs": "jsdoc -c ./jsdoc_conf.json && doxdox \"src/**/*.+(js|jsx)\" -i \"src/Helpers.js,src/ModelRouter.js\" --layout templates/DOCUMENTATION.hbs --output DOCUMENTATION.md",
+    "docs": "jsdoc -c ./jsdoc_conf.json && doxdox \"src/**/*.+(ts|js|jsx)\" -i \"src/Helpers.js,src/ModelRouter.js\" --layout templates/DOCUMENTATION.hbs --output DOCUMENTATION.md",
     "readme": "node node_modules/markdown-include/bin/cli.js markdown-include.config.json",
     "docs-readme": "npm run docs && npm run readme",
     "preversion": "npm run test && npm run build:production && npm run docs-readme",
