@@ -1,3 +1,6 @@
+### *1.2.0* - 20 August 2020
+* Codebase change to TypeScript
+
 ### *1.1.3* - 5 June 2020
 * Support Launches content paths
 
