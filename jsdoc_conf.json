@@ -1,6 +1,6 @@
 {
   "source": {
-    "include": ["./index.js", "./src/"]
+    "include": ["./src/"]
   },
   "templates": {
     "cleverLinks": true,
